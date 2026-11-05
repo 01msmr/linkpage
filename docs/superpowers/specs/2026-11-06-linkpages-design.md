@@ -14,7 +14,7 @@ The owner keeps short domains that forward to other things (shortcuts, tools, st
 - Colors are tokens, so color variants can be added later and mixed into every design.
 - One link per line on every device. The layout adapts to the device: phones differ from desktop, and desktop type is bigger.
 - Reuse a.msmr.co's PHP edit and save setup (basic auth, backup, in-page edit mode).
-- Hierarchical pages: folders that open a page of the same layout, with a breadcrumb on top (see Hierarchy).
+- Folders: pills that open in place and drop their items out beneath (see Hierarchy).
 
 ## Non-goals
 
@@ -32,9 +32,9 @@ The owner keeps short domains that forward to other things (shortcuts, tools, st
 
 ## The pages
 
-**Index** (`/`): the domain as the heading, then one entry per item (folders first, see Hierarchy). A link entry opens its redirect page; a folder entry opens its folder page.
+**Index** (`/`): the domain as the heading, then one entry per item (folders first, see Hierarchy). A link entry opens its redirect page; a folder entry opens in place.
 
-**Redirect page** (`/<slug>/` at the root, `/<folder>/<slug>/` inside a folder, so the existing URLs keep working): the breadcrumb (see Hierarchy), the heading, then "Redirect in N s to:" followed by the target. A visible countdown counts down. When it reaches 0 the browser goes to the target (`location.replace`). A `<noscript>` meta refresh with the same delay is the fallback. A delay of 0 redirects immediately without showing the page. The target address is shown and is also a link.
+**Redirect page** (`/<slug>/`, so the existing URLs keep working): a back link to the index, the heading, then "Redirect in N s to:" followed by the target. A visible countdown counts down. When it reaches 0 the browser goes to the target (`location.replace`). A `<noscript>` meta refresh with the same delay is the fallback. A delay of 0 redirects immediately without showing the page. The target address is shown and is also a link.
 
 An unknown slug shows a plain error page naming what was not found, never a blank page.
 
@@ -82,15 +82,15 @@ Leading numbers (`numbers`): with it on, entries are prefixed `01`, `02`, … in
 
 ## Hierarchy
 
-- A site is a tree. An item is a link (`name`, `url`, `slug`, optional `delay`) or a folder (`name`, `slug`, `items[]`). Folders nest to any depth. An empty folder is allowed.
-- Paths: `/` is the root page; `/<folder>/` (and deeper) is a folder page with the same layout and settings; `/<folder>/<slug>/` is a link's redirect page.
-- Breadcrumb at the top of every page except the root: `domain / folder / folder`. Each part but the last links up one level; the last part is the current page and is not a link. On a redirect page it ends with the link's name.
-- Opening a folder is a plain navigation: no countdown and no delay. Only links count down.
-- Folder marking, in the chip designs: a folder is a tab. Its top-left and top-right corners have a radius of exactly half the item's height (a true half circle on each side), its bottom corners are square, and it ends with a `>` chevron at the right edge. A link is a sharp rectangle (radius 0) with no chevron.
-- Folder marking, in the text-only designs (raw listing, bracket terminal, tracked rows and the like): no shapes; the folder name ends with `>` typed after it, for example `ARCHIVE >`.
+- A site is a tree. An item is a link (`name`, `url`, `slug`, optional `delay`) or a folder (`name`, `items[]`). Folders nest to any depth. An empty folder is allowed.
+- Folders open in place: there are no folder pages, no breadcrumb and no nested URLs. Every link's redirect page stays `/<slug>/`, so slugs are unique across the whole site.
+- Closed folder, chip designs: a fully rounded pill (radius 50% of the item's height on all corners) with a `>` at the right edge.
+- Open folder, chip designs: a click opens it. The pill keeps its top corners rounded (50% of the height) and its bottom corners go square; the chevron turns to `v`. Its items drop out directly beneath, one per line, 1px apart: links as sharp rectangles (radius 0), sub-folders as their own pills that open the same way.
+- Closer: at the bottom of the open stack sits a mirror of the folder pill (the same name, bottom corners rounded 50% of the height, top corners square, a `^` at the right edge). A click on it, or on the top pill, closes the stack.
+- Text-only designs (raw listing, bracket terminal, tracked rows and the like): no shapes. A closed folder reads `ARCHIVE >`; open it reads `ARCHIVE v`, its items follow, and the closer reads `ARCHIVE ^`. The top line and the closer are both clickable.
 - Order: folders are listed before links; within each group the stored order applies.
-- Numbers (when on) restart at 01 on every page and run as one sequence over folders and links.
-- An unknown path shows the plain error page.
+- Numbers (when on): each list is numbered from 01 on its own, the root list and every open folder's items separately; folders and links form one sequence in that list.
+- Open or closed state lives in the page only; a reload closes everything. Folders have no URL.
 - Seed data is flat for now.
 
 ## Editing
@@ -116,13 +116,13 @@ Seed content: `l.msmr.co` has two links (slugs `spiegeltextkorrektur`, `metakorr
 
 - Folder and repo name (assumed a new folder under `github projects/`, e.g. `linkpages/`) and the git setup.
 - Exact breakpoint, type sizes, and padding values, within the rules above.
-- The data file layout and the URL rewrite for nested paths (`/<slug>/`, `/<folder>/…`).
+- The data file layout and the URL rewrite for `/<slug>/`.
 - The hover animation timing, and how to share one stylesheet across eight designs.
 - Whether designs are selected by a class on `<body>` or by separate stylesheets.
 
 ## Validation and security
 
-- Slugs: lowercase letters, digits and hyphens only; unique within its folder; not a reserved name (`edit`, `site`, `seeds`, `css`, `js`, `fonts`, `assets`, `favicon`). A slug is edited separately from the name; renaming a link never changes its slug.
+- Slugs: lowercase letters, digits and hyphens only; unique across the whole site; not a reserved name (`edit`, `site`, `seeds`, `css`, `js`, `fonts`, `assets`, `favicon`). A slug is edited separately from the name; renaming a link never changes its slug.
 - Target URLs must start with `http://` or `https://`. Anything else is rejected on save and never written into `location.replace` or a meta refresh.
 - `save.php` writes only its own deployment's data file: no hostname in the payload and no cross-site write.
 - A delay-0 redirect is done by JS (with the `<noscript>` meta refresh as fallback), not by an HTTP 301/302, so later edits are never held by a cached redirect.
@@ -134,6 +134,6 @@ Seed content: `l.msmr.co` has two links (slugs `spiegeltextkorrektur`, `metakorr
 
 - Default design, default delay of 8 s (matches today), default mode light.
 - The bracket-terminal numbers-on form.
-- Plain error page for an unknown slug or path.
-- Folders listed before links, one number sequence per page, no depth limit, flat seeds.
+- Plain error page for an unknown slug.
+- Folders listed before links, numbering per list, no depth limit, flat seeds, slugs unique across the site with flat redirect URLs, the closer repeating the folder name with `^`, the chevron turning `>` to `v`, open state not remembered.
 - The validation and security rules above, including a fresh `.htpasswd` per deployment and JS-only redirects.
