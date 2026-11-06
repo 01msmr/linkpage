@@ -30,7 +30,7 @@ h1 { margin: 0 0 var(--side); font-size: inherit; font-weight: normal; overflow-
   overflow-wrap: anywhere;
 }
 button.item { font-family: inherit; line-height: inherit; text-align: left; cursor: pointer; width: 100%; display: flex; align-items: baseline; }
-button.item:focus-visible { outline: 2px solid var(--hover); outline-offset: 2px; }
+.item:focus-visible { outline: 2px solid var(--hover); outline-offset: 2px; }
 .chev { display: inline-block; width: 1em; margin-left: auto; text-align: center; line-height: 1; text-transform: none; transform: rotate(0deg); }
 .folder-head .name { margin-right: 0.5em; }
 .folder-head[aria-expanded="true"] .chev { transform: rotate(90deg); }

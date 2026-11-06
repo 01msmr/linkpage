@@ -9,7 +9,8 @@ Each domain gets its own docroot with its own copy of this repo (Apache 2.4 assu
 1. Create the docroot and deploy the repo into it.
 2. Copy `edit/.htaccess.example` to `edit/.htaccess` and set `AuthUserFile` to the absolute path of `edit/.htpasswd`.
 3. Create `edit/.htpasswd` fresh for this domain: `htpasswd -c edit/.htpasswd <user>`.
-4. Open `/edit/` once and sign in, so the browser holds the credentials for saving.
+4. Open `/edit/` once and sign in, so the browser holds the credentials for saving. A 403 afterwards is expected (the folder has no index file).
+   `edit/` must be writable by PHP (`site.php` and `save.php` write there).
 5. The first request to `/site.php` copies `seeds/default.json` to `edit/site.json`. Edits are saved there; the previous file is kept as `edit/site.bak.json`.
 
 `edit/site.json`, `edit/site.bak.json`, `edit/.htpasswd` and `edit/.htaccess` are never committed.
@@ -47,6 +48,7 @@ The CSS and JS links in `index.html` and `go.html` carry `?v=N`. Bump it with ev
 - `.htaccess` has not been run on Apache yet; verify it on the real host (Apache 2.4 assumed).
 - The redirect page without JavaScript shows a static note; there is no meta refresh.
 - Drag and drop in edit mode is mouse-only.
+- `edit/save.php` refuses unauthenticated requests when the web server passes the user to PHP; some hosts do not, so check on the real host that saving still works.
 - There is no input validation (owner's decision).
 - The font list is empty; fonts come later.
 - Color variants come later.

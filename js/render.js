@@ -28,7 +28,7 @@
   function entry(item, index, path) {
     if (!Array.isArray(item.items)) {
       var a = el('a', 'item');
-      a.href = '/' + item.slug + '/';
+      if (item.slug) a.href = '/' + item.slug + '/';
       a.appendChild(el('span', 'num', L.numberLabel(index)));
       a.appendChild(el('span', 'name', item.name));
       return a;

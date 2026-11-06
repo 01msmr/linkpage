@@ -1,5 +1,5 @@
 <?php
-// Dev router: php -S 0.0.0.0:8080 tools/dev-router.php (mirrors the production .htaccess).
+// Dev router: php -S 0.0.0.0:8080 tools/dev-router.php (approximates the production .htaccess: maps slugs, does not hide docs/seeds/site.json).
 const ROOT = __DIR__ . '/..';
 const MIME = ['html' => 'text/html', 'css' => 'text/css', 'js' => 'text/javascript', 'json' => 'application/json', 'svg' => 'image/svg+xml'];
 header('Cache-Control: no-store');

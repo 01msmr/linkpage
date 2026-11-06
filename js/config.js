@@ -12,7 +12,6 @@
   var DESIGNS = ['giant-type', 'giant-numerals', 'vertical-heading', 'bracket-terminal',
     'headline-tiny-links', 'raw-listing', 'tracked-rows', 'plain-inverted'];
   var FONTS = {};
-  var RESERVED_SLUGS = ['edit', 'css', 'js', 'seeds', 'tools', 'tests', 'docs', 'site', 'go', 'index'];
   var REDIRECT = {
     tickMs: 1000,
     back: '\u2190 Back',
@@ -36,7 +35,7 @@
     removeLabel: 'Delete {name}',
     confirmFolder: 'Delete "{name}" and the {n} items inside it?',
     confirmDiscard: 'Discard the unsaved changes?',
-    newLink: { name: 'New link', url: '', slug: '' },
+    newLink: { name: 'New link' },
     newFolderName: 'New folder',
     dropZone: { before: 0.25, after: 0.75 },
     fields: { design: 'Design', mode: 'Mode', numbers: 'Numbers', caps: 'Caps', delay: 'Delay (s)', font: 'Font' },
@@ -51,8 +50,7 @@
       other: 'Saving failed (HTTP {status}). Your edits are kept.'
     }
   };
-  var api = { EDIT: EDIT, FOLDER: FOLDER, DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, FONTS: FONTS,
-    RESERVED_SLUGS: RESERVED_SLUGS };
+  var api = { EDIT: EDIT, FOLDER: FOLDER, DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, FONTS: FONTS };
   root.LinkpagesConfig = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);

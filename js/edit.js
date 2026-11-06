@@ -27,8 +27,11 @@
 
   function changed() { return L.hasChanged(draft, original); }
 
+  var saving = false;
+
   function refresh() {
-    saveBtn.disabled = !changed();
+    saveBtn.disabled = saving || !changed();
+    if (saving) return;
     if (!saveBtn.disabled) status.textContent = E.unsaved;
     else if (status.dataset.kind !== 'saved') status.textContent = '';
   }
@@ -208,18 +211,21 @@
   }
 
   function save() {
+    saving = true;
     saveBtn.disabled = true;
     say(E.saving, 'busy');
     var sent = L.clone(draft);
     fetch(E.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sent) })
       .then(function (r) {
         if (!r.ok) throw r.status;
+        saving = false;
         original = sent;
         R.render(L.clone(sent));
         say(E.saved, 'saved');
         refresh();
       })
       .catch(function (e) {
+        saving = false;
         say(failure(typeof e === 'number' ? e : 'network'), 'error');
         saveBtn.disabled = !changed();
       });
