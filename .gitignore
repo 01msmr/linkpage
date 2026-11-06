@@ -1,7 +1,7 @@
 .superpowers/
-edit/site.json
-edit/site.bak.json
-edit/.htpasswd
-edit/.htaccess
+public/edit/site.json
+public/edit/site.bak.json
+public/edit/.htpasswd
+public/edit/.htaccess
 node_modules/
 .DS_Store

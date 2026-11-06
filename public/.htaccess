@@ -1,8 +1,5 @@
-# Hide non-public folders and files.
-RedirectMatch 404 ^/(\.git|\.superpowers|docs|tests|tools|seeds)(/|$)
-<FilesMatch "(\.md$|^package.*\.json$|^\.git)">
-  Require all denied
-</FilesMatch>
+# Hide the seed folder.
+RedirectMatch 404 ^/seeds(/|$)
 
 # /slug, /slug/ and /slug/index.html all open go.html.
 RewriteEngine On

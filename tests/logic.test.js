@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const C = require('../js/config.js');
-const L = require('../js/logic.js');
+const C = require('../public/js/config.js');
+const L = require('../public/js/logic.js');
 
 test('resolveSettings({}) equals defaults', () => {
   assert.deepEqual(L.resolveSettings({}), C.DEFAULTS);

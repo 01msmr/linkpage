@@ -4,16 +4,16 @@ A static set of brutalist link pages: eight designs, in-place folders (a `›` c
 
 ## Deploy a domain
 
-Each domain gets its own docroot with its own copy of this repo (Apache 2.4 assumed, with PHP).
+Each domain gets its own copy of this repo; its document root is the `public/` folder (Apache 2.4 assumed, with PHP). Docs, tests and tools sit outside it.
 
-1. Create the docroot and deploy the repo into it.
+1. Deploy the repo and set the domain's document root to `<repo>/public`.
 2. Copy `edit/.htaccess.example` to `edit/.htaccess` and set `AuthUserFile` to the absolute path of `edit/.htpasswd`.
 3. Create `edit/.htpasswd` fresh for this domain: `htpasswd -c edit/.htpasswd <user>`.
 4. Open `/edit/` once and sign in, so the browser holds the credentials for saving. A 403 afterwards is expected (the folder has no index file).
    `edit/` must be writable by PHP (`site.php` and `save.php` write there).
 5. The first request to `/site.php` copies `seeds/default.json` to `edit/site.json`. Edits are saved there; the previous file is kept as `edit/site.bak.json`.
 
-`edit/site.json`, `edit/site.bak.json`, `edit/.htpasswd` and `edit/.htaccess` are never committed.
+`public/edit/site.json`, `public/edit/site.bak.json`, `public/edit/.htpasswd` and `public/edit/.htaccess` are never committed. Paths in steps 2 to 5 are relative to `public/`.
 
 ## The data
 
@@ -35,7 +35,7 @@ To switch design, mode, caps or numbers: open the page, click the gear to enter 
 
 ## Commands
 
-    php -S 0.0.0.0:8080 tools/dev-router.php   # local server, no-store, maps /<slug>/ to go.html
+    php -S 0.0.0.0:8080 -t public tools/dev-router.php   # local server, no-store, maps /<slug>/ to go.html
     npm test                                    # node --test
     npm run check                               # same as npm test
 
