@@ -1,0 +1,26 @@
+:root[data-design="tracked-rows"] { --item-scale: 1; --leading: 1.2; --pad-x: 0px; --scroll-time: 6s; }
+:root[data-design="tracked-rows"] #list, :root[data-design="tracked-rows"] .folder, :root[data-design="tracked-rows"] .items { align-items: stretch; }
+:root[data-design="tracked-rows"] .item {
+  position: relative;
+  width: 100%;
+  container-type: inline-size;
+  overflow: hidden;
+  white-space: nowrap;
+  background: transparent;
+  color: var(--fg);
+  letter-spacing: 0.35em;
+}
+:root[data-design="tracked-rows"] .name { display: inline-block; }
+:root[data-design="tracked-rows"] .item:hover { background: var(--hover); color: var(--hover-fg); }
+/* The row scrolls only while hovered; the keyframe stops at the end of the text. */
+@keyframes tracked-scroll { to { transform: translateX(min(0px, calc(100cqw - 100%))); } }
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-design="tracked-rows"] .item:hover .name { animation: tracked-scroll var(--scroll-time) linear forwards; }
+}
+/* Text form: no shapes; the chevron is pinned to the right edge over the scrolling name. */
+:root[data-design="tracked-rows"] button.item { display: block; border-radius: 0; background: transparent; color: var(--fg); }
+:root[data-design="tracked-rows"] button.item:hover { background: var(--hover); color: var(--hover-fg); }
+:root[data-design="tracked-rows"] .chev { position: absolute; right: 0; top: var(--pad-y); padding: 0 0 0 0.3em; margin: 0; letter-spacing: 0; background: inherit; }
+:root[data-design="tracked-rows"] .folder-closer { min-height: calc(var(--item-font) * var(--leading) + 2 * var(--pad-y)); }
+/* The number stays put and the name slides under it. */
+:root[data-design="tracked-rows"] .num { position: relative; z-index: 1; background: inherit; margin-right: 0; padding-right: 0.5em; }

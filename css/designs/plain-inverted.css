@@ -1,0 +1,9 @@
+:root[data-design="plain-inverted"] { --item-scale: 1.5; --leading: 1.1; --pad-x: 0px; }
+:root[data-design="plain-inverted"] .item { background: transparent; color: var(--fg); }
+:root[data-design="plain-inverted"] a.item:hover { background: var(--hover); color: var(--hover-fg); }
+/* Text form: no shapes, chevron follows the name, closer is a bare line. */
+:root[data-design="plain-inverted"] button.item { display: block; width: auto; border-radius: 0; background: transparent; color: var(--fg); }
+:root[data-design="plain-inverted"] button.item:hover { background: var(--hover); color: var(--hover-fg); }
+:root[data-design="plain-inverted"] .chev { margin-left: 0; padding-left: 0.4em; }
+:root[data-design="plain-inverted"] .folder-closer { min-height: 0; }
+:root[data-design="plain-inverted"] .folder-closer .chev { padding-left: 0; }

@@ -1,0 +1,16 @@
+:root[data-design="headline-tiny-links"] { --item-scale: 0.6; --leading: 1.25; --pad-x: 0px; }
+:root[data-design="headline-tiny-links"] h1 {
+  font-size: clamp(3.5rem, 17vw, 11rem);
+  font-weight: bold;
+  line-height: 0.82;
+  letter-spacing: -0.06em;
+  margin-bottom: calc(var(--side) * 1.5);
+}
+:root[data-design="headline-tiny-links"] .item { background: transparent; color: var(--fg); }
+:root[data-design="headline-tiny-links"] a.item:hover { background: var(--hover); color: var(--hover-fg); }
+/* Text form: no shapes, chevron follows the name, closer is a bare line. */
+:root[data-design="headline-tiny-links"] button.item { display: block; width: auto; border-radius: 0; background: transparent; color: var(--fg); }
+:root[data-design="headline-tiny-links"] button.item:hover { background: var(--hover); color: var(--hover-fg); }
+:root[data-design="headline-tiny-links"] .chev { margin-left: 0; padding-left: 0.4em; }
+:root[data-design="headline-tiny-links"] .folder-closer { min-height: 0; }
+:root[data-design="headline-tiny-links"] .folder-closer .chev { padding-left: 0; }
