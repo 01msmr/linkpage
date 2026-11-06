@@ -1,0 +1,9 @@
+:root[data-design="giant-type"] { --item-scale: 2.2; --leading: 0.95; --pad-x: 0px; }
+:root[data-design="giant-type"] .item {
+  background: transparent;
+  color: var(--fg);
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: -0.02em;
+}
+:root[data-design="giant-type"] a.item:hover { background: var(--hover); color: var(--hover-fg); }
