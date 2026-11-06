@@ -11,6 +11,7 @@
   }
 
   var settings = null;
+  var raw = null;
   var open = [];
 
   function chevron(ch) { return el('span', 'chev', ch); }
@@ -71,6 +72,7 @@
   }
 
   function render(site) {
+    raw = site;
     settings = L.resolveSettings(site);
     var html = document.documentElement;
     html.dataset.design = settings.design;
@@ -88,7 +90,7 @@
     list.appendChild(el('p', 'error', text));
   }
 
-  root.LinkpagesRender = { render: render, showError: showError };
+  root.LinkpagesRender = { render: render, showError: showError, getSite: function () { return raw; } };
 
   fetch('/site.php', { cache: 'no-store' })
     .then(function (r) {

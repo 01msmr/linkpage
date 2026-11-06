@@ -47,3 +47,68 @@ test('toggleOpen / isOpen', () => {
 test('toggleOpen close keeps siblings like 10 when closing 1', () => {
   assert.deepEqual(L.toggleOpen(['1', '1.0', '10'], '1'), ['10']);
 });
+
+const tree = () => [
+  { name: 'a', slug: 'a', url: 'u' },
+  { name: 'F', items: [{ name: 'b', slug: 'b', url: 'v' }, { name: 'G', items: [] }] },
+  { name: 'c', slug: 'c', url: 'w' }
+];
+test('itemAt reads by index path', () => {
+  assert.equal(L.itemAt(tree(), [1, 0]).name, 'b');
+  assert.equal(L.itemAt(tree(), [2]).name, 'c');
+});
+test('removeAt returns a new tree without the item', () => {
+  const t = tree();
+  const r = L.removeAt(t, [1, 0]);
+  assert.equal(r.items[1].items.length, 1);
+  assert.equal(r.removed.name, 'b');
+  assert.equal(t[1].items.length, 2);
+});
+test('insertAt puts an item into a folder at an index', () => {
+  const r = L.insertAt(tree(), [1], 1, { name: 'n' });
+  assert.deepEqual(r[1].items.map(i => i.name), ['b', 'n', 'G']);
+  assert.equal(L.insertAt(tree(), [], 0, { name: 'n' })[0].name, 'n');
+});
+test('moveItem moves into a folder', () => {
+  const r = L.moveItem(tree(), [0], [1], 0);
+  assert.deepEqual(r.map(i => i.name), ['F', 'c']);
+  assert.deepEqual(r[0].items.map(i => i.name), ['a', 'b', 'G']);
+});
+test('moveItem out of a folder', () => {
+  const r = L.moveItem(tree(), [1, 0], [], 0);
+  assert.deepEqual(r.map(i => i.name), ['b', 'a', 'F', 'c']);
+});
+test('moveItem reorders in the same list with the index in the list before removal', () => {
+  const r = L.moveItem(tree(), [0], [], 3);
+  assert.deepEqual(r.map(i => i.name), ['F', 'c', 'a']);
+  const s = L.moveItem(tree(), [2], [], 0);
+  assert.deepEqual(s.map(i => i.name), ['c', 'a', 'F']);
+});
+test('moveItem refuses a folder into itself or its own subtree', () => {
+  assert.equal(L.moveItem(tree(), [1], [1], 0), null);
+  assert.equal(L.moveItem(tree(), [1], [1, 1], 0), null);
+});
+test('moveItem adjusts the target parent path when the removal shifts it', () => {
+  const r = L.moveItem(tree(), [0], [1, 1], 0);
+  assert.deepEqual(r[0].items[1].items.map(i => i.name), ['a']);
+});
+test('setField sets a value and drops it when empty', () => {
+  const r = L.setField(tree(), [0], 'name', 'x');
+  assert.equal(r[0].name, 'x');
+  assert.equal(L.setField(r, [0], 'delay', '3')[0].delay, 3);
+  assert.equal('delay' in L.setField(L.setField(r, [0], 'delay', '3'), [0], 'delay', ''), false);
+  assert.equal(L.setField(r, [0], 'delay', 'abc')[0].delay, 'abc');
+});
+test('hasChanged compares by content', () => {
+  assert.equal(L.hasChanged({ a: [1] }, { a: [1] }), false);
+  assert.equal(L.hasChanged({ a: [1] }, { a: [2] }), true);
+});
+test('countDescendants counts all nested items', () => {
+  assert.equal(L.countDescendants(tree()[1]), 2);
+  assert.equal(L.countDescendants(tree()[0]), 0);
+});
+test('typedValue turns a typed delay into a number, leaves the rest', () => {
+  assert.equal(L.typedValue('delay', '5'), 5);
+  assert.equal(L.typedValue('delay', 'x'), 'x');
+  assert.equal(L.typedValue('name', '5'), '5');
+});
