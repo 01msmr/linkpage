@@ -115,7 +115,7 @@ Seed content: `l.msmr.co` has two links (slugs `spiegeltextkorrektur`, `metakorr
 
 ## Left to the builder
 
-- Folder and repo name (assumed a new folder under `github projects/`, e.g. `linkpages/`) and the git setup.
+- Folder and repo name (assumed a new folder under `github projects/`, e.g. `linkpage/`) and the git setup.
 - Exact breakpoint, type sizes, and padding values, within the rules above.
 - The data file layout and the URL rewrite for `/<slug>/`.
 - The hover animation timing, and how to share one stylesheet across eight designs.

@@ -1,6 +1,6 @@
-# CLAUDE.md — linkpages
+# CLAUDE.md — linkpage
 
-Extends `../CLAUDE.md`. Spec: `docs/superpowers/specs/2026-11-06-linkpages-design.md`; plan: `docs/superpowers/plans/2026-11-06-linkpages.md`.
+Extends `../CLAUDE.md`. Spec: `docs/superpowers/specs/2026-11-06-linkpage-design.md`; plan: `docs/superpowers/plans/2026-11-06-linkpage.md`.
 
 ## Rules
 

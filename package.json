@@ -1,5 +1,5 @@
 {
-  "name": "linkpages",
+  "name": "linkpage",
   "private": true,
   "scripts": {
     "test": "node --test",
