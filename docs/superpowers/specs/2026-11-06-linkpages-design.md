@@ -90,6 +90,7 @@ Leading numbers (`numbers`): with it on, entries are prefixed `01`, `02`, … in
 - Text-only designs (raw listing, bracket terminal, tracked rows and the like): no shapes. A closed folder reads `ARCHIVE >`; open it reads `ARCHIVE v`, its items follow, and the closer is a line with only a `^`. The top line and the closer are both clickable.
 - Order: folders are listed before links; within each group the stored order applies.
 - Numbers (when on): each list is numbered from 01 on its own, the root list and every open folder's items separately; folders and links form one sequence in that list.
+- Nesting: a sub-folder opens inside its parent's stack and has its own closer. Closing a level closes it and everything inside it; opening it again shows its sub-folders closed. Levels above stay as they are.
 - Open or closed state lives in the page only; a reload closes everything. Folders have no URL.
 - Seed data is flat for now.
 
