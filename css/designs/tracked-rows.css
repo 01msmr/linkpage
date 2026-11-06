@@ -20,7 +20,8 @@
 /* Text form: no shapes; the chevron is pinned to the right edge over the scrolling name. */
 :root[data-design="tracked-rows"] button.item { display: block; border-radius: 0; background: transparent; color: var(--fg); }
 :root[data-design="tracked-rows"] button.item:hover { background: var(--hover); color: var(--hover-fg); }
-:root[data-design="tracked-rows"] .chev { position: absolute; right: 0; top: var(--pad-y); padding: 0 0 0 0.3em; margin: 0; letter-spacing: 0; background: inherit; }
+:root[data-design="tracked-rows"] .chev { position: absolute; right: 0; top: var(--pad-y); padding: 0 0.15em; box-sizing: content-box; margin: 0; letter-spacing: 0; background: inherit; }
+:root[data-design="tracked-rows"] .folder-head .name { margin-right: 0; }
 :root[data-design="tracked-rows"] .folder-closer { min-height: calc(var(--item-font) * var(--leading) + 2 * var(--pad-y)); }
 /* The number stays put and the name slides under it. */
 :root[data-design="tracked-rows"] .num { position: relative; z-index: 1; background: inherit; margin-right: 0; padding-right: 0.5em; }

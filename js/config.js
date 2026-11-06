@@ -19,7 +19,7 @@
     countdown: 'Redirect in {n} s to:',
     unknown: 'Unknown link: {slug}'
   };
-  var FOLDER = { closed: '>', open: 'v', closer: '^', closeLabel: 'Close {name}' };
+  var FOLDER = { chevron: '›', closeLabel: 'Close {name}' };
   var api = { FOLDER: FOLDER, DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, FONTS: FONTS,
     RESERVED_SLUGS: RESERVED_SLUGS };
   root.LinkpagesConfig = api;

@@ -5,6 +5,7 @@
 /* Text form: no shapes, chevron follows the name, closer is a bare line. */
 :root[data-design="raw-listing"] button.item { display: block; width: auto; border-radius: 0; background: transparent; color: var(--fg); }
 :root[data-design="raw-listing"] button.item:hover { background: var(--hover); color: var(--hover-fg); }
-:root[data-design="raw-listing"] .chev { margin-left: 0; padding-left: 0.4em; }
+:root[data-design="raw-listing"] .chev { margin-left: 0.4em; }
+:root[data-design="raw-listing"] .folder-head .name { margin-right: 0; }
 :root[data-design="raw-listing"] .folder-closer { min-height: 0; }
-:root[data-design="raw-listing"] .folder-closer .chev { padding-left: 0; }
+:root[data-design="raw-listing"] .folder-closer .chev { margin-left: 0; }

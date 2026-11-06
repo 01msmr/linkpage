@@ -42,7 +42,7 @@
     head.setAttribute('aria-expanded', String(isOpen));
     head.appendChild(el('span', 'num', L.numberLabel(index)));
     head.appendChild(el('span', 'name', item.name));
-    head.appendChild(chevron(isOpen ? F.open : F.closed));
+    head.appendChild(chevron(F.chevron));
     head.addEventListener('click', function () { toggle(path, headSel); });
     wrap.appendChild(head);
     if (isOpen) {
@@ -51,7 +51,7 @@
       closer.type = 'button';
       closer.dataset.path = path;
       closer.setAttribute('aria-label', F.closeLabel.replace('{name}', item.name));
-      closer.appendChild(chevron(F.closer));
+      closer.appendChild(chevron(F.chevron));
       closer.addEventListener('click', function () { toggle(path, headSel); });
       wrap.appendChild(closer);
     }

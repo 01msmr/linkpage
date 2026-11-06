@@ -15,7 +15,8 @@
 :root[data-design="bracket-terminal"] .item:hover .num { display: none; }
 /* Text form: no shapes, chevron follows the name, closer is a bare line. */
 :root[data-design="bracket-terminal"] button.item { display: block; width: auto; border-radius: 0; }
-:root[data-design="bracket-terminal"] .chev { margin-left: 0; padding-left: 0.5em; }
+:root[data-design="bracket-terminal"] .chev { margin-left: 0.5em; }
+:root[data-design="bracket-terminal"] .folder-head .name { margin-right: 0; }
 :root[data-design="bracket-terminal"] .folder-closer { min-height: 0; }
 :root[data-design="bracket-terminal"] .folder-closer::before, :root[data-design="bracket-terminal"] .folder-closer:hover::before { content: none; }
-:root[data-design="bracket-terminal"] .folder-closer .chev { padding-left: 0; }
+:root[data-design="bracket-terminal"] .folder-closer .chev { margin-left: 0; }
