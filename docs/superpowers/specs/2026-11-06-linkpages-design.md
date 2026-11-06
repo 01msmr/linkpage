@@ -123,13 +123,12 @@ Seed content: `l.msmr.co` has two links (slugs `spiegeltextkorrektur`, `metakorr
 
 ## Validation and security
 
-- Slugs: lowercase letters, digits and hyphens only; unique across the whole site; not a reserved name (`edit`, `site`, `seeds`, `css`, `js`, `fonts`, `assets`, `favicon`). A slug is edited separately from the name; renaming a link never changes its slug.
-- Target URLs must start with `http://` or `https://`. Anything else is rejected on save and never written into `location.replace` or a meta refresh.
+- No input validation for now (owner's decision, 2026-11-06): no slug rules, no URL checks, no delay checks. Everything typed in the editor is stored as typed.
 - `save.php` writes only its own deployment's data file: no hostname in the payload and no cross-site write.
 - A delay-0 redirect is done by JS (with the `<noscript>` meta refresh as fallback), not by an HTTP 301/302, so later edits are never held by a cached redirect.
 - The font selector is hidden in the edit UI while the font list is empty; an unknown `font` key falls back to the system stack.
 - `.htpasswd`: each deployment has its own, created fresh and not shared with a.msmr.co or another domain.
-- The builder reads the five unknown targets from the live redirect pages (network is available) and also keeps the `index.html` and trailing-slash variants resolving.
+- Content is dummy for now: the seed holds placeholder links and folders. Real names and targets come later.
 
 ## Decided by the author, not confirmed with the owner
 
@@ -137,4 +136,4 @@ Seed content: `l.msmr.co` has two links (slugs `spiegeltextkorrektur`, `metakorr
 - The bracket-terminal numbers-on form.
 - Plain error page for an unknown slug.
 - Folders listed before links, numbering per list, no depth limit, flat seeds, slugs unique across the site with flat redirect URLs, the closer showing only a `^`, the chevron turning `>` to `v`, open state not remembered.
-- The validation and security rules above, including a fresh `.htpasswd` per deployment and JS-only redirects.
+- A fresh `.htpasswd` per deployment and JS-only redirects.

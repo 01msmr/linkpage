@@ -18,8 +18,7 @@
 - Folder pill: closed = radius 50% of height on all corners; open = top corners 50% of height, bottom corners square; items drop out 1px apart; links radius 0; a mirrored, textless closer with only `^` ends the stack.
 - One item per line on every device; phone breakpoint around 600px; sizes by CSS only (`clamp`, one media query), no JS measuring.
 - Defaults: design `giant-type`, mode `light`, numbers `true`, caps `regular`, font system Helvetica stack, delay 8 s.
-- Slugs: lowercase letters, digits, hyphens; unique across the whole site; reserved: `edit`, `site`, `seeds`, `css`, `js`, `fonts`, `assets`, `favicon`.
-- Target URLs start with `http://` or `https://` only. Delay 0 redirects by JS (no HTTP 301/302).
+- No input validation anywhere (owner's decision); all content is dummy for now. Delay 0 redirects by JS (no HTTP 301/302).
 - Cache-bust `?v=` on CSS and JS links in the HTML with every change to them.
 - Everything in English; code comments one line; no secrets in git (`.htpasswd` and `edit/site.json` are ignored, only `.example` variants committed).
 - Never push without the owner's say-so (the owner said "and push" for the spec and plan only).
@@ -28,10 +27,9 @@
 ## Review Focus
 
 - A link with `delay: 0` must redirect at once, not fall back to the site's 8 s (0 is falsy). Pinned in Task 2.
-- A target such as `javascript:alert(1)` must be rejected by both the JS and the PHP validation. Pinned in Tasks 3 and 4.
 - `/slug`, `/slug/` and `/slug/index.html` all resolve to the same redirect page. Pinned in Task 4.
 - A missing, empty or corrupt `edit/site.json` shows a readable error page (never blank) and `save.php` writes atomically so a failed save cannot corrupt it. Pinned in Tasks 4 and 5.
-- Very long names, an unknown `font` key and duplicate slugs must not break the layout or the editor. Pinned in Tasks 2, 3 and 8.
+- Very long names and an unknown `font` key must not break the layout or the editor. Pinned in Tasks 2 and 8.
 
 ## File Structure
 
@@ -41,9 +39,9 @@
 - `js/render.js`: builds the list and folder stacks, applies settings as data attributes on `<html>`.
 - `js/go.js`: redirect page countdown. `js/edit.js`: gear, settings form, tree editor, save.
 - `css/tokens.css`: light and dark token sets, radius and gap tokens. `css/base.css`: shared layout, chips, folder pills. `css/designs/<id>.css`: one per design.
-- `site.php`, `edit/save.php`, `lib/validate.php`, `.htaccess`, `edit/.htaccess.example`.
-- `seeds/default.json`, `seeds/l.msmr.co.json`, `seeds/tbx.li.json`.
-- `tests/logic.test.js`, `tests/validate.test.php`, `tools/dev-router.php`, `README.md`, `CLAUDE.md`, `.gitignore`.
+- `site.php`, `edit/save.php`, `.htaccess`, `edit/.htaccess.example`.
+- `seeds/default.json` (dummy content).
+- `tests/logic.test.js`, `tools/dev-router.php`, `README.md`, `CLAUDE.md`, `.gitignore`.
 
 ---
 
@@ -57,7 +55,7 @@
 
 - [ ] **Step 1: Ask the owner before adding a test setup**, naming `node --test` (as a.msmr.co uses). Proceed only on a yes; otherwise stop and report.
 - [ ] **Step 2: Create `.gitignore`** ignoring `edit/site.json`, `edit/site.bak.json`, `edit/.htpasswd`, `edit/.htaccess`, `node_modules/`.
-- [ ] **Step 3: Create `package.json`** with scripts `test` (`node --test tests/`) and `check` (`npm test && php tests/validate.test.php`).
+- [ ] **Step 3: Create `package.json`** with scripts `test` (`node --test tests/`) and `check` (`npm test`).
 - [ ] **Step 4: Implement `js/config.js`** with the interface above, guarded `module.exports` for node.
 - [ ] **Step 5: Create `tools/dev-router.php`** serving everything `no-store` and rewriting `/<slug>/` to `go.html` like the production `.htaccess`; run with `php -S 0.0.0.0:8080 tools/dev-router.php`.
 - [ ] **Step 6: Create `CLAUDE.md`** (extends `../CLAUDE.md`, rules from Global Constraints) and `README.md` (what it is, how to run, how a domain is deployed: own docroot, `.htpasswd` created fresh, first request copies the seed).
@@ -78,39 +76,24 @@
 - [ ] **Step 4: Run** `npm test`; expect PASS.
 - [ ] **Step 5: Commit** `feat: settings, delay, search, ordering, open state`.
 
-### Task 3: Site validation (JS)
+### Task 3: dropped
+
+The owner decided on no validation. This task is skipped.
+
+### Task 4: Server side: data, save, rewrites, dummy seed
 
 **Files:**
-- Modify: `js/logic.js`, `tests/logic.test.js`
+- Create: `site.php`, `edit/save.php`, `.htaccess`, `edit/.htaccess.example`, `seeds/default.json`
 
 **Interfaces:**
-- Produces: `validateSite(site: object): string[]` returning error codes: `slug-invalid:<slug>`, `slug-duplicate:<slug>`, `slug-reserved:<slug>`, `url-invalid:<slug>`, `delay-invalid:<where>`, `name-empty:<path>`, `setting-invalid:<key>`; `[]` when valid.
+- Produces: `GET /site.php` returns the site JSON (`Content-Type: application/json`, `Cache-Control: no-cache`); `POST /edit/save.php` with a JSON body returns `200 OK`, `400` for a body that is not JSON, `405` for other methods.
 
-- [ ] **Step 1: Write failing tests**: valid nested site returns `[]`; duplicate slug in different folders gives `slug-duplicate`; `edit` gives `slug-reserved`; `Bad Slug` gives `slug-invalid`; url `javascript:alert(1)`, `data:text/html,x` and `ftp://x` each give `url-invalid`; `https://x` and `http://x` pass; delay `-1`, `1.5`, `"8"` give `delay-invalid`; delay `0` passes; empty folder name gives `name-empty`; `mode: 'blue'` gives `setting-invalid:mode`; an empty folder (`items: []`) is valid.
-- [ ] **Step 2: Run** `npm test`; expect the new tests FAIL.
-- [ ] **Step 3: Implement `validateSite`** walking the tree once, collecting slugs into a set.
-- [ ] **Step 4: Run** `npm test`; expect PASS.
-- [ ] **Step 5: Commit** `feat: site validation`.
-
-### Task 4: Server side: data, save, rewrites, seeds
-
-**Files:**
-- Create: `lib/validate.php`, `site.php`, `edit/save.php`, `.htaccess`, `edit/.htaccess.example`, `seeds/default.json`, `seeds/l.msmr.co.json`, `seeds/tbx.li.json`, `tests/validate.test.php`
-
-**Interfaces:**
-- Consumes: the error-code list from Task 3 (same codes).
-- Produces: `validate_site(array $site): array` in `lib/validate.php` (same rules and codes as `validateSite`); `GET /site.php` returns the site JSON (`Content-Type: application/json`, `Cache-Control: no-cache`); `POST /edit/save.php` with a JSON body returns `200 OK`, `400` with the error codes as a JSON array, `405` for other methods.
-
-- [ ] **Step 1: Write `tests/validate.test.php`** mirroring Task 3's cases (valid site, duplicate, reserved, invalid slug, `javascript:` and `data:` URLs, delays, empty name) and printing `OK` only if all assertions hold.
-- [ ] **Step 2: Run** `php tests/validate.test.php`; expect FAIL (function missing).
-- [ ] **Step 3: Implement `validate_site`** in `lib/validate.php`.
-- [ ] **Step 4: Run** `php tests/validate.test.php`; expect `OK`.
-- [ ] **Step 5: Implement `site.php`**: if `edit/site.json` is missing, copy `seeds/<HTTP_HOST>.json` if it exists, else `seeds/default.json`; output the file; on an unreadable or invalid JSON file respond `500` with a JSON `{"error": "..."}` (the pages show it, never blank).
-- [ ] **Step 6: Implement `edit/save.php`**: POST only, JSON decode, `validate_site`, copy the old file to `edit/site.bak.json`, write to a temp file in `edit/` and `rename` it over `site.json` (atomic).
-- [ ] **Step 7: Write `.htaccess`**: hide `docs`, `tests`, `tools`, `seeds`, `lib`, `*.md`, `package*.json`, `.git*`; rewrite `^([a-z0-9-]+)/?$`, `^([a-z0-9-]+)/index\.html$` to `go.html` (so `/slug`, `/slug/`, `/slug/index.html` all work) unless the path is a real file or folder; caching as in a.msmr.co (`html` no-cache, css/js 1 h). Write `edit/.htaccess.example` with the basic-auth block and the `AuthUserFile` placeholder.
-- [ ] **Step 8: Write the seeds**: `default.json` (defaults, empty `items`), `l.msmr.co.json` and `tbx.li.json` with the slugs and names from the spec. Fetch each link's target from the live redirect pages (`curl https://l.msmr.co/<slug>/` and the same for `tbx.li`, reading the `<meta http-equiv="refresh">` url); if a fetch fails, stop and ask the owner for that URL.
-- [ ] **Step 9: Verify by hand** with the dev router: `curl -s localhost:8080/site.php` returns the default; POST a valid body returns `OK`; POST `{"items":[{"name":"x","slug":"a","url":"javascript:alert(1)"}]}` returns `400` with `url-invalid:a`.
-- [ ] **Step 10: Commit** `feat: site.php, save.php, rewrites, seeds`.
+- [ ] **Step 1: Write `seeds/default.json`** with dummy content: settings at their defaults and `items`: two root links (`link-one` → `https://example.com/one`, `link-two` → `https://example.com/two` with `delay: 0`), a folder "Folder A" holding two links and a sub-folder "Folder B" with one link, and an empty folder "Empty folder". Names and slugs are plain dummy words.
+- [ ] **Step 2: Implement `site.php`**: if `edit/site.json` is missing, copy `seeds/default.json` to it; output the file; on an unreadable or invalid JSON file respond `500` with `{"error": "..."}` (pages show it, never blank).
+- [ ] **Step 3: Implement `edit/save.php`**: POST only, JSON decode check, copy the old file to `edit/site.bak.json`, write to a temp file in `edit/` and `rename` it over `site.json` (atomic).
+- [ ] **Step 4: Write `.htaccess`**: hide `docs`, `tests`, `tools`, `seeds`, `*.md`, `package*.json`, `.git*`; rewrite `^([a-z0-9-]+)/?$` and `^([a-z0-9-]+)/index\.html$` to `go.html` (so `/slug`, `/slug/`, `/slug/index.html` all work) unless the path is a real file or folder; caching: `html` no-cache, css/js one hour. Write `edit/.htaccess.example` with the basic-auth block and an `AuthUserFile` placeholder.
+- [ ] **Step 5: Verify by hand** with the dev router: `curl -s localhost:8080/site.php` returns the dummy site; POST a JSON body returns `OK` and a `site.bak.json` appears on the second save; POST `not json` returns `400`; a corrupt `edit/site.json` makes `site.php` answer `500` with an error object.
+- [ ] **Step 6: Commit** `feat: site.php, save.php, rewrites, dummy seed`.
 
 ### Task 5: Tokens, base layout, flat list, first design
 
@@ -176,12 +159,12 @@
 - Modify: `index.html`, `css/base.css`
 
 **Interfaces:**
-- Consumes: `validateSite`, `resolveSettings`, `LinkpagesConfig.DESIGNS`, `LinkpagesConfig.FONTS`; `POST /edit/save.php`.
-- Produces: a gear control opening edit mode: fields for `design`, `mode`, `numbers`, `caps`, `delay`, `font` (hidden while `FONTS` is empty); a tree editor to add, delete, rename, reorder (drag) and move items into and out of folders; a link's `name`, `url`, `slug`, optional `delay`; change detection with a save button enabled only on changes; deleting a folder with children asks first; validation errors from `validateSite` shown beside the offending item; a failed save (400 or 401) shows the server's message and keeps the edits; a 401 says to open `/edit/` once and sign in.
+- Consumes: `resolveSettings`, `LinkpagesConfig.DESIGNS`, `LinkpagesConfig.FONTS`; `POST /edit/save.php`.
+- Produces: a gear control opening edit mode: fields for `design`, `mode`, `numbers`, `caps`, `delay`, `font` (hidden while `FONTS` is empty); a tree editor to add, delete, rename, reorder (drag) and move items into and out of folders; a link's `name`, `url`, `slug`, optional `delay`; change detection with a save button enabled only on changes; deleting a folder with children asks first; a failed save (400 or 401) shows the server's message and keeps the edits; a 401 says to open `/edit/` once and sign in.
 
 - [ ] **Step 1: Read a.msmr.co's `js/edit.js` for drag and change-detection ideas**; copy only what editing items and settings needs.
 - [ ] **Step 2: Implement `js/edit.js`** to the interface above.
-- [ ] **Step 3: Verify by hand** with the dev router and a temporary basic-auth-free `edit/`: change every setting and see it apply after save; add a folder, move a link in, delete the folder (asks); enter `javascript:x` as a URL (blocked with a message); duplicate a slug (blocked); an unknown `font` key (from a hand-edited file) loads with the system font.
+- [ ] **Step 3: Verify by hand** with the dev router and a temporary basic-auth-free `edit/`: change every setting and see it apply after save; add a folder, move a link in, delete the folder (asks); an unknown `font` key (from a hand-edited file) loads with the system font.
 - [ ] **Step 4: Commit** `feat: online edit mode`.
 
 ### Task 10: Docs and deployment notes
@@ -196,5 +179,5 @@
 
 ## Self-review notes
 
-- Spec coverage: pages (Tasks 5, 6), settings and defaults (Tasks 1, 2, 5), colors as tokens (Task 5), eight designs (Tasks 5, 8), hierarchy and closer (Task 7), editing and server (Tasks 4, 9), validation and security (Tasks 3, 4), constraints and docs (Tasks 1, 10).
+- Spec coverage: pages (Tasks 5, 6), settings and defaults (Tasks 1, 2, 5), colors as tokens (Task 5), eight designs (Tasks 5, 8), hierarchy and closer (Task 7), editing and server (Tasks 4, 9), constraints and docs (Tasks 1, 10). Validation is dropped by the owner's decision (Task 3).
 - Left to the builder stays with the builder: breakpoint value near 600px, exact sizes, hover timing, one stylesheet per design scoped by `data-design`.
