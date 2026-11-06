@@ -17,4 +17,4 @@ Extends `../CLAUDE.md`. Spec: `docs/superpowers/specs/2026-11-06-linkpages-desig
 
 ## Running
 
-`php -S 0.0.0.0:8080 tools/dev-router.php`, then open `http://127.0.0.1:8080/`.
+`php -S 0.0.0.0:8080 tools/dev-router.php`, then open `http://127.0.0.1:8080/`. `npm run check` runs the tests (run before any push). Deployment and data: `README.md`.
