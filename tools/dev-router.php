@@ -14,5 +14,5 @@ if (is_file($file)) {
     return true;
 }
 if ($path === '/' ) { header('Content-Type: text/html'); readfile(ROOT . '/index.html'); return true; }
-if (preg_match('#^/([^/.]+)(/|/index\.html)?$#', $path)) { header('Content-Type: text/html'); readfile(ROOT . '/go.html'); return true; }
+if (!is_dir($file) && preg_match('#^/([^/.]+)(/|/index\.html)?$#', $path)) { header('Content-Type: text/html'); readfile(ROOT . '/go.html'); return true; }
 return false;
