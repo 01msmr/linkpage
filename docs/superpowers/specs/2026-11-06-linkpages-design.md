@@ -84,10 +84,10 @@ Leading numbers (`numbers`): with it on, entries are prefixed `01`, `02`, … in
 
 - A site is a tree. An item is a link (`name`, `url`, `slug`, optional `delay`) or a folder (`name`, `items[]`). Folders nest to any depth. An empty folder is allowed.
 - Folders open in place: there are no folder pages, no breadcrumb and no nested URLs. Every link's redirect page stays `/<slug>/`, so slugs are unique across the whole site.
-- Closed folder, chip designs: a fully rounded pill (radius 50% of the item's height on all corners) with a `>` at the right edge.
-- Open folder, chip designs: a click opens it. The pill keeps its top corners rounded (50% of the height) and its bottom corners go square; the chevron turns to `v`. Its items drop out directly beneath, one per line, 1px apart: links as sharp rectangles (radius 0), sub-folders as their own pills that open the same way.
-- Closer: at the bottom of the open stack sits a mirror of the folder pill without any text (bottom corners rounded 50% of the height, top corners square, only a `^` at the right edge). A click on it, or on the top pill, closes the stack.
-- Text-only designs (raw listing, bracket terminal, tracked rows and the like): no shapes. A closed folder reads `ARCHIVE >`; open it reads `ARCHIVE v`, its items follow, and the closer is a line with only a `^`. The top line and the closer are both clickable.
+- Closed folder, chip designs: a fully rounded pill (radius 50% of the item's height on all corners) with a real right-pointing chevron (the glyph `›`, not the ASCII `>`) at the right edge.
+- Open folder, chip designs: a click opens it. The pill keeps its top corners rounded (50% of the height) and its bottom corners go square; the same chevron glyph is rotated to point down. Its items drop out directly beneath, one per line, 1px apart: links as sharp rectangles (radius 0), sub-folders as their own pills that open the same way.
+- Closer: at the bottom of the open stack sits a mirror of the folder pill without any text (bottom corners rounded 50% of the height, top corners square, only the chevron at the right edge, rotated to point up). A click on it, or on the top pill, closes the stack.
+- Text-only designs (raw listing, bracket terminal, tracked rows and the like): no shapes. The same real chevron follows the name: a closed folder reads `ARCHIVE ›`; open it reads the name with the chevron rotated down, its items follow, and the closer is a line with only the chevron. The top line and the closer are both clickable.
 - Order: folders are listed before links; within each group the stored order applies.
 - Numbers (when on): each list is numbered from 01 on its own, the root list and every open folder's items separately; folders and links form one sequence in that list.
 - Nesting: a sub-folder opens inside its parent's stack and has its own closer. Closing a level closes it and everything inside it; opening it again shows its sub-folders closed. Levels above stay as they are.
@@ -135,5 +135,5 @@ Seed content: `l.msmr.co` has two links (slugs `spiegeltextkorrektur`, `metakorr
 - Default design, default delay of 8 s (matches today), default mode light.
 - The bracket-terminal numbers-on form.
 - Plain error page for an unknown slug.
-- Folders listed before links, numbering per list, no depth limit, flat seeds, slugs unique across the site with flat redirect URLs, the closer showing only a `^`, the chevron turning `>` to `v`, open state not remembered.
+- Folders listed before links, numbering per list, no depth limit, flat seeds, slugs unique across the site with flat redirect URLs, the closer showing only the chevron, one chevron glyph rotated per state (right closed, down open, up on the closer), open state not remembered.
 - A fresh `.htpasswd` per deployment and JS-only redirects.
