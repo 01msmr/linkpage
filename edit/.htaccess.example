@@ -1,0 +1,5 @@
+# Copy to edit/.htaccess; create the password file with: htpasswd -c edit/.htpasswd <user>
+AuthType Basic
+AuthName "Edit"
+AuthUserFile /absolute/path/to/edit/.htpasswd
+Require valid-user
