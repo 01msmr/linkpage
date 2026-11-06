@@ -17,4 +17,3 @@
 :root[data-design="giant-numerals"] .chev { margin-left: 0; padding-left: 0.3em; flex: none; }
 :root[data-design="giant-numerals"] .folder-closer { min-height: 0; }
 :root[data-design="giant-numerals"] .folder-closer .chev { padding-left: 0; }
-:root[data-design="giant-numerals"] .chev { text-transform: none; }

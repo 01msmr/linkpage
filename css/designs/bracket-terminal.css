@@ -19,4 +19,3 @@
 :root[data-design="bracket-terminal"] .folder-closer { min-height: 0; }
 :root[data-design="bracket-terminal"] .folder-closer::before, :root[data-design="bracket-terminal"] .folder-closer:hover::before { content: none; }
 :root[data-design="bracket-terminal"] .folder-closer .chev { padding-left: 0; }
-:root[data-design="bracket-terminal"] .chev { text-transform: none; }
