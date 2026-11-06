@@ -1,0 +1,8 @@
+{
+  "name": "linkpages",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "check": "npm test"
+  }
+}

@@ -1,0 +1,19 @@
+:root[data-design="vertical-heading"] { --item-scale: 1; --leading: 1.2; }
+/* The domain runs sideways along the left edge as a block. */
+:root[data-design="vertical-heading"] h1 {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100lvh;
+  margin: 0;
+  padding: var(--side) var(--pad-y);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  background: var(--chip);
+  color: var(--chip-fg);
+  font-size: var(--item-font);
+  line-height: var(--leading);
+  overflow: hidden;
+}
+:root[data-design="vertical-heading"] body { padding-left: calc(var(--item-height) + 2 * var(--side)); }
+:root[data-design="vertical-heading"] .item { font-weight: bold; }

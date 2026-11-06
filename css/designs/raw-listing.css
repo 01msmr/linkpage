@@ -1,0 +1,11 @@
+:root[data-design="raw-listing"] { --item-scale: 0.7; --leading: 1.35; --pad-x: 0px; --font: ui-monospace, Menlo, Consolas, "Courier New", monospace; }
+:root[data-design="raw-listing"] .item { background: transparent; color: var(--fg); }
+:root[data-design="raw-listing"] a.item:hover { background: var(--hover); color: var(--hover-fg); }
+:root[data-design="raw-listing"] .num { margin-right: 1.5ch; }
+/* Text form: no shapes, chevron follows the name, closer is a bare line. */
+:root[data-design="raw-listing"] button.item { display: block; width: auto; border-radius: 0; background: transparent; color: var(--fg); }
+:root[data-design="raw-listing"] button.item:hover { background: var(--hover); color: var(--hover-fg); }
+:root[data-design="raw-listing"] .chev { margin-left: 0.4em; }
+:root[data-design="raw-listing"] .folder-head .name { margin-right: 0; }
+:root[data-design="raw-listing"] .folder-closer { min-height: 0; }
+:root[data-design="raw-listing"] .folder-closer .chev { margin-left: 0; }

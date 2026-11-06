@@ -1,0 +1,16 @@
+:root[data-design="giant-type"] { --item-scale: 2.2; --leading: 0.95; --pad-x: 0px; }
+:root[data-design="giant-type"] .item {
+  background: transparent;
+  color: var(--fg);
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: -0.02em;
+}
+:root[data-design="giant-type"] a.item:hover { background: var(--hover); color: var(--hover-fg); }
+/* Text form: no shapes, chevron follows the name, closer is a bare line. */
+:root[data-design="giant-type"] button.item { display: block; width: auto; border-radius: 0; background: transparent; color: var(--fg); }
+:root[data-design="giant-type"] .chev { margin-left: 0.3em; }
+:root[data-design="giant-type"] .folder-head .name { margin-right: 0; }
+:root[data-design="giant-type"] .folder-closer { min-height: 0; }
+:root[data-design="giant-type"] button.item:hover { background: var(--hover); color: var(--hover-fg); }
+:root[data-design="giant-type"] .folder-closer .chev { margin-left: 0; }

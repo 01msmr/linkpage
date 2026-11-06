@@ -1,0 +1,20 @@
+:root[data-design="giant-numerals"] { --item-scale: 1.4; --leading: 1; --pad-x: 0px; }
+:root[data-design="giant-numerals"] .item {
+  display: flex;
+  align-items: baseline;
+  background: transparent;
+  color: var(--fg);
+  text-transform: uppercase;
+  font-weight: bold;
+}
+/* The numeral is the design: huge, beside a small name. */
+:root[data-design="giant-numerals"] .num { font-size: 2.6em; line-height: 0.8; margin-right: 0.2em; flex: none; }
+:root[data-design="giant-numerals"] .name { min-width: 0; }
+:root[data-design="giant-numerals"] a.item:hover { background: var(--hover); color: var(--hover-fg); }
+/* Text form: no shapes, chevron follows the name, closer is a bare line. */
+:root[data-design="giant-numerals"] button.item { width: auto; max-width: 100%; border-radius: 0; background: transparent; color: var(--fg); }
+:root[data-design="giant-numerals"] button.item:hover { background: var(--hover); color: var(--hover-fg); }
+:root[data-design="giant-numerals"] .chev { margin-left: 0.3em; flex: none; }
+:root[data-design="giant-numerals"] .folder-head .name { margin-right: 0; }
+:root[data-design="giant-numerals"] .folder-closer { min-height: 0; }
+:root[data-design="giant-numerals"] .folder-closer .chev { margin-left: 0; }

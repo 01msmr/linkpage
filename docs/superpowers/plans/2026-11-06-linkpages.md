@@ -152,6 +152,18 @@ The owner decided on no validation. This task is skipped.
 - [ ] **Step 4: Verify by hand** each design at 390 and 1280 px, light and dark, numbers on and off, caps both, with a closed and an open folder and a 60-character name; the text-only designs show `>`, `v` and `^` lines. Report each design's result.
 - [ ] **Step 5: Commit** `feat: the other seven designs`.
 
+### Task 8c: Real chevron
+
+**Files:**
+- Modify: `js/config.js`, `js/render.js`, `css/base.css`, `css/designs/*.css` (where a design sets its own chevron)
+
+**Interfaces:**
+- Produces: `LinkpagesConfig.FOLDER.chevron` = `›` (one glyph); the `.chev` element shows it in every design; CSS rotates it: right when closed, down (90deg) when open, up (-90deg) on the closer; the typed `>`, `v`, `^` strings are gone from config and designs.
+
+- [ ] **Step 1: Replace** `FOLDER.closed/open/closer` with `FOLDER.chevron`; render one `.chev` per pill and closer and let CSS rotate by state (`aria-expanded` / `.folder-closer`).
+- [ ] **Step 2: Verify by hand** in all eight designs at 390 and 1280, light and dark, caps both: closed folder shows `›`, open shows it pointing down, closer shows it pointing up; chevron does not become uppercase or change size between states.
+- [ ] **Step 3: Commit** `feat: real chevron for folders`.
+
 ### Task 9: Edit mode
 
 **Files:**
