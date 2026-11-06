@@ -4,3 +4,4 @@ edit/site.bak.json
 edit/.htpasswd
 edit/.htaccess
 node_modules/
+.DS_Store
