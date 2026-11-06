@@ -29,6 +29,16 @@ h1 { margin: 0 0 var(--side); font-size: inherit; font-weight: normal; overflow-
   text-decoration: none;
   overflow-wrap: anywhere;
 }
+button.item { font: inherit; text-align: left; cursor: pointer; width: 100%; display: flex; align-items: baseline; }
+button.item:focus-visible { outline: 2px solid var(--hover); outline-offset: 2px; }
+.chev { margin-left: auto; padding-left: 0.5em; }
+.folder, .items { display: flex; flex-direction: column; gap: var(--gap-item); align-items: stretch; }
+.folder { max-width: 100%; }
+.folder-head { border-radius: calc(var(--item-height) / 2); }
+.folder[data-state="open"] > .folder-head { border-radius: calc(var(--item-height) / 2) calc(var(--item-height) / 2) 0 0; }
+.folder-closer { border-radius: 0 0 calc(var(--item-height) / 2) calc(var(--item-height) / 2); min-height: var(--item-height); }
+.folder-body > a.item { border-radius: 0; }
+.folder-head:hover, .folder-closer:hover { background: var(--hover); color: var(--hover-fg); }
 a.item:hover { background: var(--hover); color: var(--hover-fg); }
 .num { margin-right: 0.5em; }
 :root:not([data-numbers="true"]) .num { display: none; }

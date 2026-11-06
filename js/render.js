@@ -1,6 +1,7 @@
 // Fills <main id="list"> and sets the data-* attributes that select design, mode, caps, numbers, font.
 (function (root) {
   var L = root.LinkpagesLogic;
+  var C = root.LinkpagesConfig;
 
   function el(tag, cls, text) {
     var e = document.createElement(tag);
@@ -9,26 +10,76 @@
     return e;
   }
 
-  function entry(item, index) {
-    var isLink = !Array.isArray(item.items);
-    var node = isLink ? el('a', 'item') : el('div', 'item folder');
-    if (isLink) node.href = '/' + item.slug + '/';
-    node.appendChild(el('span', 'num', L.numberLabel(index)));
-    node.appendChild(el('span', 'name', item.name));
-    return node;
+  var settings = null;
+  var open = [];
+
+  function chevron(ch) { return el('span', 'chev', ch); }
+
+  function toggle(path, focusSel) {
+    open = L.toggleOpen(open, path);
+    draw();
+    var f = document.querySelector(focusSel(path));
+    if (f) f.focus();
+  }
+
+  function headSel(path) { return '.folder-head[data-path="' + path + '"]'; }
+
+  function entry(item, index, path) {
+    if (!Array.isArray(item.items)) {
+      var a = el('a', 'item');
+      a.href = '/' + item.slug + '/';
+      a.appendChild(el('span', 'num', L.numberLabel(index)));
+      a.appendChild(el('span', 'name', item.name));
+      return a;
+    }
+    var F = C.FOLDER;
+    var isOpen = L.isOpen(open, path);
+    var wrap = el('div', 'folder');
+    wrap.dataset.state = isOpen ? 'open' : 'closed';
+    var head = el('button', 'item folder-head');
+    head.type = 'button';
+    head.dataset.path = path;
+    head.setAttribute('aria-expanded', String(isOpen));
+    head.appendChild(el('span', 'num', L.numberLabel(index)));
+    head.appendChild(el('span', 'name', item.name));
+    head.appendChild(chevron(isOpen ? F.open : F.closed));
+    head.addEventListener('click', function () { toggle(path, headSel); });
+    wrap.appendChild(head);
+    if (isOpen) {
+      wrap.appendChild(sub(item.items, path));
+      var closer = el('button', 'item folder-closer');
+      closer.type = 'button';
+      closer.dataset.path = path;
+      closer.setAttribute('aria-label', F.closeLabel.replace('{name}', item.name));
+      closer.appendChild(chevron(F.closer));
+      closer.addEventListener('click', function () { toggle(path, headSel); });
+      wrap.appendChild(closer);
+    }
+    return wrap;
+  }
+
+  function sub(items, path) {
+    var box = el('div', 'items folder-body');
+    L.sortItems(items).forEach(function (item, i) { box.appendChild(entry(item, i, path + '.' + i)); });
+    return box;
+  }
+
+  function draw() {
+    var main = document.getElementById('list');
+    main.textContent = '';
+    L.sortItems(settings.items).forEach(function (item, i) { main.appendChild(entry(item, i, String(i))); });
   }
 
   function render(site) {
-    var s = L.resolveSettings(site);
+    settings = L.resolveSettings(site);
     var html = document.documentElement;
-    html.dataset.design = s.design;
-    html.dataset.mode = s.mode;
-    html.dataset.caps = s.caps;
-    html.dataset.numbers = String(s.numbers === true);
-    html.dataset.font = s.font;
-    var list = document.getElementById('list');
-    list.textContent = '';
-    L.sortItems(s.items).forEach(function (item, i) { list.appendChild(entry(item, i)); });
+    html.dataset.design = settings.design;
+    html.dataset.mode = settings.mode;
+    html.dataset.caps = settings.caps;
+    html.dataset.numbers = String(settings.numbers === true);
+    html.dataset.font = settings.font;
+    open = [];
+    draw();
   }
 
   function showError(text) {

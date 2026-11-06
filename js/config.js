@@ -19,7 +19,8 @@
     countdown: 'Redirect in {n} s to:',
     unknown: 'Unknown link: {slug}'
   };
-  var api = { DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, FONTS: FONTS,
+  var FOLDER = { closed: '>', open: 'v', closer: '^', closeLabel: 'Close {name}' };
+  var api = { FOLDER: FOLDER, DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, FONTS: FONTS,
     RESERVED_SLUGS: RESERVED_SLUGS };
   root.LinkpagesConfig = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
