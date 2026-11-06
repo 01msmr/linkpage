@@ -13,7 +13,13 @@
     'headline-tiny-links', 'raw-listing', 'tracked-rows', 'plain-inverted'];
   var FONTS = {};
   var RESERVED_SLUGS = ['edit', 'css', 'js', 'seeds', 'tools', 'tests', 'docs', 'site', 'go', 'index'];
-  var api = { DEFAULTS: DEFAULTS, DESIGNS: DESIGNS, FONTS: FONTS,
+  var REDIRECT = {
+    tickMs: 1000,
+    back: '\u2190 Back',
+    countdown: 'Redirect in {n} s to:',
+    unknown: 'Unknown link: {slug}'
+  };
+  var api = { DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, FONTS: FONTS,
     RESERVED_SLUGS: RESERVED_SLUGS };
   root.LinkpagesConfig = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
