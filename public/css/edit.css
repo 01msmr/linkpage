@@ -12,7 +12,7 @@
 .gl, .gr { display: flex; flex: none; align-items: center; width: calc(var(--ctl) * 2); }
 .ctl-gap { width: var(--ctl); height: var(--ctl); }
 .ctl { display: flex; align-items: center; justify-content: center; width: var(--ctl); height: var(--ctl); padding: 0; border: 0; border-radius: 50%; background: none; color: var(--fg); font: inherit; font-size: 1.1rem; line-height: 1; cursor: pointer; opacity: 0; }
-.ent:hover .ctl, .ent:focus-within .ctl, .ent[data-editing] .ctl, .listend .ctl { opacity: 1; }
+.gl:hover .ctl, .gr:hover .ctl, .ent:focus-within .ctl, .ent[data-editing] .ctl, .listend .ctl { opacity: 1; }
 .ctl:hover { color: var(--hover); }
 .ctl-handle { cursor: grab; }
 .ctl-remove, .ctl-remove:hover { color: var(--danger); }
