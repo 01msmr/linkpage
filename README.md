@@ -31,7 +31,7 @@ Everything lives in `edit/site.json`:
 
 A link is `{ "name", "url", "slug", "delay"? }`; the optional `delay` overrides the default for that link. A folder is `{ "name", "items": [...] }` and may nest. The page at `/<slug>/` shows the countdown and redirects to the link. The seed `seeds/default.json` holds dummy content.
 
-To switch design, mode, caps or numbers: open the page, click the gear to enter edit mode, change the field and press Save. Or edit `edit/site.json` by hand. Defaults are in `js/config.js`; colors are tokens in `css/tokens.css`.
+Editing: click the gear to enter edit mode. Hover an entry for its small controls: a pen edits the name (and URL for a link), with a red x to delete and a check to finish; a folder also shows a plus before it (a new folder after it) and a plus after it (a new folder inside it); a plus under every list adds a link, and `+›` adds a folder. The ☰ handle drags an entry to another place or into a folder. A new link's slug is made from its name and stays when you rename it; a link's own `delay` is not editable there (edit `edit/site.json`). Design, mode, caps, numbers and the default delay are in the panel under the list; press Save there. Or edit `edit/site.json` by hand. Defaults are in `js/config.js`; colors are tokens in `css/tokens.css`.
 
 ## Commands
 

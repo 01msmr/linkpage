@@ -1,4 +1,4 @@
-// Edit mode: settings fields, tree editor with drag, change detection, save.
+// Edit mode: inline editing in the list, a settings panel, change detection, save.
 (function (root) {
   var L = root.LinkpagesLogic;
   var C = root.LinkpagesConfig;
@@ -8,8 +8,10 @@
   var original = null;
   var draft = null;
   var dragFrom = null;
+  var editPath = null;
   var editing = false;
-  var gear, panel, tree, saveBtn, status;
+  var saving = false;
+  var gear, panel, saveBtn, status;
 
   function el(tag, cls, text) {
     var e = document.createElement(tag);
@@ -25,9 +27,11 @@
     return b;
   }
 
-  function changed() { return L.hasChanged(draft, original); }
+  function fill(template, name) { return template.replace('{name}', name || ''); }
+  function parse(path) { return path === '' ? [] : path.split('.').map(Number); }
+  function listAt(pp) { return pp.length ? L.itemAt(draft.items, pp).items : draft.items; }
 
-  var saving = false;
+  function changed() { return L.hasChanged(draft, original); }
 
   function refresh() {
     saveBtn.disabled = saving || !changed();
@@ -68,6 +72,7 @@
   function setting(key, value) {
     draft[key] = value;
     touched();
+    R.show(draft);
   }
 
   function settingsFields() {
@@ -98,64 +103,96 @@
     return box;
   }
 
-  function inputFor(path, key, item) {
+  // A new link without a slug gets one from its name when editing ends.
+  function settle() {
+    if (editPath === null) return;
+    var p = parse(editPath);
+    var it = L.itemAt(draft.items, p);
+    if (it && !Array.isArray(it.items) && !it.slug) {
+      draft.items = L.setField(draft.items, p, 'slug', L.slugFor(it.name || '', draft.items));
+    }
+    editPath = null;
+  }
+
+  function focusEdit() {
+    var f = document.querySelector('.ebox input');
+    if (f) { f.focus(); f.select(); }
+  }
+
+  // Structure changed: show only the folders on the way to `parent`, then redraw.
+  function afterChange(parent, newPath) {
+    R.setOpen(L.prefixPaths(parent));
+    editPath = newPath === undefined ? null : newPath;
+    touched();
+    R.show(draft);
+    if (editPath !== null) focusEdit();
+  }
+
+  function finish() {
+    settle();
+    touched();
+    R.show(draft);
+  }
+
+  function startEdit(path) {
+    settle();
+    editPath = path;
+    R.show(draft);
+    focusEdit();
+  }
+
+  function addTo(pp, item) {
+    settle();
+    var index = listAt(pp).length;
+    draft.items = L.insertAt(draft.items, pp, index, item);
+    afterChange(pp, pp.concat([index]).join('.'));
+  }
+
+  function addFolderAfter(p) {
+    settle();
+    var parent = p.slice(0, -1);
+    var index = p[p.length - 1] + 1;
+    draft.items = L.insertAt(draft.items, parent, index, { name: E.newFolderName, items: [] });
+    afterChange(parent, parent.concat([index]).join('.'));
+  }
+
+  function remove(p, item) {
+    var n = L.countDescendants(item);
+    if (n > 0 && !root.confirm(E.confirmFolder.replace('{name}', item.name || '').replace('{n}', n))) return;
+    editPath = null;
+    draft.items = L.removeAt(draft.items, p).items;
+    afterChange(p.slice(0, -1));
+  }
+
+  function ctl(icon, label, cls, onClick) {
+    var b = button(icon, 'ctl ' + cls, function (e) { e.stopPropagation(); onClick(); });
+    b.setAttribute('aria-label', label);
+    b.title = label;
+    return b;
+  }
+
+  function input(path, key, item) {
     var i = el('input', 'in-' + key);
     i.type = 'text';
     i.value = item[key] === undefined ? '' : String(item[key]);
     i.placeholder = E.itemFields[key];
     i.setAttribute('aria-label', E.itemFields[key]);
     i.addEventListener('input', function () {
-      draft.items = L.setField(draft.items, path, key, i.value);
+      draft.items = L.setField(draft.items, parse(path), key, i.value);
       touched();
+    });
+    i.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); finish(); }
     });
     return i;
   }
 
-  function parsePath(s) { return s === '' ? [] : s.split('.').map(Number); }
-
-  function row(item, path) {
+  function editBox(item, path) {
+    if (editPath !== path) return null;
     var isFolder = Array.isArray(item.items);
-    var wrap = el('div', 'erow-wrap');
-    var r = el('div', 'erow ' + (isFolder ? 'efolder' : 'elink'));
-    r.dataset.path = path.join('.');
-    var handle = el('span', 'handle', E.handle);
-    handle.setAttribute('aria-label', E.handleLabel);
-    handle.addEventListener('mousedown', function () { r.draggable = true; });
-    r.addEventListener('dragstart', function (e) {
-      dragFrom = path;
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', r.dataset.path);
-    });
-    r.addEventListener('dragend', function () { r.draggable = false; dragFrom = null; clearDrop(); });
-    r.addEventListener('dragover', function (e) {
-      if (!dragFrom) return;
-      e.preventDefault();
-      mark(r, zoneOf(r, e, isFolder));
-    });
-    r.addEventListener('drop', function (e) {
-      if (!dragFrom) return;
-      e.preventDefault();
-      drop(path, zoneOf(r, e, isFolder), item);
-    });
-    r.appendChild(handle);
-    r.appendChild(inputFor(path, 'name', item));
-    r.appendChild(button(E.remove, 'del', function () { remove(path, item); }));
-    r.lastChild.setAttribute('aria-label', E.removeLabel.replace('{name}', item.name));
-    if (!isFolder) {
-      var more = el('div', 'link-fields');
-      more.appendChild(inputFor(path, 'url', item));
-      more.appendChild(inputFor(path, 'slug', item));
-      more.appendChild(inputFor(path, 'delay', item));
-      r.appendChild(more);
-    }
-    wrap.appendChild(r);
-    if (isFolder) wrap.appendChild(list(item.items, path));
-    return wrap;
-  }
-
-  function list(items, parent) {
-    var box = el('div', 'elist');
-    items.forEach(function (it, i) { box.appendChild(row(it, parent.concat([i]))); });
+    var box = el('div', 'ebox' + (isFolder ? ' efolder' : ''));
+    box.appendChild(input(path, 'name', item));
+    if (!isFolder) box.appendChild(input(path, 'url', item));
     return box;
   }
 
@@ -168,42 +205,93 @@
   }
 
   function clearDrop() {
-    var m = tree.querySelectorAll('[data-drop]');
+    var m = document.querySelectorAll('[data-drop]');
     for (var i = 0; i < m.length; i++) delete m[i].dataset.drop;
   }
 
-  function mark(r, zone) {
-    clearDrop();
-    r.dataset.drop = zone;
-  }
-
-  function drop(path, zone, item) {
-    var parent = zone === 'into' ? path : path.slice(0, -1);
-    var index = zone === 'into' ? item.items.length : path[path.length - 1] + (zone === 'after' ? 1 : 0);
-    var moved = L.moveItem(draft.items, dragFrom, parent, index);
+  function drop(p, zone, item) {
+    settle();
+    var parent = zone === 'into' ? p : p.slice(0, -1);
+    var index = zone === 'into' ? item.items.length : p[p.length - 1] + (zone === 'after' ? 1 : 0);
+    var from = dragFrom;
     dragFrom = null;
     clearDrop();
-    if (moved) { draft.items = moved; redrawTree(); touched(); }
+    var moved = L.moveItem(draft.items, from, parent, index);
+    if (moved) {
+      draft.items = moved;
+      afterChange(L.parentAfterRemoval(from, parent));
+    }
   }
 
-  function remove(path, item) {
-    var n = L.countDescendants(item);
-    if (n > 0 && !root.confirm(E.confirmFolder.replace('{name}', item.name).replace('{n}', n))) return;
-    draft.items = L.removeAt(draft.items, path).items;
-    redrawTree();
-    touched();
+  function wireDrag(r, handle, p, isFolder, item) {
+    handle.addEventListener('mousedown', function () { r.draggable = true; });
+    r.addEventListener('dragstart', function (e) {
+      dragFrom = p;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', r.dataset.path);
+    });
+    r.addEventListener('dragend', function () { r.draggable = false; dragFrom = null; clearDrop(); });
+    r.addEventListener('dragover', function (e) {
+      if (!dragFrom) return;
+      e.preventDefault();
+      clearDrop();
+      r.dataset.drop = zoneOf(r, e, isFolder);
+    });
+    r.addEventListener('drop', function (e) {
+      if (!dragFrom) return;
+      e.preventDefault();
+      drop(p, zoneOf(r, e, isFolder), item);
+    });
   }
 
-  function add(item) {
-    draft.items = L.insertAt(draft.items, [], draft.items.length, item);
-    redrawTree();
-    touched();
+  // The row around an entry: controls in the gutters, the entry itself in the middle.
+  function wrap(core, item, path) {
+    var p = parse(path);
+    var isFolder = Array.isArray(item.items);
+    var I = E.icons;
+    var r = el('div', 'ent');
+    r.dataset.path = path;
+    var gl = el('div', 'gl');
+    var gr = el('div', 'gr');
+    if (editPath === path) {
+      r.dataset.editing = 'true';
+      gr.appendChild(ctl(I.done, E.labels.done, 'ctl-done', finish));
+      gr.appendChild(ctl(I.remove, fill(E.labels.remove, item.name), 'ctl-remove', function () { remove(p, item); }));
+    } else {
+      var handle = ctl(I.handle, fill(E.labels.handle, item.name), 'ctl-handle', function () {});
+      gl.appendChild(handle);
+      if (isFolder) gl.appendChild(ctl(I.plus, fill(E.labels.folderAfter, item.name), 'ctl-plus', function () { addFolderAfter(p); }));
+      else gl.appendChild(el('span', 'ctl-gap'));
+      if (isFolder) gr.appendChild(ctl(I.plus, fill(E.labels.folderInside, item.name), 'ctl-plus', function () { addTo(p, { name: E.newFolderName, items: [] }); }));
+      else gr.appendChild(el('span', 'ctl-gap'));
+      gr.appendChild(ctl(I.pen, fill(E.labels.pen, item.name), 'ctl-pen', function () { startEdit(path); }));
+      wireDrag(r, handle, p, isFolder, item);
+    }
+    r.appendChild(gl);
+    r.appendChild(core);
+    r.appendChild(gr);
+    return r;
   }
 
-  function redrawTree() {
-    tree.textContent = '';
-    tree.appendChild(list(draft.items, []));
+  function spacer(core) {
+    var r = el('div', 'ent');
+    r.appendChild(el('div', 'gl'));
+    r.appendChild(core);
+    r.appendChild(el('div', 'gr'));
+    return r;
   }
+
+  function listEnd(path) {
+    var pp = parse(path);
+    var core = el('div', 'lend');
+    core.appendChild(ctl(E.icons.plus, E.labels.addLink, 'ctl-plus', function () { addTo(pp, L.clone(E.newLink)); }));
+    core.appendChild(ctl(E.icons.plus + C.FOLDER.chevron, E.labels.addFolder, 'ctl-plus', function () { addTo(pp, { name: E.newFolderName, items: [] }); }));
+    var r = spacer(core);
+    r.className += ' listend';
+    return r;
+  }
+
+  var api = { wrap: wrap, spacer: spacer, editBox: editBox, listEnd: listEnd };
 
   function failure(res) {
     if (res === 'network') return E.errors.network;
@@ -211,6 +299,8 @@
   }
 
   function save() {
+    settle();
+    R.show(draft);
     saving = true;
     saveBtn.disabled = true;
     say(E.saving, 'busy');
@@ -220,7 +310,6 @@
         if (!r.ok) throw r.status;
         saving = false;
         original = sent;
-        R.render(L.clone(sent));
         say(E.saved, 'saved');
         refresh();
       })
@@ -234,12 +323,7 @@
   function build() {
     panel.textContent = '';
     panel.appendChild(settingsFields());
-    tree = el('div', 'etree');
-    redrawTree();
-    panel.appendChild(tree);
     var bar = el('div', 'ebar');
-    bar.appendChild(button(E.addLink, 'ebtn', function () { add(L.clone(E.newLink)); }));
-    bar.appendChild(button(E.addFolder, 'ebtn', function () { add({ name: E.newFolderName, items: [] }); }));
     saveBtn = button(E.save, 'ebtn esave', save);
     saveBtn.disabled = true;
     bar.appendChild(saveBtn);
@@ -255,9 +339,17 @@
       if (!site) return;
       original = L.clone(site);
       draft = L.clone(site);
+      editing = true;
       build();
-    } else if (changed() && !root.confirm(E.confirmDiscard)) return;
-    editing = !editing;
+      R.setEditor(api);
+      R.show(draft);
+    } else {
+      if (changed() && !root.confirm(E.confirmDiscard)) return;
+      editing = false;
+      editPath = null;
+      R.setEditor(null);
+      R.show(original);
+    }
     document.documentElement.dataset.editing = String(editing);
     gear.setAttribute('aria-pressed', String(editing));
     panel.hidden = !editing;

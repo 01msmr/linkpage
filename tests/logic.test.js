@@ -112,3 +112,33 @@ test('typedValue turns a typed delay into a number, leaves the rest', () => {
   assert.equal(L.typedValue('delay', 'x'), 'x');
   assert.equal(L.typedValue('name', '5'), '5');
 });
+
+test('sortedEntries puts folders first and keeps the stored index', () => {
+  const items = [{ n: 1, slug: 's' }, { n: 2, items: [] }, { n: 3, slug: 's' }, { n: 4, items: [] }];
+  assert.deepEqual(L.sortedEntries(items).map(e => [e.item.n, e.index]), [[2, 1], [4, 3], [1, 0], [3, 2]]);
+});
+test('prefixPaths lists every folder on the way to a list', () => {
+  assert.deepEqual(L.prefixPaths([]), []);
+  assert.deepEqual(L.prefixPaths([1]), ['1']);
+  assert.deepEqual(L.prefixPaths([1, 0, 2]), ['1', '1.0', '1.0.2']);
+});
+test('slugFor lowercases, maps umlauts and replaces other characters', () => {
+  assert.equal(L.slugFor('SPIEGEL Textkorrektur', []), 'spiegel-textkorrektur');
+  assert.equal(L.slugFor('Grüße äö', []), 'gruesse-aeoe');
+  assert.equal(L.slugFor('  --A!!b--  ', []), 'a-b');
+});
+test('slugFor falls back to "link" for an empty result', () => {
+  assert.equal(L.slugFor('!!!', []), 'link');
+  assert.equal(L.slugFor('', []), 'link');
+});
+test('slugFor stays unique across the whole tree', () => {
+  const items = [{ name: 'x', slug: 'new-link', url: '' }, { name: 'F', items: [{ name: 'y', slug: 'new-link-2', url: '' }] }];
+  assert.equal(L.slugFor('New link', items), 'new-link-3');
+});
+
+test('parentAfterRemoval shifts an ancestor index past the removed item', () => {
+  assert.deepEqual(L.parentAfterRemoval([0], [2]), [1]);
+  assert.deepEqual(L.parentAfterRemoval([1], [0]), [0]);
+  assert.deepEqual(L.parentAfterRemoval([0, 1], [0, 2]), [0, 1]);
+  assert.deepEqual(L.parentAfterRemoval([3], []), []);
+});

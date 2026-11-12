@@ -40,7 +40,7 @@ button.item { font-family: inherit; line-height: inherit; text-align: left; curs
 .folder-head { border-radius: calc(var(--item-height) / 2); }
 .folder[data-state="open"] > .folder-head { border-radius: calc(var(--item-height) / 2) calc(var(--item-height) / 2) 0 0; }
 .folder-closer { border-radius: 0 0 calc(var(--item-height) / 2) calc(var(--item-height) / 2); min-height: var(--item-height); }
-.folder-body > a.item { border-radius: 0; }
+a.item { border-radius: 0; }
 .folder-head:hover, .folder-closer:hover { background: var(--hover); color: var(--hover-fg); }
 a.item:hover { background: var(--hover); color: var(--hover-fg); }
 .num { margin-right: 0.5em; }

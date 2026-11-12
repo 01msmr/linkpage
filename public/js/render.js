@@ -13,65 +13,86 @@
   var settings = null;
   var raw = null;
   var open = [];
+  var editor = null;
 
   function chevron(ch) { return el('span', 'chev', ch); }
 
-  function toggle(path, focusSel) {
+  function toggle(path) {
     open = L.toggleOpen(open, path);
     draw();
-    var f = document.querySelector(focusSel(path));
+    var f = document.querySelector('.folder-head[data-path="' + path + '"]');
     if (f) f.focus();
   }
 
-  function headSel(path) { return '.folder-head[data-path="' + path + '"]'; }
+  function linkCore(item, index) {
+    var a = el('a', 'item');
+    if (item.slug) a.href = '/' + item.slug + '/';
+    a.appendChild(el('span', 'num', L.numberLabel(index)));
+    a.appendChild(el('span', 'name', item.name));
+    return a;
+  }
 
-  function entry(item, index, path) {
-    if (!Array.isArray(item.items)) {
-      var a = el('a', 'item');
-      if (item.slug) a.href = '/' + item.slug + '/';
-      a.appendChild(el('span', 'num', L.numberLabel(index)));
-      a.appendChild(el('span', 'name', item.name));
-      return a;
-    }
-    var F = C.FOLDER;
-    var isOpen = L.isOpen(open, path);
-    var wrap = el('div', 'folder');
-    wrap.dataset.state = isOpen ? 'open' : 'closed';
+  function headCore(item, index, path, isOpen) {
     var head = el('button', 'item folder-head');
     head.type = 'button';
     head.dataset.path = path;
     head.setAttribute('aria-expanded', String(isOpen));
     head.appendChild(el('span', 'num', L.numberLabel(index)));
     head.appendChild(el('span', 'name', item.name));
-    head.appendChild(chevron(F.chevron));
-    head.addEventListener('click', function () { toggle(path, headSel); });
-    wrap.appendChild(head);
+    head.appendChild(chevron(C.FOLDER.chevron));
+    head.addEventListener('click', function () { toggle(path); });
+    return head;
+  }
+
+  function closerCore(item, path) {
+    var closer = el('button', 'item folder-closer');
+    closer.type = 'button';
+    closer.dataset.path = path;
+    closer.setAttribute('aria-label', C.FOLDER.closeLabel.replace('{name}', item.name));
+    closer.appendChild(chevron(C.FOLDER.chevron));
+    closer.addEventListener('click', function () { toggle(path); });
+    return closer;
+  }
+
+  function entry(item, index, path) {
+    var box = editor && editor.editBox(item, path);
+    if (!Array.isArray(item.items)) {
+      var core = box || linkCore(item, index);
+      return editor ? editor.wrap(core, item, path) : core;
+    }
+    var isOpen = L.isOpen(open, path);
+    var wrap = el('div', 'folder');
+    wrap.dataset.state = isOpen ? 'open' : 'closed';
+    var head = box || headCore(item, index, path, isOpen);
+    wrap.appendChild(editor ? editor.wrap(head, item, path) : head);
     if (isOpen) {
       wrap.appendChild(sub(item.items, path));
-      var closer = el('button', 'item folder-closer');
-      closer.type = 'button';
-      closer.dataset.path = path;
-      closer.setAttribute('aria-label', F.closeLabel.replace('{name}', item.name));
-      closer.appendChild(chevron(F.chevron));
-      closer.addEventListener('click', function () { toggle(path, headSel); });
-      wrap.appendChild(closer);
+      var closer = closerCore(item, path);
+      wrap.appendChild(editor ? editor.spacer(closer) : closer);
     }
     return wrap;
   }
 
+  function fill(box, items, path) {
+    var prefix = path === '' ? '' : path + '.';
+    L.sortedEntries(items).forEach(function (e, i) { box.appendChild(entry(e.item, i, prefix + e.index)); });
+    if (editor) box.appendChild(editor.listEnd(path));
+  }
+
   function sub(items, path) {
     var box = el('div', 'items folder-body');
-    L.sortItems(items).forEach(function (item, i) { box.appendChild(entry(item, i, path + '.' + i)); });
+    fill(box, items, path);
     return box;
   }
 
   function draw() {
     var main = document.getElementById('list');
     main.textContent = '';
-    L.sortItems(settings.items).forEach(function (item, i) { main.appendChild(entry(item, i, String(i))); });
+    fill(main, settings.items, '');
   }
 
-  function render(site) {
+  // Shows a site and keeps the open folders (edit mode redraws through this).
+  function show(site) {
     raw = site;
     settings = L.resolveSettings(site);
     var html = document.documentElement;
@@ -80,8 +101,12 @@
     html.dataset.caps = settings.caps;
     html.dataset.numbers = String(settings.numbers === true);
     html.dataset.font = settings.font;
-    open = [];
     draw();
+  }
+
+  function render(site) {
+    open = [];
+    show(site);
   }
 
   function showError(text) {
@@ -90,7 +115,14 @@
     list.appendChild(el('p', 'error', text));
   }
 
-  root.LinkpagesRender = { render: render, showError: showError, getSite: function () { return raw; } };
+  root.LinkpagesRender = {
+    render: render,
+    show: show,
+    showError: showError,
+    getSite: function () { return raw; },
+    setOpen: function (paths) { open = paths; },
+    setEditor: function (e) { editor = e; }
+  };
 
   fetch('/site.php', { cache: 'no-store' })
     .then(function (r) {
