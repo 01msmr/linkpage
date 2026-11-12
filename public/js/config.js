@@ -22,6 +22,7 @@
   var EDIT = {
     endpoint: '/edit/save.php',
     gear: '\u2699',
+    flagKey: 'linkpage-edit',
     gearLabel: 'Edit mode',
     save: 'Save',
     saving: 'Saving\u2026',
@@ -39,7 +40,7 @@
       addFolder: 'Add a folder'
     },
     confirmFolder: 'Delete "{name}" and the {n} items inside it?',
-    confirmDiscard: 'Discard the unsaved changes?',
+    leaveWarning: 'You have unsaved changes.',
     newLink: { name: 'New link' },
     newFolderName: 'New folder',
     dropZone: { before: 0.25, after: 0.75 },

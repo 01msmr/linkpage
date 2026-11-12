@@ -1,7 +1,9 @@
 /* Edit mode: tokens only, no borders or outlines on chips. */
 :root { --ctl: 1.5rem; }
-.gear { position: fixed; right: var(--side); bottom: var(--side); z-index: 2; border: 0; border-radius: var(--radius-chip); padding: var(--pad-y) var(--pad-x); background: var(--chip); color: var(--chip-fg); font: inherit; font-size: var(--item-font); line-height: var(--leading); cursor: pointer; }
-.gear:hover, .gear[aria-pressed="true"] { background: var(--hover); color: var(--hover-fg); }
+.gear { position: fixed; top: var(--side); right: var(--side); z-index: 3; width: var(--ctl); height: var(--ctl); padding: 0; border: 0; background: none; color: var(--fg); font: inherit; font-size: 1.4rem; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.gear:hover, .gear[aria-pressed="true"] { color: var(--hover); }
+.esavebar { font-size: 1rem; line-height: 1.2; position: fixed; top: var(--side); right: calc(var(--side) + var(--ctl) + var(--pad-x)); z-index: 3; display: flex; gap: var(--gap-item); align-items: center; }
+.esavebar[hidden] { display: none; }
 .gear:focus-visible, .ebtn:focus-visible, .ctl:focus-visible, .editor input:focus-visible, .editor select:focus-visible, .ebox input:focus-visible { outline: 2px solid var(--hover); outline-offset: 2px; }
 
 /* Inline editing: a row is gutter, entry, gutter. */
@@ -24,19 +26,18 @@
 .ebox .in-url { flex: 2 1 12em; }
 .ebox.efolder input { border-radius: calc(var(--item-height) / 2); }
 
-/* Settings panel under the list. */
+/* Settings panel under the gear. */
 .editor[hidden] { display: none; }
-.editor { display: flex; flex-direction: column; gap: var(--side); font-size: var(--item-size); line-height: var(--leading); margin-top: var(--side); padding-bottom: calc(var(--side) * 4); }
+.editor { position: fixed; top: calc(var(--side) + var(--ctl) + 12px); right: var(--side); z-index: 3; max-width: calc(100vw - 2 * var(--side)); max-height: calc(100lvh - 2 * var(--side) - var(--ctl) - 12px); overflow: auto; padding: var(--pad-x); background: var(--bg); box-shadow: 0 0 0 2px var(--fg); font-size: 1rem; line-height: 1.2; }
 .settings { display: flex; flex-wrap: wrap; gap: var(--gap-item); }
 .field { display: flex; flex-direction: column; gap: 2px; }
-.field-label { font-size: 0.6em; }
-.editor input[type="text"], .editor select { border: 0; border-radius: var(--radius-chip); padding: var(--pad-y) var(--pad-x); background: var(--chip); color: var(--chip-fg); font: inherit; font-size: 0.8em; min-width: 0; }
+.field-label { font-size: 0.75em; }
+.editor input[type="text"], .editor select { border: 0; border-radius: var(--radius-chip); padding: var(--pad-y) var(--pad-x); background: var(--chip); color: var(--chip-fg); font: inherit; min-width: 0; }
 .editor input[type="checkbox"] { width: 1.4em; height: 1.4em; accent-color: var(--hover); }
-.ebar { display: flex; flex-wrap: wrap; gap: var(--gap-item); align-items: center; }
-.ebtn { border: 0; border-radius: var(--radius-chip); padding: var(--pad-y) var(--pad-x); background: var(--chip); color: var(--chip-fg); font: inherit; font-size: 0.8em; cursor: pointer; }
+.ebtn { border: 0; border-radius: var(--radius-chip); padding: var(--pad-y) var(--pad-x); background: var(--chip); color: var(--chip-fg); font: inherit; cursor: pointer; }
 .ebtn:hover { background: var(--hover); color: var(--hover-fg); }
 .ebtn:disabled { opacity: 0.4; cursor: default; background: var(--chip); color: var(--chip-fg); }
-.estatus { margin-left: var(--pad-x); font-size: 0.8em; overflow-wrap: anywhere; }
+.estatus { margin-left: var(--pad-x); overflow-wrap: anywhere; }
 .estatus[data-kind="error"] { font-weight: bold; }
 
 @media (hover: none) { .ctl { opacity: 1; } }

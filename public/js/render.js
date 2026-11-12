@@ -14,6 +14,7 @@
   var raw = null;
   var open = [];
   var editor = null;
+  var readyFns = [];
 
   function chevron(ch) { return el('span', 'chev', ch); }
 
@@ -107,6 +108,7 @@
   function render(site) {
     open = [];
     show(site);
+    readyFns.splice(0).forEach(function (fn) { fn(site); });
   }
 
   function showError(text) {
@@ -120,6 +122,7 @@
     show: show,
     showError: showError,
     getSite: function () { return raw; },
+    whenReady: function (fn) { if (raw) fn(raw); else readyFns.push(fn); },
     setOpen: function (paths) { open = paths; },
     setEditor: function (e) { editor = e; }
   };

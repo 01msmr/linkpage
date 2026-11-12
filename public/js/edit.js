@@ -9,9 +9,8 @@
   var draft = null;
   var dragFrom = null;
   var editPath = null;
-  var editing = false;
   var saving = false;
-  var gear, panel, saveBtn, status;
+  var gear, panel, bar, saveBtn, status;
 
   function el(tag, cls, text) {
     var e = document.createElement(tag);
@@ -35,14 +34,17 @@
 
   function refresh() {
     saveBtn.disabled = saving || !changed();
-    if (saving) return;
-    if (!saveBtn.disabled) status.textContent = E.unsaved;
-    else if (status.dataset.kind !== 'saved') status.textContent = '';
+    if (!saving) {
+      if (changed()) status.textContent = E.unsaved;
+      else if (status.dataset.kind !== 'saved') status.textContent = '';
+    }
+    bar.hidden = !changed() && !status.textContent;
   }
 
   function say(text, kind) {
     status.textContent = text;
     status.dataset.kind = kind;
+    bar.hidden = false;
   }
 
   function touched() {
@@ -321,45 +323,53 @@
   }
 
   function build() {
-    panel.textContent = '';
+    panel = el('section', 'editor');
+    panel.hidden = true;
     panel.appendChild(settingsFields());
-    var bar = el('div', 'ebar');
+    bar = el('div', 'esavebar');
+    bar.hidden = true;
     saveBtn = button(E.save, 'ebtn esave', save);
     saveBtn.disabled = true;
     bar.appendChild(saveBtn);
     status = el('span', 'estatus');
     status.setAttribute('role', 'status');
     bar.appendChild(status);
-    panel.appendChild(bar);
+    gear = button(E.gear, 'gear', function () {
+      panel.hidden = !panel.hidden;
+      gear.setAttribute('aria-pressed', String(!panel.hidden));
+    });
+    gear.setAttribute('aria-label', E.gearLabel);
+    gear.setAttribute('aria-pressed', 'false');
+    document.body.appendChild(bar);
+    document.body.appendChild(gear);
+    document.body.appendChild(panel);
   }
 
-  function toggle() {
-    if (!editing) {
-      var site = R.getSite();
-      if (!site) return;
-      original = L.clone(site);
-      draft = L.clone(site);
-      editing = true;
-      build();
-      R.setEditor(api);
-      R.show(draft);
-    } else {
-      if (changed() && !root.confirm(E.confirmDiscard)) return;
-      editing = false;
-      editPath = null;
-      R.setEditor(null);
-      R.show(original);
+  function start(site) {
+    original = L.clone(site);
+    draft = L.clone(site);
+    build();
+    R.setEditor(api);
+    R.show(draft);
+    root.addEventListener('beforeunload', function (e) {
+      if (!changed()) return;
+      e.preventDefault();
+      e.returnValue = E.leaveWarning;
+    });
+  }
+
+  // Editing is on only in a browser that opened /edit/ (which redirects to /?edit=1).
+  function enabled() {
+    try {
+      var q = new URLSearchParams(root.location.search).get('edit');
+      if (q === '1') root.localStorage.setItem(E.flagKey, '1');
+      if (q === '0') root.localStorage.removeItem(E.flagKey);
+      if (q !== null) root.history.replaceState(null, '', root.location.pathname);
+      return root.localStorage.getItem(E.flagKey) === '1';
+    } catch (e) {
+      return false;
     }
-    document.documentElement.dataset.editing = String(editing);
-    gear.setAttribute('aria-pressed', String(editing));
-    panel.hidden = !editing;
   }
 
-  gear = button(E.gear, 'gear', toggle);
-  gear.setAttribute('aria-label', E.gearLabel);
-  gear.setAttribute('aria-pressed', 'false');
-  panel = el('section', 'editor');
-  panel.hidden = true;
-  document.body.appendChild(gear);
-  document.getElementById('list').after(panel);
+  if (enabled()) R.whenReady(start);
 })(window);

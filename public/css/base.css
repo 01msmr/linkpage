@@ -43,6 +43,7 @@ button.item { font-family: inherit; line-height: inherit; text-align: left; curs
 a.item { border-radius: 0; }
 .folder-head:hover, .folder-closer:hover { background: var(--hover); color: var(--hover-fg); }
 a.item:hover { background: var(--hover); color: var(--hover-fg); }
+.folder + * { margin-top: var(--gap-folder); }
 .num { margin-right: 0.5em; }
 :root:not([data-numbers="true"]) .num { display: none; }
 :root[data-caps="versalien"] .item, :root[data-caps="versalien"] h1 { text-transform: uppercase; }
