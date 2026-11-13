@@ -127,13 +127,15 @@
     html.style.setProperty('--fit', '1');
     if (!splitOn() || settings.height > 0) return;
     var f = 1;
+    html.classList.add('measure');
     Array.prototype.forEach.call(document.querySelectorAll('#list .item'), function (it) {
       var cs = getComputedStyle(it);
       var pad = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
       var need = it.scrollWidth - pad;
       var room = it.clientWidth - pad;
-      if (need > room && room > 0) f = Math.min(f, room / need);
+      if (need > room && room > 0) f = Math.min(f, room / need * C.SPLIT.fitSlack);
     });
+    html.classList.remove('measure');
     html.style.setProperty('--fit', String(f));
   }
 

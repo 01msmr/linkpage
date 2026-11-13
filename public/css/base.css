@@ -6,7 +6,7 @@
 html { background: var(--bg); }
 body {
   margin: 0;
-  padding: var(--side);
+  padding: var(--side) var(--pad-page);
   min-height: 100lvh;
   background: var(--bg);
   color: var(--fg);
@@ -57,7 +57,9 @@ a.item:hover { background: var(--hover); color: var(--hover-fg); }
 #pane { display: none; }
 :root { --pane: 55%; }
 @media (min-width: 601px) {
-  html[data-layout="split"] body { padding-right: calc(var(--pane) + var(--side)); }
+  html[data-layout="split"] body { padding-right: calc(var(--pane) + var(--pad-page)); }
+  html[data-layout="split"] #list { align-items: stretch; }
+  html[data-layout="split"] .ent { width: 100%; }
   html[data-layout="split"] #pane { position: fixed; top: 0; right: 0; bottom: 0; width: var(--pane); padding-top: calc(var(--gear-size) + 2 * var(--side)); display: flex; flex-direction: column; background: var(--bg); box-shadow: -2px 0 0 var(--fg); }
   #pane-open { position: absolute; top: var(--side); left: 0; padding: var(--pad-y) var(--pad-x); font-size: 1rem; line-height: 1.2; color: var(--fg); }
   #pane-open:hover { color: var(--hover); }
@@ -70,3 +72,6 @@ a.item:hover { background: var(--hover); color: var(--hover-fg); }
 
 .mode-fade, .mode-fade * { transition: background-color var(--fade), color var(--fade), box-shadow var(--fade), outline-color var(--fade) !important; }
 @media (prefers-reduced-motion: reduce) { .mode-fade, .mode-fade * { transition: none !important; } }
+
+/* While fitting, ellipsis would hide the overflow being measured. */
+html.measure .item, html.measure .item .name { text-overflow: clip !important; }
