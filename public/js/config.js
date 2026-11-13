@@ -8,14 +8,14 @@
     font: 'system',
     delay: 8,
     layout: 'list',
-    height: 0,
+    height: 46,
     items: []
   };
   var DESIGNS = ['giant-type', 'giant-numerals', 'vertical-heading', 'bracket-terminal',
     'headline-tiny-links', 'raw-listing', 'tracked-rows', 'plain-inverted'];
   var LAYOUTS = ['list', 'split'];
   var HEIGHTS = [];
-  for (var h = 48; h <= 104; h += 4) HEIGHTS.push(h);
+  for (var h = 30; h <= 70; h += 4) HEIGHTS.push(h);
   var FONTS = {};
   var REDIRECT = {
     tickMs: 1000,
@@ -49,14 +49,14 @@
     newLink: { name: 'New link', url: 'https://' },
     newFolderName: 'New folder',
     dropZone: { before: 0.25, after: 0.75 },
-    valueLabels: { true: 'on', false: 'off', 0: 'auto' },
+    valueLabels: { true: 'on', false: 'off' },
     controls: [
       { key: 'design', icon: '\u25A7', label: 'Design', values: DESIGNS },
       { key: 'mode', icon: '\u25D0', label: 'Mode', values: ['light', 'dark'] },
       { key: 'numbers', icon: '#', label: 'Numbers', values: [true, false] },
       { key: 'caps', icon: 'Aa', label: 'Caps', values: ['regular', 'versalien'] },
       { key: 'layout', icon: '\u25EB', label: 'Layout', values: LAYOUTS },
-      { key: 'height', icon: '\u2195', label: 'Pill height (px)', values: [0].concat(HEIGHTS) }
+      { key: 'height', icon: '\u2195', label: 'Pill height (px)', values: HEIGHTS }
     ].concat(Object.keys(FONTS).length ? [{ key: 'font', icon: 'F', label: 'Font', values: ['system'].concat(Object.keys(FONTS)) }] : []),
     itemFields: { name: 'Name', url: 'URL' },
     errors: {

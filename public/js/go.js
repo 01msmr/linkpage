@@ -21,8 +21,7 @@
     html.dataset.caps = s.caps;
     html.dataset.numbers = String(s.numbers === true);
     html.dataset.font = s.font;
-    var pill = L.pillFont(s.height);
-    if (pill) html.style.setProperty('--pill-font', pill);
+    html.style.setProperty('--pill-font', L.pillFont(s.height));
   }
 
   function show(node) {

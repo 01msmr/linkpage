@@ -17,15 +17,15 @@
       caps: pick(raw.caps, d.caps),
       font: font,
       delay: Number.isInteger(raw.delay) ? raw.delay : d.delay,
-      height: raw.height === 0 || C.HEIGHTS.indexOf(raw.height) >= 0 ? raw.height : d.height,
+      height: C.HEIGHTS.indexOf(raw.height) >= 0 ? raw.height : d.height,
       layout: C.LAYOUTS.indexOf(raw.layout) >= 0 ? raw.layout : d.layout,
       items: Array.isArray(raw.items) ? raw.items : d.items
     };
   }
 
-  // The font size that gives a pill of `height` px (empty for auto).
+  // The font size that gives a pill of `height` px.
   function pillFont(height) {
-    return height > 0 ? 'calc((' + height + 'px - 2 * var(--pad-y)) / var(--leading))' : '';
+    return 'calc((' + height + 'px - 2 * var(--pad-y)) / var(--leading))';
   }
 
   function delayFor(link, settings) {

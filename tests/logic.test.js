@@ -149,17 +149,19 @@ test('layout defaults to list; split is kept; unknown falls back', () => {
 });
 test('height defaults to the config default; listed steps are kept; others fall back', () => {
   assert.equal(L.resolveSettings({}).height, C.DEFAULTS.height);
-  assert.equal(L.resolveSettings({ height: 48 }).height, 48);
-  assert.equal(L.resolveSettings({ height: 0 }).height, 0);
-  assert.equal(L.resolveSettings({ height: 50 }).height, C.DEFAULTS.height);
+  assert.equal(L.resolveSettings({ height: 34 }).height, 34);
+  assert.equal(L.resolveSettings({ height: 0 }).height, C.DEFAULTS.height);
+  assert.equal(L.resolveSettings({ height: 74 }).height, C.DEFAULTS.height);
+  assert.equal(L.resolveSettings({ height: 51 }).height, C.DEFAULTS.height);
   assert.equal(L.resolveSettings({ height: '52' }).height, C.DEFAULTS.height);
 });
-test('HEIGHTS start at 48 and step by 4', () => {
-  assert.equal(C.HEIGHTS[0], 48);
+test('HEIGHTS run from 30 to 70 in steps of 4 and include the default', () => {
+  assert.equal(C.HEIGHTS[0], 30);
+  assert.equal(C.HEIGHTS[C.HEIGHTS.length - 1], 70);
+  assert.ok(C.HEIGHTS.includes(C.DEFAULTS.height));
   assert.ok(C.HEIGHTS.every((h, i) => i === 0 || h - C.HEIGHTS[i - 1] === 4));
 });
-test('pillFont is empty for auto and a calc for a height', () => {
-  assert.equal(L.pillFont(0), '');
+test('pillFont gives the font size for a pill height', () => {
   assert.equal(L.pillFont(48), 'calc((48px - 2 * var(--pad-y)) / var(--leading))');
 });
 test('reindexOpen drops the removed folder and shifts later siblings down', () => {

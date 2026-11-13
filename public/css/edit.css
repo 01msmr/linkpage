@@ -59,4 +59,4 @@
 }
 
 /* In the split layout the toolbar floats over the pane, so it needs its own backing. */
-@media (min-width: 601px) { html[data-layout="split"] .toolbar { background: var(--bg); padding: 0 var(--pad-x); } }
+@media (min-width: 601px) { html[data-layout="split"] .toolbar { background: color-mix(in srgb, var(--bg) var(--toolbar-opacity), transparent); padding: 0 var(--pad-x); } }
