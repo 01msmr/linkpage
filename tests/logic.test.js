@@ -142,3 +142,8 @@ test('parentAfterRemoval shifts an ancestor index past the removed item', () => 
   assert.deepEqual(L.parentAfterRemoval([0, 1], [0, 2]), [0, 1]);
   assert.deepEqual(L.parentAfterRemoval([3], []), []);
 });
+test('layout defaults to list; split is kept; unknown falls back', () => {
+  assert.equal(L.resolveSettings({}).layout, 'list');
+  assert.equal(L.resolveSettings({ layout: 'split' }).layout, 'split');
+  assert.equal(L.resolveSettings({ layout: 'nope' }).layout, 'list');
+});

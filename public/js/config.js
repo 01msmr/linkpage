@@ -7,10 +7,12 @@
     caps: 'regular',
     font: 'system',
     delay: 8,
+    layout: 'list',
     items: []
   };
   var DESIGNS = ['giant-type', 'giant-numerals', 'vertical-heading', 'bracket-terminal',
     'headline-tiny-links', 'raw-listing', 'tracked-rows', 'plain-inverted'];
+  var LAYOUTS = ['list', 'split'];
   var FONTS = {};
   var REDIRECT = {
     tickMs: 1000,
@@ -18,6 +20,7 @@
     countdown: 'Redirect in {n} s to:',
     unknown: 'Unknown link: {slug}'
   };
+  var SPLIT = { query: '(min-width: 601px)', newTabHosts: ['icloud.com'], open: 'Open in new tab \u2197', frameTitle: 'Preview' };
   var FOLDER = { chevron: '›', closeLabel: 'Close {name}' };
   var EDIT = {
     endpoint: '/edit/save.php',
@@ -45,10 +48,15 @@
     newLink: { name: 'New link', url: 'https://' },
     newFolderName: 'New folder',
     dropZone: { before: 0.25, after: 0.75 },
-    fields: { design: 'Design', mode: 'Mode', numbers: 'Numbers', caps: 'Caps', delay: 'Delay (s)', font: 'Font' },
-    modes: ['light', 'dark'],
-    capsValues: ['regular', 'versalien'],
-    system: 'system',
+    valueLabels: { true: 'on', false: 'off' },
+    controls: [
+      { key: 'design', icon: '\u25A7', label: 'Design', values: DESIGNS },
+      { key: 'mode', icon: '\u25D0', label: 'Mode', values: ['light', 'dark'] },
+      { key: 'numbers', icon: '#', label: 'Numbers', values: [true, false] },
+      { key: 'caps', icon: 'Aa', label: 'Caps', values: ['regular', 'versalien'] },
+      { key: 'layout', icon: '\u25EB', label: 'Layout', values: LAYOUTS },
+      { key: 'delay', icon: '\u23F1', label: 'Delay (s)', values: [1, 3, 5, 7] }
+    ].concat(Object.keys(FONTS).length ? [{ key: 'font', icon: 'F', label: 'Font', values: ['system'].concat(Object.keys(FONTS)) }] : []),
     itemFields: { name: 'Name', url: 'URL' },
     errors: {
       401: 'Not signed in. Open /edit/ once, sign in, then save again.',
@@ -57,7 +65,7 @@
       other: 'Saving failed (HTTP {status}). Your edits are kept.'
     }
   };
-  var api = { EDIT: EDIT, FOLDER: FOLDER, DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, FONTS: FONTS };
+  var api = { EDIT: EDIT, FOLDER: FOLDER, SPLIT: SPLIT, DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, LAYOUTS: LAYOUTS, FONTS: FONTS };
   root.LinkpagesConfig = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);

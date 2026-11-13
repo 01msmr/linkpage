@@ -15,6 +15,7 @@
   var open = [];
   var editor = null;
   var readyFns = [];
+  var activeUrl = null;
 
   function chevron(ch) { return el('span', 'chev', ch); }
 
@@ -25,9 +26,43 @@
     if (f) f.focus();
   }
 
+  function splitOn() { return settings.layout === 'split' && root.matchMedia(C.SPLIT.query).matches; }
+
+  // Plain http (blocked inside https pages) and listed hosts (refuse framing) open in a new tab.
+  function embeddable(url) {
+    try {
+      var u = new URL(url);
+      return u.protocol === 'https:' && !C.SPLIT.newTabHosts.some(function (h) { return u.hostname === h || u.hostname.slice(-h.length - 1) === '.' + h; });
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function openInPane(url) {
+    activeUrl = url;
+    var frame = document.getElementById('pane-frame');
+    var open = document.getElementById('pane-open');
+    frame.title = C.SPLIT.frameTitle;
+    frame.src = url;
+    frame.hidden = false;
+    open.href = url;
+    open.textContent = C.SPLIT.open;
+    open.hidden = false;
+    draw();
+  }
+
   function linkCore(item, index) {
     var a = el('a', 'item');
     if (item.slug) a.href = '/' + item.slug + '/';
+    var split = splitOn();
+    if (item.url && split && embeddable(item.url)) {
+      if (item.url === activeUrl) a.setAttribute('aria-current', 'true');
+      a.addEventListener('click', function (e) { e.preventDefault(); openInPane(item.url); });
+    } else if (item.url && (split || L.delayFor(item, settings) <= 0)) {
+      a.href = item.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+    }
     a.appendChild(el('span', 'num', L.numberLabel(index)));
     a.appendChild(el('span', 'name', item.name));
     return a;
@@ -102,6 +137,7 @@
     html.dataset.caps = settings.caps;
     html.dataset.numbers = String(settings.numbers === true);
     html.dataset.font = settings.font;
+    html.dataset.layout = settings.layout;
     draw();
   }
 

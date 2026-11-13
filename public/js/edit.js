@@ -1,4 +1,4 @@
-// Edit mode: inline editing in the list, a settings panel, change detection, save.
+// Edit mode: inline editing in the list, settings dots with menus, change detection, save.
 (function (root) {
   var L = root.LinkpagesLogic;
   var C = root.LinkpagesConfig;
@@ -10,7 +10,8 @@
   var dragFrom = null;
   var editPath = null;
   var saving = false;
-  var gear, panel, bar, saveBtn, status, closeTimer;
+  var gear, bar, saveBtn, status, closeTimer;
+  var slots = [];
 
   function el(tag, cls, text) {
     var e = document.createElement(tag);
@@ -52,57 +53,76 @@
     refresh();
   }
 
-  function labeled(text, input) {
-    var l = el('label', 'field');
-    l.appendChild(el('span', 'field-label', text));
-    l.appendChild(input);
-    return l;
-  }
-
-  function select(values, current, onChange) {
-    var s = el('select');
-    values.forEach(function (v) {
-      var o = el('option', '', v);
-      o.value = v;
-      s.appendChild(o);
-    });
-    s.value = current;
-    s.addEventListener('change', function () { onChange(s.value); });
-    return s;
-  }
-
   function setting(key, value) {
     draft[key] = value;
     touched();
     R.show(draft);
   }
 
-  function settingsFields() {
+  function labelOf(v) { return Object.prototype.hasOwnProperty.call(E.valueLabels, String(v)) ? E.valueLabels[String(v)] : String(v); }
+
+  function valuesOf(c, cur) { return c.values.indexOf(cur) >= 0 ? c.values : c.values.concat([cur]); }
+
+  function refreshDock() {
     var cur = L.resolveSettings(draft);
-    var box = el('div', 'settings');
-    box.appendChild(labeled(E.fields.design, select(C.DESIGNS, cur.design, function (v) { setting('design', v); })));
-    box.appendChild(labeled(E.fields.mode, select(E.modes, cur.mode, function (v) { setting('mode', v); })));
-    var num = el('input');
-    num.type = 'checkbox';
-    num.checked = cur.numbers === true;
-    num.addEventListener('change', function () { setting('numbers', num.checked); });
-    box.appendChild(labeled(E.fields.numbers, num));
-    box.appendChild(labeled(E.fields.caps, select(E.capsValues, cur.caps, function (v) { setting('caps', v); })));
-    var delay = el('input');
-    delay.type = 'text';
-    delay.inputMode = 'numeric';
-    delay.value = String(cur.delay);
-    delay.addEventListener('input', function () {
-      if (delay.value === '') delete draft.delay;
-      else draft.delay = L.typedValue('delay', delay.value);
-      touched();
+    slots.forEach(function (x) {
+      var now = cur[x.c.key];
+      x.btn.title = x.c.label + ': ' + labelOf(now);
+      x.btn.setAttribute('aria-label', x.btn.title);
+      if (x.opts) x.opts.forEach(function (o) { if (o.value === now) o.btn.setAttribute('aria-current', 'true'); else o.btn.removeAttribute('aria-current'); });
     });
-    box.appendChild(labeled(E.fields.delay, delay));
-    var fonts = Object.keys(C.FONTS);
-    if (fonts.length) {
-      box.appendChild(labeled(E.fields.font, select([E.system].concat(fonts), cur.font, function (v) { setting('font', v); })));
+  }
+
+  function closeMenus(except) {
+    slots.forEach(function (x) { if (x.menu && x.slot !== except) delete x.menu.dataset.open; });
+  }
+
+  // Two values switch on click; more values open a menu on hover.
+  function dockSlot(c) {
+    var cur = L.resolveSettings(draft)[c.key];
+    var values = valuesOf(c, cur);
+    var slot = el('div', 'slot');
+    var btn = el('button', 'dot');
+    btn.type = 'button';
+    btn.appendChild(el('span', 'pt'));
+    btn.appendChild(el('span', 'ico', c.icon));
+    slot.appendChild(btn);
+    var x = { c: c, slot: slot, btn: btn };
+    if (values.length === 2) {
+      btn.addEventListener('click', function () {
+        var now = L.resolveSettings(draft)[c.key];
+        setting(c.key, values[values[0] === now ? 1 : 0]);
+        refreshDock();
+      });
+    } else {
+      x.menu = el('div', 'menu');
+      x.opts = values.map(function (v) {
+        var o = button(labelOf(v), 'opt', function () {
+          setting(c.key, v);
+          refreshDock();
+          closeMenus();
+        });
+        x.menu.appendChild(o);
+        return { value: v, btn: o };
+      });
+      slot.appendChild(x.menu);
+      btn.addEventListener('click', function () {
+        var was = 'open' in x.menu.dataset;
+        closeMenus();
+        if (!was) { x.menu.dataset.open = ''; armClose(); }
+      });
+      slot.addEventListener('mouseenter', function () { closeMenus(slot); x.menu.dataset.open = ''; clearTimeout(closeTimer); });
     }
-    return box;
+    slot.addEventListener('mouseleave', armClose);
+    slots.push(x);
+    return slot;
+  }
+
+  function buildDock() {
+    var dock = el('div', 'dock');
+    E.controls.forEach(function (c) { dock.appendChild(dockSlot(c)); });
+    refreshDock();
+    return dock;
   }
 
   // A new link without a slug gets one from its name when editing ends.
@@ -323,25 +343,17 @@
       });
   }
 
-  function setPanel(on) {
-    clearTimeout(closeTimer);
-    if (on) panel.dataset.open = ''; else delete panel.dataset.open;
-    gear.setAttribute('aria-pressed', String(on));
-    if (on) armClose();
-  }
-
-  // Closes after the pointer has been away for E.closeDelay; waits while a field has focus.
+  // Closes open menus once the pointer has been away for E.closeDelay.
   function armClose() {
     clearTimeout(closeTimer);
     closeTimer = setTimeout(function () {
-      if (panel.contains(document.activeElement) || panel.matches(':hover') || gear.matches(':hover')) armClose();
-      else setPanel(false);
+      if (document.querySelector('.dock:hover')) armClose();
+      else closeMenus();
     }, E.closeDelay);
   }
 
   function build() {
-    panel = el('section', 'editor');
-    panel.appendChild(settingsFields());
+    var bar0 = el('div', 'toolbar');
     bar = el('div', 'esavebar');
     bar.hidden = true;
     saveBtn = button(E.save, 'ebtn esave', save);
@@ -350,16 +362,12 @@
     status = el('span', 'estatus');
     status.setAttribute('role', 'status');
     bar.appendChild(status);
-    gear = button(E.gear, 'gear', function () { setPanel(!('open' in panel.dataset)); });
-    [gear, panel].forEach(function (n) {
-      n.addEventListener('mouseenter', function () { setPanel(true); });
-      n.addEventListener('mouseleave', armClose);
-    });
-    gear.setAttribute('aria-label', E.gearLabel);
-    gear.setAttribute('aria-pressed', 'false');
-    document.body.appendChild(bar);
-    document.body.appendChild(gear);
-    document.body.appendChild(panel);
+    gear = el('span', 'gear', E.gear);
+    gear.title = E.gearLabel;
+    bar0.appendChild(bar);
+    bar0.appendChild(buildDock());
+    bar0.appendChild(gear);
+    document.body.appendChild(bar0);
   }
 
   function start(site) {

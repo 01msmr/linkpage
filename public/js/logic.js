@@ -17,6 +17,7 @@
       caps: pick(raw.caps, d.caps),
       font: font,
       delay: Number.isInteger(raw.delay) ? raw.delay : d.delay,
+      layout: C.LAYOUTS.indexOf(raw.layout) >= 0 ? raw.layout : d.layout,
       items: Array.isArray(raw.items) ? raw.items : d.items
     };
   }
