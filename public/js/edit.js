@@ -325,7 +325,7 @@
 
   function setPanel(on) {
     clearTimeout(closeTimer);
-    panel.hidden = !on;
+    if (on) panel.dataset.open = ''; else delete panel.dataset.open;
     gear.setAttribute('aria-pressed', String(on));
     if (on) armClose();
   }
@@ -341,7 +341,6 @@
 
   function build() {
     panel = el('section', 'editor');
-    panel.hidden = true;
     panel.appendChild(settingsFields());
     bar = el('div', 'esavebar');
     bar.hidden = true;
@@ -351,7 +350,7 @@
     status = el('span', 'estatus');
     status.setAttribute('role', 'status');
     bar.appendChild(status);
-    gear = button(E.gear, 'gear', function () { setPanel(panel.hidden); });
+    gear = button(E.gear, 'gear', function () { setPanel(!('open' in panel.dataset)); });
     [gear, panel].forEach(function (n) {
       n.addEventListener('mouseenter', function () { setPanel(true); });
       n.addEventListener('mouseleave', armClose);

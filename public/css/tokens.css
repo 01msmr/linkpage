@@ -7,6 +7,8 @@
   --hover: #00f;
   --hover-fg: #fff;
   --danger: #e00;
+  --fade: 0.25s;
+  --fade-fast: 0.1s;
   --gear: #bbb;
   --gear-hover: #777;
   --radius-chip: 6px;

@@ -1,6 +1,8 @@
 /* Edit mode: tokens only, no borders or outlines on chips. */
 :root { --ctl: 1.5rem; --gear-size: calc(var(--item-font) * var(--leading)); }
-.gear { position: fixed; top: var(--side); right: var(--side); z-index: 3; width: var(--gear-size); height: var(--gear-size); padding: 0; border: 0; background: none; color: var(--gear); font: inherit; font-size: var(--item-font); line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.gear { position: fixed; top: var(--side); right: var(--side); z-index: 3; width: var(--gear-size); height: var(--gear-size); padding: 0; border: 0; background: none; color: var(--gear); font: inherit; font-size: var(--item-font); line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: color var(--fade); animation: fade-in var(--fade) both; }
+@keyframes fade-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .gear, .editor, .ctl { transition: none; animation: none; } }
 .gear:hover, .gear[aria-pressed="true"] { color: var(--gear-hover); }
 .esavebar { font-size: 1rem; line-height: 1.2; position: fixed; top: var(--side); right: calc(var(--side) + var(--gear-size) + var(--pad-x)); z-index: 3; display: flex; gap: var(--gap-item); align-items: center; }
 .esavebar[hidden] { display: none; }
@@ -11,7 +13,7 @@
 .ent > .item, .ent > .ebox, .ent > .lend { flex: 1 1 auto; min-width: 0; width: auto; }
 .gl, .gr { display: flex; flex: none; align-items: center; width: calc(var(--ctl) * 2); }
 .ctl-gap { width: var(--ctl); height: var(--ctl); }
-.ctl { display: flex; align-items: center; justify-content: center; width: var(--ctl); height: var(--ctl); padding: 0; border: 0; border-radius: 50%; background: none; color: var(--fg); font: inherit; font-size: 1.1rem; line-height: 1; cursor: pointer; opacity: 0; }
+.ctl { display: flex; align-items: center; justify-content: center; width: var(--ctl); height: var(--ctl); padding: 0; border: 0; border-radius: 50%; background: none; color: var(--fg); font: inherit; font-size: 1.1rem; line-height: 1; cursor: pointer; opacity: 0; transition: opacity var(--fade-fast), color var(--fade-fast); }
 .gl:hover .ctl, .gr:hover .ctl, .ctl:focus-visible, .ent[data-editing] .ctl, .listend .ctl { opacity: 1; }
 .ctl:hover { color: var(--hover); }
 .ctl-handle { cursor: grab; }
@@ -27,7 +29,8 @@
 .ebox.efolder input { border-radius: calc(var(--item-height) / 2); }
 
 /* Settings panel under the gear. */
-.editor[hidden] { display: none; }
+.editor { opacity: 0; visibility: hidden; transform: translateY(calc(var(--side) * -0.5)); transition: opacity var(--fade), transform var(--fade), visibility 0s var(--fade); }
+.editor[data-open] { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
 .editor { position: fixed; top: calc(var(--side) + var(--gear-size) + 12px); right: var(--side); z-index: 3; max-width: calc(100vw - 2 * var(--side)); max-height: calc(100lvh - 2 * var(--side) - var(--gear-size) - 12px); overflow: auto; padding: var(--pad-x); background: var(--bg); box-shadow: 0 0 0 2px var(--fg); font-size: 1rem; line-height: 1.2; }
 .settings { display: flex; flex-wrap: wrap; gap: var(--gap-item); }
 .field { display: flex; flex-direction: column; gap: 2px; }
