@@ -67,6 +67,7 @@
     if (item.slug) a.href = '/' + item.slug + '/';
     var split = splitOn();
     if (item.url && split && embeddable(item.url)) {
+      a.href = item.url;
       if (item.url === activeUrl) a.setAttribute('aria-current', 'true');
       a.addEventListener('click', function (e) { e.preventDefault(); openInPane(item.url); });
     } else if (item.url && (split || L.delayFor(item, settings) <= 0)) {
