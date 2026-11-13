@@ -150,11 +150,11 @@
     afterChange(pp, pp.concat([index]).join('.'));
   }
 
-  function addFolderAfter(p) {
+  function addAfter(p, item) {
     settle();
     var parent = p.slice(0, -1);
     var index = p[p.length - 1] + 1;
-    draft.items = L.insertAt(draft.items, parent, index, { name: E.newFolderName, items: [] });
+    draft.items = L.insertAt(draft.items, parent, index, item);
     afterChange(parent, parent.concat([index]).join('.'));
   }
 
@@ -262,10 +262,10 @@
     } else {
       var handle = ctl(I.handle, fill(E.labels.handle, item.name), 'ctl-handle', function () {});
       gl.appendChild(handle);
-      if (isFolder) gl.appendChild(ctl(I.plus, fill(E.labels.folderAfter, item.name), 'ctl-plus', function () { addFolderAfter(p); }));
+      if (isFolder) gl.appendChild(ctl(I.plus, fill(E.labels.folderInside, item.name), 'ctl-plus', function () { addTo(p, { name: E.newFolderName, items: [] }); }));
       else gl.appendChild(el('span', 'ctl-gap'));
-      if (isFolder) gr.appendChild(ctl(I.plus, fill(E.labels.folderInside, item.name), 'ctl-plus', function () { addTo(p, { name: E.newFolderName, items: [] }); }));
-      else gr.appendChild(el('span', 'ctl-gap'));
+      var after = isFolder ? E.labels.folderAfter : E.labels.linkAfter;
+      gr.appendChild(ctl(I.plus, fill(after, item.name), 'ctl-plus', function () { addAfter(p, isFolder ? { name: E.newFolderName, items: [] } : L.clone(E.newLink)); }));
       gr.appendChild(ctl(I.pen, fill(E.labels.pen, item.name), 'ctl-pen', function () { startEdit(path); }));
       wireDrag(r, handle, p, isFolder, item);
     }

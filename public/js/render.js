@@ -77,7 +77,7 @@
   function fill(box, items, path) {
     var prefix = path === '' ? '' : path + '.';
     L.sortedEntries(items).forEach(function (e, i) { box.appendChild(entry(e.item, i, prefix + e.index)); });
-    if (editor) box.appendChild(editor.listEnd(path));
+    if (editor && items.length === 0) box.appendChild(editor.listEnd(path));
   }
 
   function sub(items, path) {

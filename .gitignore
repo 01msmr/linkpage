@@ -5,3 +5,4 @@ public/edit/.htpasswd
 public/edit/.htaccess
 node_modules/
 .DS_Store
+local/
