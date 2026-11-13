@@ -8,11 +8,14 @@
     font: 'system',
     delay: 8,
     layout: 'list',
+    height: 0,
     items: []
   };
   var DESIGNS = ['giant-type', 'giant-numerals', 'vertical-heading', 'bracket-terminal',
     'headline-tiny-links', 'raw-listing', 'tracked-rows', 'plain-inverted'];
   var LAYOUTS = ['list', 'split'];
+  var HEIGHTS = [];
+  for (var h = 48; h <= 104; h += 4) HEIGHTS.push(h);
   var FONTS = {};
   var REDIRECT = {
     tickMs: 1000,
@@ -48,14 +51,14 @@
     newLink: { name: 'New link', url: 'https://' },
     newFolderName: 'New folder',
     dropZone: { before: 0.25, after: 0.75 },
-    valueLabels: { true: 'on', false: 'off' },
+    valueLabels: { true: 'on', false: 'off', 0: 'auto' },
     controls: [
       { key: 'design', icon: '\u25A7', label: 'Design', values: DESIGNS },
       { key: 'mode', icon: '\u25D0', label: 'Mode', values: ['light', 'dark'] },
       { key: 'numbers', icon: '#', label: 'Numbers', values: [true, false] },
       { key: 'caps', icon: 'Aa', label: 'Caps', values: ['regular', 'versalien'] },
       { key: 'layout', icon: '\u25EB', label: 'Layout', values: LAYOUTS },
-      { key: 'delay', icon: '\u23F1', label: 'Delay (s)', values: [1, 3, 5, 7] }
+      { key: 'height', icon: '\u2195', label: 'Pill height (px)', values: [0].concat(HEIGHTS) }
     ].concat(Object.keys(FONTS).length ? [{ key: 'font', icon: 'F', label: 'Font', values: ['system'].concat(Object.keys(FONTS)) }] : []),
     itemFields: { name: 'Name', url: 'URL' },
     errors: {
@@ -65,7 +68,7 @@
       other: 'Saving failed (HTTP {status}). Your edits are kept.'
     }
   };
-  var api = { EDIT: EDIT, FOLDER: FOLDER, SPLIT: SPLIT, DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, LAYOUTS: LAYOUTS, FONTS: FONTS };
+  var api = { EDIT: EDIT, FOLDER: FOLDER, SPLIT: SPLIT, DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, LAYOUTS: LAYOUTS, HEIGHTS: HEIGHTS, FONTS: FONTS };
   root.LinkpagesConfig = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);

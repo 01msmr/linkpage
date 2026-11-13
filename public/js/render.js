@@ -121,10 +121,27 @@
     return box;
   }
 
+  // Split pane: scale every item by the same factor so the widest one fits without wrapping.
+  function fit() {
+    var html = document.documentElement;
+    html.style.setProperty('--fit', '1');
+    if (!splitOn()) return;
+    var f = 1;
+    Array.prototype.forEach.call(document.querySelectorAll('#list .item'), function (it) {
+      var cs = getComputedStyle(it);
+      var pad = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+      var need = it.scrollWidth - pad;
+      var room = it.clientWidth - pad;
+      if (need > room && room > 0) f = Math.min(f, room / need);
+    });
+    html.style.setProperty('--fit', String(f));
+  }
+
   function draw() {
     var main = document.getElementById('list');
     main.textContent = '';
     fill(main, settings.items, '');
+    fit();
   }
 
   // Shows a site and keeps the open folders (edit mode redraws through this).
@@ -138,6 +155,8 @@
     html.dataset.numbers = String(settings.numbers === true);
     html.dataset.font = settings.font;
     html.dataset.layout = settings.layout;
+    var pill = L.pillFont(settings.height);
+    if (pill) html.style.setProperty('--pill-font', pill); else html.style.removeProperty('--pill-font');
     draw();
   }
 
@@ -162,6 +181,9 @@
     setOpen: function (paths) { open = paths; },
     setEditor: function (e) { editor = e; }
   };
+
+  root.addEventListener('resize', function () { if (settings) fit(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (settings) fit(); });
 
   fetch('/site.php', { cache: 'no-store' })
     .then(function (r) {

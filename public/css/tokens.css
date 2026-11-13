@@ -20,8 +20,9 @@
   --leading: 1.2;
   --item-scale: 1;
   --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --item-font: calc(var(--item-size) * var(--item-scale));
-  --item-height: round(up, calc(var(--item-font) * var(--leading) + 2 * var(--pad-y)), 2px);
+  --fit: 1;
+  --item-font: calc(var(--pill-font, calc(var(--item-size) * var(--item-scale))) * var(--fit));
+  --item-height: round(nearest, calc(var(--item-font) * var(--leading) + 2 * var(--pad-y)), 2px);
 }
 :root[data-mode="dark"] {
   --bg: #000;

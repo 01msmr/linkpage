@@ -10,7 +10,7 @@
   var dragFrom = null;
   var editPath = null;
   var saving = false;
-  var gear, bar, saveBtn, status, closeTimer;
+  var gear, bar, saveBtn, status, closeTimer, fadeTimer;
   var slots = [];
 
   function el(tag, cls, text) {
@@ -53,7 +53,18 @@
     refresh();
   }
 
+  // Colors cross-fade while the mode changes (the class stays on for one fade).
+  function fadeMode() {
+    var html = document.documentElement;
+    var ms = parseFloat(getComputedStyle(html).getPropertyValue('--fade')) * 1000 || 0;
+    html.classList.add('mode-fade');
+    void html.offsetWidth;
+    clearTimeout(fadeTimer);
+    fadeTimer = setTimeout(function () { html.classList.remove('mode-fade'); }, ms + 50);
+  }
+
   function setting(key, value) {
+    if (key === 'mode') fadeMode();
     draft[key] = value;
     touched();
     R.show(draft);

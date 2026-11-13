@@ -17,9 +17,15 @@
       caps: pick(raw.caps, d.caps),
       font: font,
       delay: Number.isInteger(raw.delay) ? raw.delay : d.delay,
+      height: raw.height === 0 || C.HEIGHTS.indexOf(raw.height) >= 0 ? raw.height : d.height,
       layout: C.LAYOUTS.indexOf(raw.layout) >= 0 ? raw.layout : d.layout,
       items: Array.isArray(raw.items) ? raw.items : d.items
     };
+  }
+
+  // The font size that gives a pill of `height` px (empty for auto).
+  function pillFont(height) {
+    return height > 0 ? 'calc((' + height + 'px - 2 * var(--pad-y)) / var(--leading))' : '';
   }
 
   function delayFor(link, settings) {
@@ -146,7 +152,7 @@
     return item.items.reduce(function (n, i) { return n + 1 + countDescendants(i); }, 0);
   }
 
-  var api = { resolveSettings: resolveSettings, delayFor: delayFor, findLink: findLink,
+  var api = { resolveSettings: resolveSettings, pillFont: pillFont, delayFor: delayFor, findLink: findLink,
     sortItems: sortItems, sortedEntries: sortedEntries, prefixPaths: prefixPaths, slugFor: slugFor, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen,
     clone: clone, itemAt: itemAt, removeAt: removeAt, insertAt: insertAt, moveItem: moveItem, parentAfterRemoval: parentAfterRemoval,
     setField: setField, typedValue: typedValue, hasChanged: hasChanged, countDescendants: countDescendants };

@@ -1,11 +1,11 @@
 /* Edit mode: tokens only, no borders or outlines on chips. */
-:root { --ctl: 1.5rem; --gear-size: calc(var(--item-font) * var(--leading)); }
+:root { --ctl: 1.5rem; --gear-size: calc(var(--item-size) * 1.2); }
 .toolbar { position: fixed; top: var(--side); right: var(--side); z-index: 3; display: flex; align-items: center; gap: var(--pad-x); }
-.gear { display: flex; align-items: center; justify-content: center; width: var(--gear-size); height: var(--gear-size); color: var(--gear); font-size: var(--item-font); line-height: 1; transition: color var(--fade); animation: fade-in var(--fade) both; }
+.gear { display: flex; align-items: center; justify-content: center; width: var(--gear-size); height: var(--gear-size); color: var(--gear); font-size: var(--item-size); line-height: 1; transition: color var(--fade); animation: fade-in var(--fade) both; }
 .gear:hover { color: var(--gear-hover); }
 @keyframes fade-in { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .gear, .menu, .dot .pt, .dot .ico, .ctl { transition: none; animation: none; } }
-.esavebar { font-size: 1rem; line-height: 1.2; display: flex; gap: var(--gap-item); align-items: center; }
+.esavebar { font-size: 1rem; line-height: 1.2; display: flex; gap: var(--pad-x); align-items: center; }
 .esavebar[hidden] { display: none; }
 .ebtn:focus-visible, .ctl:focus-visible, .ebox input:focus-visible, .dot:focus-visible, .opt:focus-visible { outline: 2px solid var(--hover); outline-offset: 2px; }
 
@@ -13,10 +13,11 @@
 .dock { display: flex; align-items: center; }
 .slot { position: relative; }
 .dot { display: flex; align-items: center; justify-content: center; position: relative; width: calc(var(--gear-size) * 0.8); height: var(--gear-size); padding: 0; border: 0; background: none; color: var(--gear-hover); font: inherit; font-size: calc(var(--gear-size) * 0.6); line-height: 1; cursor: pointer; }
-.dot .pt { width: 0.35em; height: 0.35em; border-radius: 50%; background: var(--gear); transition: opacity var(--fade-fast); }
+.dot .pt { width: 0.2em; height: 0.2em; border-radius: 50%; background: var(--gear); transition: opacity var(--fade-fast); }
 .dot .ico { position: absolute; opacity: 0; transition: opacity var(--fade-fast); }
-.dot:hover .pt, .slot:hover .pt { opacity: 0; }
-.dot:hover .ico, .slot:hover .ico { opacity: 1; }
+.dock:hover .pt { opacity: 0; }
+.dock:hover .ico { opacity: 1; }
+.dot:hover .ico { color: var(--fg); }
 .menu { position: absolute; top: 100%; right: 0; min-width: 100%; padding-top: calc(var(--side) / 4); opacity: 0; visibility: hidden; transform: translateY(calc(var(--side) * -0.25)); transition: opacity var(--fade), transform var(--fade), visibility 0s var(--fade); font-size: 1rem; line-height: 1.2; }
 .menu[data-open] { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
 .menu { display: flex; flex-direction: column; align-items: stretch; width: max-content; }

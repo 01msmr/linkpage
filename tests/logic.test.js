@@ -147,3 +147,18 @@ test('layout defaults to list; split is kept; unknown falls back', () => {
   assert.equal(L.resolveSettings({ layout: 'split' }).layout, 'split');
   assert.equal(L.resolveSettings({ layout: 'nope' }).layout, 'list');
 });
+test('height defaults to the config default; listed steps are kept; others fall back', () => {
+  assert.equal(L.resolveSettings({}).height, C.DEFAULTS.height);
+  assert.equal(L.resolveSettings({ height: 48 }).height, 48);
+  assert.equal(L.resolveSettings({ height: 0 }).height, 0);
+  assert.equal(L.resolveSettings({ height: 50 }).height, C.DEFAULTS.height);
+  assert.equal(L.resolveSettings({ height: '52' }).height, C.DEFAULTS.height);
+});
+test('HEIGHTS start at 48 and step by 4', () => {
+  assert.equal(C.HEIGHTS[0], 48);
+  assert.ok(C.HEIGHTS.every((h, i) => i === 0 || h - C.HEIGHTS[i - 1] === 4));
+});
+test('pillFont is empty for auto and a calc for a height', () => {
+  assert.equal(L.pillFont(0), '');
+  assert.equal(L.pillFont(48), 'calc((48px - 2 * var(--pad-y)) / var(--leading))');
+});
