@@ -363,7 +363,7 @@
     }, E.closeDelay);
   }
 
-  // Dragging the divider sets the pane width in whole percent, within the config limits.
+  // Dragging the divider sets the pane width in whole percent for this page view only; it is not saved.
   function buildDivider() {
     var d = el('div', 'divider');
     d.id = 'divider';
@@ -375,7 +375,8 @@
       if (!('drag' in d.dataset)) return;
       var pct = Math.round((root.innerWidth - e.clientX) / root.innerWidth * 100);
       pct = Math.max(C.SPLIT.min, Math.min(C.SPLIT.max, pct));
-      if (L.resolveSettings(draft).split !== pct) setting('split', pct);
+      root.document.documentElement.style.setProperty('--pane', pct + '%');
+      R.fit();
     });
     function end() { delete d.dataset.drag; }
     d.addEventListener('pointerup', end);

@@ -162,10 +162,3 @@ test('pillFont is empty for auto and a calc for a height', () => {
   assert.equal(L.pillFont(0), '');
   assert.equal(L.pillFont(48), 'calc((48px - 2 * var(--pad-y)) / var(--leading))');
 });
-test('split width defaults to the config default; integers within the limits are kept', () => {
-  assert.equal(L.resolveSettings({}).split, C.DEFAULTS.split);
-  assert.equal(L.resolveSettings({ split: 40 }).split, 40);
-  assert.equal(L.resolveSettings({ split: C.SPLIT.min - 1 }).split, C.DEFAULTS.split);
-  assert.equal(L.resolveSettings({ split: C.SPLIT.max + 1 }).split, C.DEFAULTS.split);
-  assert.equal(L.resolveSettings({ split: 40.5 }).split, C.DEFAULTS.split);
-});

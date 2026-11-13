@@ -157,7 +157,6 @@
     html.dataset.numbers = String(settings.numbers === true);
     html.dataset.font = settings.font;
     html.dataset.layout = settings.layout;
-    html.style.setProperty('--pane', settings.split + '%');
     var pill = L.pillFont(settings.height);
     if (pill) html.style.setProperty('--pill-font', pill); else html.style.removeProperty('--pill-font');
     draw();
@@ -178,6 +177,7 @@
   root.LinkpagesRender = {
     render: render,
     show: show,
+    fit: fit,
     showError: showError,
     getSite: function () { return raw; },
     whenReady: function (fn) { if (raw) fn(raw); else readyFns.push(fn); },

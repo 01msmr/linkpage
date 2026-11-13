@@ -9,7 +9,6 @@
     delay: 8,
     layout: 'list',
     height: 0,
-    split: 55,
     items: []
   };
   var DESIGNS = ['giant-type', 'giant-numerals', 'vertical-heading', 'bracket-terminal',
