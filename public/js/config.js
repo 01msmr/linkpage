@@ -6,7 +6,6 @@
     numbers: true,
     caps: 'regular',
     font: 'system',
-    delay: 8,
     layout: 'list',
     height: 46,
     items: []
@@ -18,9 +17,7 @@
   for (var h = 30; h <= 70; h += 4) HEIGHTS.push(h);
   var FONTS = {};
   var REDIRECT = {
-    tickMs: 1000,
     back: '\u2190 Back',
-    countdown: 'Redirect in {n} s to:',
     unknown: 'Unknown link: {slug}'
   };
   var SPLIT = { query: '(min-width: 601px)', queryEmbedded: '(min-width: 450px)', min: 20, max: 80, fitSlack: 0.98, newTabHosts: ['icloud.com'], open: 'Open in new tab \u2197', frameTitle: 'Preview' };

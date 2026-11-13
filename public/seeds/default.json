@@ -4,10 +4,9 @@
   "numbers": true,
   "caps": "regular",
   "font": "system",
-  "delay": 8,
   "items": [
     { "name": "Link one", "url": "https://example.com/one", "slug": "link-one" },
-    { "name": "Link two", "url": "https://example.com/two", "slug": "link-two", "delay": 0 },
+    { "name": "Link two", "url": "https://example.com/two", "slug": "link-two" },
     { "name": "Folder A", "items": [
       { "name": "Link three", "url": "https://example.com/three", "slug": "link-three" },
       { "name": "Link four", "url": "https://example.com/four", "slug": "link-four" },

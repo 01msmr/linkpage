@@ -1,4 +1,4 @@
-// Pure logic: settings, delay, search, ordering, open state.
+// Pure logic: settings, search, ordering, open state.
 (function (root) {
   var C = (typeof module !== 'undefined' && module.exports) ? require('./config.js') : root.LinkpagesConfig;
 
@@ -16,7 +16,6 @@
       numbers: pick(raw.numbers, d.numbers),
       caps: pick(raw.caps, d.caps),
       font: font,
-      delay: Number.isInteger(raw.delay) ? raw.delay : d.delay,
       height: C.HEIGHTS.indexOf(raw.height) >= 0 ? raw.height : d.height,
       layout: C.LAYOUTS.indexOf(raw.layout) >= 0 ? raw.layout : d.layout,
       items: Array.isArray(raw.items) ? raw.items : d.items
@@ -26,10 +25,6 @@
   // The font size that gives a pill of `height` px.
   function pillFont(height) {
     return 'calc((' + height + 'px - 2 * var(--pad-y)) / var(--leading))';
-  }
-
-  function delayFor(link, settings) {
-    return Number.isInteger(link.delay) ? link.delay : settings.delay;
   }
 
   function isFolder(item) { return Array.isArray(item.items); }
@@ -152,13 +147,12 @@
     return insertAt(r.items, parent, index, r.removed);
   }
 
-  function typedValue(key, value) { return key === 'delay' && /^-?\d+$/.test(value) ? Number(value) : value; }
 
   function setField(items, path, key, value) {
     var copy = clone(items);
     var item = itemAt(copy, path);
     if (value === '') delete item[key];
-    else item[key] = typedValue(key, value);
+    else item[key] = value;
     return copy;
   }
 
@@ -169,10 +163,10 @@
     return item.items.reduce(function (n, i) { return n + 1 + countDescendants(i); }, 0);
   }
 
-  var api = { resolveSettings: resolveSettings, pillFont: pillFont, delayFor: delayFor, findLink: findLink,
+  var api = { resolveSettings: resolveSettings, pillFont: pillFont, findLink: findLink,
     sortItems: sortItems, sortedEntries: sortedEntries, prefixPaths: prefixPaths, reindexOpen: reindexOpen, slugFor: slugFor, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen,
     clone: clone, itemAt: itemAt, removeAt: removeAt, insertAt: insertAt, moveItem: moveItem, parentAfterRemoval: parentAfterRemoval,
-    setField: setField, typedValue: typedValue, hasChanged: hasChanged, countDescendants: countDescendants };
+    setField: setField, hasChanged: hasChanged, countDescendants: countDescendants };
   root.LinkpagesLogic = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -1,4 +1,4 @@
-// Redirect page: looks the slug up in site.php, counts down, then replaces the location.
+// Redirect page: looks the slug up in site.php and replaces the location at once.
 (function (root) {
   var L = root.LinkpagesLogic;
   var R = root.LinkpagesConfig.REDIRECT;
@@ -33,33 +33,13 @@
 
   function showError(text) { show(el('p', 'error', text)); }
 
-  function countdown(link, delay) {
-    var line = el('p', 'redirect');
-    var target = el('a', 'item', link.url);
-    target.href = link.url;
-    var box = el('div');
-    box.appendChild(line);
-    box.appendChild(target);
-    var n = delay;
-    function paint() { line.textContent = R.countdown.replace('{n}', String(n)); }
-    paint();
-    show(box);
-    var timer = setInterval(function () {
-      n -= 1;
-      if (n <= 0) { clearInterval(timer); location.replace(link.url); return; }
-      paint();
-    }, R.tickMs);
-  }
-
   function run(site) {
     var s = L.resolveSettings(site);
     applyLook(s);
     var slug = slugFromPath(location.pathname);
     var link = L.findLink(s.items, slug);
     if (!link) return showError(R.unknown.replace('{slug}', slug));
-    var delay = L.delayFor(link, s);
-    if (delay <= 0) return location.replace(link.url);
-    countdown(link, delay);
+    location.replace(link.url);
   }
 
   document.getElementById('back').textContent = R.back;

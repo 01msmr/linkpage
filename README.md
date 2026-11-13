@@ -1,6 +1,6 @@
 # Linkpages
 
-A static set of brutalist link pages: eight designs, in-place folders (a `›` chevron opens a folder in place), a countdown redirect page at `/<slug>/` and online editing. No build step, no framework: HTML, CSS, vanilla JS and two small PHP scripts (`site.php`, `edit/save.php`).
+A static set of brutalist link pages: eight designs, in-place folders (a `›` chevron opens a folder in place), an instant redirect page at `/<slug>/` and online editing. No build step, no framework: HTML, CSS, vanilla JS and two small PHP scripts (`site.php`, `edit/save.php`).
 
 ## Deploy a domain
 
@@ -26,12 +26,11 @@ Everything lives in `edit/site.json`:
 | `numbers` | `true` or `false` |
 | `caps` | `regular` or `versalien` |
 | `font` | `system` (the font list is empty for now) |
-| `delay` | default redirect delay in seconds; 0 redirects at once |
 | `items` | list of links and folders |
 
-A link is `{ "name", "url", "slug", "delay"? }`; the optional `delay` overrides the default for that link. A folder is `{ "name", "items": [...] }` and may nest. The page at `/<slug>/` shows the countdown and redirects to the link. The seed `seeds/default.json` holds dummy content.
+A link is `{ "name", "url", "slug" }`. A folder is `{ "name", "items": [...] }` and may nest. The page at `/<slug>/` redirects to the link at once. The seed `seeds/default.json` holds dummy content.
 
-Editing is inline and always on in a browser that has opened `/edit/` once (it signs you in and redirects to `/?edit=1`, which sets a flag in that browser; `/?edit=0` clears it). Visitors see no controls. Hover an entry for its small controls: a pen edits the name (and URL for a link), with a red x to delete and a check to finish; a folder also shows a plus before it (a new folder after it) and a plus after it (a new folder inside it); a plus under every list adds a link, and `+›` adds a folder. The ☰ handle drags an entry to another place or into a folder. A Save button appears top right when something changed. A new link's slug is made from its name and stays when you rename it; a link's own `delay` is not editable there (edit `edit/site.json`). The gear (top right) opens the settings: design, mode, caps, numbers and the default delay.
+Editing is inline and always on in a browser that has opened `/edit/` once (it signs you in and redirects to `/?edit=1`, which sets a flag in that browser; `/?edit=0` clears it). Visitors see no controls. Hover an entry for its small controls: a pen edits the name (and URL for a link), with a red x to delete and a check to finish; a folder also shows a plus before it (a new folder after it) and a plus after it (a new folder inside it); a plus under every list adds a link, and `+›` adds a folder. The ☰ handle drags an entry to another place or into a folder. A Save button appears top right when something changed. A new link's slug is made from its name and stays when you rename it. Small grey dots top left of the corner show their icon on hover and change the settings: design, mode, numbers, caps, layout and pill height (two values switch on click, more open a menu).
 
 ## Commands
 

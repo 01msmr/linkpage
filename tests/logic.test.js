@@ -6,18 +6,11 @@ const L = require('../public/js/logic.js');
 test('resolveSettings({}) equals defaults', () => {
   assert.deepEqual(L.resolveSettings({}), C.DEFAULTS);
 });
-test('resolveSettings keeps delay 0', () => {
-  assert.equal(L.resolveSettings({ mode: 'dark', delay: 0 }).delay, 0);
-});
 test('unknown design falls back to default', () => {
   assert.equal(L.resolveSettings({ design: 'nope' }).design, 'giant-type');
 });
 test('unknown font falls back to the default (system) font', () => {
   assert.equal(L.resolveSettings({ font: 'nope' }).font, C.DEFAULTS.font);
-});
-test('delayFor keeps 0 and falls back to settings', () => {
-  assert.equal(L.delayFor({ delay: 0 }, { delay: 8 }), 0);
-  assert.equal(L.delayFor({}, { delay: 8 }), 8);
 });
 test('findLink searches nested folders, ignores folders', () => {
   const items = [{ name: 'a', slug: 'a', url: 'u' },
@@ -95,9 +88,7 @@ test('moveItem adjusts the target parent path when the removal shifts it', () =>
 test('setField sets a value and drops it when empty', () => {
   const r = L.setField(tree(), [0], 'name', 'x');
   assert.equal(r[0].name, 'x');
-  assert.equal(L.setField(r, [0], 'delay', '3')[0].delay, 3);
-  assert.equal('delay' in L.setField(L.setField(r, [0], 'delay', '3'), [0], 'delay', ''), false);
-  assert.equal(L.setField(r, [0], 'delay', 'abc')[0].delay, 'abc');
+  assert.equal('name' in L.setField(r, [0], 'name', ''), false);
 });
 test('hasChanged compares by content', () => {
   assert.equal(L.hasChanged({ a: [1] }, { a: [1] }), false);
@@ -106,11 +97,6 @@ test('hasChanged compares by content', () => {
 test('countDescendants counts all nested items', () => {
   assert.equal(L.countDescendants(tree()[1]), 2);
   assert.equal(L.countDescendants(tree()[0]), 0);
-});
-test('typedValue turns a typed delay into a number, leaves the rest', () => {
-  assert.equal(L.typedValue('delay', '5'), 5);
-  assert.equal(L.typedValue('delay', 'x'), 'x');
-  assert.equal(L.typedValue('name', '5'), '5');
 });
 
 test('sortedEntries puts folders first and keeps the stored index', () => {

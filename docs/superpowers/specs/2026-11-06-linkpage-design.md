@@ -34,7 +34,7 @@ The owner keeps short domains that forward to other things (shortcuts, tools, st
 
 **Index** (`/`): the domain as the heading, then one entry per item (folders first, see Hierarchy). A link entry opens its redirect page; a folder entry opens in place.
 
-**Redirect page** (`/<slug>/`, so the existing URLs keep working): a back link to the index, the heading, then "Redirect in N s to:" followed by the target. A visible countdown counts down. When it reaches 0 the browser goes to the target (`location.replace`). A `<noscript>` meta refresh with the same delay is the fallback. A delay of 0 redirects immediately without showing the page. The target address is shown and is also a link.
+**Redirect page** (`/<slug>/`, so the existing URLs keep working): the browser goes to the target at once (`location.replace`); there is no countdown (changed 2026-11-13).
 
 An unknown slug shows a plain error page naming what was not found, never a blank page.
 
@@ -49,10 +49,8 @@ Stored per deployment in that deployment's own server-side data file (`edit/site
 | `numbers` | `true`, `false` | `true` |
 | `caps` | `regular`, `versalien` | `regular` |
 | `font` | a key into the font list (empty for now) | system Helvetica stack |
-| `delay` | seconds, integer ≥ 0 | 8 |
 | `items[]` | links and folders, see Hierarchy | none |
 
-A link's own `delay` overrides the site's. A link without one uses the site's.
 
 Versalien is an all-caps rendering (CSS `text-transform: uppercase`). The stored names are unchanged.
 

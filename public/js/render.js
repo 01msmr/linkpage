@@ -70,7 +70,7 @@
       a.href = item.url;
       if (item.url === activeUrl) a.setAttribute('aria-current', 'true');
       a.addEventListener('click', function (e) { e.preventDefault(); openInPane(item.url); });
-    } else if (item.url && (split || L.delayFor(item, settings) <= 0)) {
+    } else if (item.url) {
       a.href = item.url;
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
