@@ -181,6 +181,7 @@
     showError: showError,
     getSite: function () { return raw; },
     whenReady: function (fn) { if (raw) fn(raw); else readyFns.push(fn); },
+    getOpen: function () { return open; },
     setOpen: function (paths) { open = paths; },
     setEditor: function (e) { editor = e; }
   };

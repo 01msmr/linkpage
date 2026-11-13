@@ -152,9 +152,9 @@
     if (f) { f.focus(); f.select(); }
   }
 
-  // Structure changed: show only the folders on the way to `parent`, then redraw.
-  function afterChange(parent, newPath) {
-    R.setOpen(L.prefixPaths(parent));
+  // Structure changed: apply the new open folders (default: only the way to `parent`), then redraw.
+  function afterChange(parent, newPath, open) {
+    R.setOpen(open || L.prefixPaths(parent));
     editPath = newPath === undefined ? null : newPath;
     touched();
     R.show(draft);
@@ -174,11 +174,18 @@
     focusEdit();
   }
 
+  // Open folders after an insert at parent[index]: the others stay as they were, the way to the new item opens.
+  function openWith(parent, index) {
+    var open = L.reindexOpen(R.getOpen(), parent, index, 1);
+    L.prefixPaths(parent).forEach(function (p) { if (open.indexOf(p) < 0) open.push(p); });
+    return open;
+  }
+
   function addTo(pp, item) {
     settle();
     var index = listAt(pp).length;
     draft.items = L.insertAt(draft.items, pp, index, item);
-    afterChange(pp, pp.concat([index]).join('.'));
+    afterChange(pp, pp.concat([index]).join('.'), openWith(pp, index));
   }
 
   function addAfter(p, item) {
@@ -186,15 +193,16 @@
     var parent = p.slice(0, -1);
     var index = p[p.length - 1] + 1;
     draft.items = L.insertAt(draft.items, parent, index, item);
-    afterChange(parent, parent.concat([index]).join('.'));
+    afterChange(parent, parent.concat([index]).join('.'), openWith(parent, index));
   }
 
   function remove(p, item) {
     var n = L.countDescendants(item);
     if (n > 0 && !root.confirm(E.confirmFolder.replace('{name}', item.name || '').replace('{n}', n))) return;
     editPath = null;
+    var open = L.reindexOpen(R.getOpen(), p.slice(0, -1), p[p.length - 1], -1);
     draft.items = L.removeAt(draft.items, p).items;
-    afterChange(p.slice(0, -1));
+    afterChange(p.slice(0, -1), undefined, open);
   }
 
   function ctl(icon, label, cls, onClick) {

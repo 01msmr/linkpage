@@ -60,6 +60,23 @@
     return path.map(function (_, i) { return path.slice(0, i + 1).join('.'); });
   }
 
+  // Open-folder paths after an item was removed (delta -1) or inserted (delta +1) at parent[index].
+  function reindexOpen(open, parent, index, delta) {
+    var depth = parent.length;
+    var out = [];
+    open.forEach(function (p) {
+      var parts = p.split('.').map(Number);
+      var inList = parts.length > depth && parent.every(function (v, i) { return parts[i] === v; });
+      if (inList) {
+        var at = parts[depth];
+        if (delta < 0 && at === index) return;
+        if (delta < 0 ? at > index : at >= index) parts[depth] = at + delta;
+      }
+      out.push(parts.join('.'));
+    });
+    return out;
+  }
+
   function allSlugs(items, out) {
     items.forEach(function (it) {
       if (isFolder(it)) allSlugs(it.items, out);
@@ -153,7 +170,7 @@
   }
 
   var api = { resolveSettings: resolveSettings, pillFont: pillFont, delayFor: delayFor, findLink: findLink,
-    sortItems: sortItems, sortedEntries: sortedEntries, prefixPaths: prefixPaths, slugFor: slugFor, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen,
+    sortItems: sortItems, sortedEntries: sortedEntries, prefixPaths: prefixPaths, reindexOpen: reindexOpen, slugFor: slugFor, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen,
     clone: clone, itemAt: itemAt, removeAt: removeAt, insertAt: insertAt, moveItem: moveItem, parentAfterRemoval: parentAfterRemoval,
     setField: setField, typedValue: typedValue, hasChanged: hasChanged, countDescendants: countDescendants };
   root.LinkpagesLogic = api;

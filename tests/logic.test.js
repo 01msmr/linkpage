@@ -162,3 +162,12 @@ test('pillFont is empty for auto and a calc for a height', () => {
   assert.equal(L.pillFont(0), '');
   assert.equal(L.pillFont(48), 'calc((48px - 2 * var(--pad-y)) / var(--leading))');
 });
+test('reindexOpen drops the removed folder and shifts later siblings down', () => {
+  assert.deepEqual(L.reindexOpen(['0', '1', '1.0', '2', '2.1'], [], 1, -1), ['0', '1', '1.1']);
+});
+test('reindexOpen shifts only inside the changed list', () => {
+  assert.deepEqual(L.reindexOpen(['0', '0.2', '1'], [0], 1, -1), ['0', '0.1', '1']);
+});
+test('reindexOpen shifts siblings at or after an insertion up', () => {
+  assert.deepEqual(L.reindexOpen(['0', '1', '1.0'], [], 1, 1), ['0', '2', '2.0']);
+});
