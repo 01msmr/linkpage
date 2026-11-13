@@ -60,8 +60,8 @@ a.item:hover { background: var(--hover); color: var(--hover-fg); }
   html[data-layout="split"] body { padding-right: calc(var(--pane) + var(--pad-page)); }
   html[data-layout="split"] #list { align-items: stretch; }
   html[data-layout="split"] .ent { width: 100%; }
-  html[data-layout="split"] #pane { position: fixed; top: 0; right: 0; bottom: 0; width: var(--pane); padding-top: calc(var(--gear-size) + 2 * var(--side)); display: flex; flex-direction: column; background: var(--bg); box-shadow: -2px 0 0 var(--fg); }
-  #pane-open { position: absolute; top: var(--side); left: 0; padding: var(--pad-y) var(--pad-x); font-size: 1rem; line-height: 1.2; color: var(--fg); }
+  html[data-layout="split"] #pane { position: fixed; top: 0; right: 0; bottom: 0; width: var(--pane); display: flex; flex-direction: column; background: var(--bg); box-shadow: -2px 0 0 var(--fg); }
+  #pane-open { position: absolute; z-index: 1; top: var(--side); left: var(--pad-page); background: var(--bg); padding: var(--pad-y) var(--pad-x); font-size: 1rem; line-height: 1.2; color: var(--fg); }
   #pane-open:hover { color: var(--hover); }
   #pane-frame { flex: 1 1 auto; width: 100%; border: 0; background: var(--bg); }
   html[data-layout="split"] .item { white-space: nowrap; overflow-wrap: normal; overflow: hidden; text-overflow: ellipsis; }

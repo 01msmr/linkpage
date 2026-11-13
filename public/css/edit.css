@@ -57,3 +57,6 @@
   #divider::after { content: ""; position: absolute; top: 0; bottom: 0; left: 4px; width: 4px; background: var(--hover); opacity: 0; transition: opacity var(--fade-fast); }
   #divider:hover::after, #divider[data-drag]::after { opacity: 1; }
 }
+
+/* In the split layout the toolbar floats over the pane, so it needs its own backing. */
+@media (min-width: 601px) { html[data-layout="split"] .toolbar { background: var(--bg); padding: 0 var(--pad-x); } }
