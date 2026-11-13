@@ -52,11 +52,9 @@
 
 /* Draggable divider between list and pane (split layout, wide screens, edit mode). */
 #divider { display: none; }
-@media (min-width: 601px) {
-  html[data-layout="split"] #divider { display: block; position: fixed; top: 0; bottom: 0; right: var(--pane); width: 12px; transform: translateX(50%); z-index: 2; cursor: col-resize; touch-action: none; }
-  #divider::after { content: ""; position: absolute; top: 0; bottom: 0; left: 4px; width: 4px; background: var(--hover); opacity: 0; transition: opacity var(--fade-fast); }
-  #divider:hover::after, #divider[data-drag]::after { opacity: 1; }
-}
+html[data-split] #divider { display: block; position: fixed; top: 0; bottom: 0; right: var(--pane); width: 12px; transform: translateX(50%); z-index: 2; cursor: col-resize; touch-action: none; }
+#divider::after { content: ""; position: absolute; top: 0; bottom: 0; left: 4px; width: 4px; background: var(--hover); opacity: 0; transition: opacity var(--fade-fast); }
+#divider:hover::after, #divider[data-drag]::after { opacity: 1; }
 
 /* In the split layout the toolbar floats over the pane, so it needs its own backing. */
-@media (min-width: 601px) { html[data-layout="split"] .toolbar { background: color-mix(in srgb, var(--bg) var(--toolbar-opacity), transparent); padding: 0 var(--pad-x); } }
+html[data-split] .toolbar { background: color-mix(in srgb, var(--bg) var(--toolbar-opacity), transparent); padding: 0 var(--pad-x); }

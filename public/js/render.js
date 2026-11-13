@@ -26,7 +26,18 @@
     if (f) f.focus();
   }
 
-  function splitOn() { return settings.layout === 'split' && root.matchMedia(C.SPLIT.query).matches; }
+  // Split needs room; a page inside a frame gets a lower threshold so frames can nest.
+  function splitOn() {
+    var q = root.self !== root.top ? C.SPLIT.queryEmbedded : C.SPLIT.query;
+    return settings.layout === 'split' && root.matchMedia(q).matches;
+  }
+
+  function syncSplit() {
+    var on = splitOn();
+    var changed = on !== document.documentElement.hasAttribute('data-split');
+    document.documentElement.toggleAttribute('data-split', on);
+    return changed;
+  }
 
   // Plain http (blocked inside https pages) and listed hosts (refuse framing) open in a new tab.
   function embeddable(url) {
@@ -157,6 +168,7 @@
     html.dataset.numbers = String(settings.numbers === true);
     html.dataset.font = settings.font;
     html.dataset.layout = settings.layout;
+    syncSplit();
     html.style.setProperty('--pill-font', L.pillFont(settings.height));
     draw();
   }
@@ -185,7 +197,10 @@
     setEditor: function (e) { editor = e; }
   };
 
-  root.addEventListener('resize', function () { if (settings) fit(); });
+  root.addEventListener('resize', function () {
+    if (!settings) return;
+    if (syncSplit()) draw(); else fit();
+  });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (settings) fit(); });
 
   fetch('/site.php', { cache: 'no-store' })

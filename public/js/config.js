@@ -23,7 +23,7 @@
     countdown: 'Redirect in {n} s to:',
     unknown: 'Unknown link: {slug}'
   };
-  var SPLIT = { query: '(min-width: 601px)', min: 20, max: 80, fitSlack: 0.98, newTabHosts: ['icloud.com'], open: 'Open in new tab \u2197', frameTitle: 'Preview' };
+  var SPLIT = { query: '(min-width: 601px)', queryEmbedded: '(min-width: 450px)', min: 20, max: 80, fitSlack: 0.98, newTabHosts: ['icloud.com'], open: 'Open in new tab \u2197', frameTitle: 'Preview' };
   var FOLDER = { chevron: '›', closeLabel: 'Close {name}' };
   var EDIT = {
     endpoint: '/edit/save.php',
