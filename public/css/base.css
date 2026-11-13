@@ -19,6 +19,7 @@ h1 { margin: 0 0 var(--side); font-size: inherit; font-weight: normal; overflow-
 .item {
   display: block;
   max-width: 100%;
+  min-height: var(--item-height);
   padding: var(--pad-y) var(--pad-x);
   border: 0;
   outline: 0;
