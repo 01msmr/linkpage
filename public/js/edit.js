@@ -10,7 +10,7 @@
   var dragFrom = null;
   var editPath = null;
   var saving = false;
-  var gear, panel, bar, saveBtn, status;
+  var gear, panel, bar, saveBtn, status, closeTimer;
 
   function el(tag, cls, text) {
     var e = document.createElement(tag);
@@ -36,7 +36,7 @@
     saveBtn.disabled = saving || !changed();
     if (!saving) {
       if (changed()) status.textContent = E.unsaved;
-      else if (status.dataset.kind !== 'saved') status.textContent = '';
+      else status.textContent = '';
     }
     bar.hidden = !changed() && !status.textContent;
   }
@@ -312,7 +312,8 @@
         if (!r.ok) throw r.status;
         saving = false;
         original = sent;
-        say(E.saved, 'saved');
+        status.textContent = '';
+        status.dataset.kind = '';
         refresh();
       })
       .catch(function (e) {
@@ -320,6 +321,22 @@
         say(failure(typeof e === 'number' ? e : 'network'), 'error');
         saveBtn.disabled = !changed();
       });
+  }
+
+  function setPanel(on) {
+    clearTimeout(closeTimer);
+    panel.hidden = !on;
+    gear.setAttribute('aria-pressed', String(on));
+    if (on) armClose();
+  }
+
+  // Closes after the pointer has been away for E.closeDelay; waits while a field has focus.
+  function armClose() {
+    clearTimeout(closeTimer);
+    closeTimer = setTimeout(function () {
+      if (panel.contains(document.activeElement) || panel.matches(':hover') || gear.matches(':hover')) armClose();
+      else setPanel(false);
+    }, E.closeDelay);
   }
 
   function build() {
@@ -334,9 +351,10 @@
     status = el('span', 'estatus');
     status.setAttribute('role', 'status');
     bar.appendChild(status);
-    gear = button(E.gear, 'gear', function () {
-      panel.hidden = !panel.hidden;
-      gear.setAttribute('aria-pressed', String(!panel.hidden));
+    gear = button(E.gear, 'gear', function () { setPanel(panel.hidden); });
+    [gear, panel].forEach(function (n) {
+      n.addEventListener('mouseenter', function () { setPanel(true); });
+      n.addEventListener('mouseleave', armClose);
     });
     gear.setAttribute('aria-label', E.gearLabel);
     gear.setAttribute('aria-pressed', 'false');
@@ -351,6 +369,12 @@
     build();
     R.setEditor(api);
     R.show(draft);
+    root.addEventListener('keydown', function (e) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        if (changed() && !saving) save();
+      }
+    });
     root.addEventListener('beforeunload', function (e) {
       if (!changed()) return;
       e.preventDefault();

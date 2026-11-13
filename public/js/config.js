@@ -26,7 +26,7 @@
     gearLabel: 'Edit mode',
     save: 'Save',
     saving: 'Saving\u2026',
-    saved: 'Saved',
+    closeDelay: 5000,
     unsaved: 'Unsaved changes',
     icons: { pen: '\u270E', plus: '+', remove: '\u00d7', done: '\u2713', handle: '\u2630' },
     labels: {

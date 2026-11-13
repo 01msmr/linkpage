@@ -1,8 +1,8 @@
 /* Edit mode: tokens only, no borders or outlines on chips. */
-:root { --ctl: 1.5rem; }
-.gear { position: fixed; top: var(--side); right: var(--side); z-index: 3; width: var(--ctl); height: var(--ctl); padding: 0; border: 0; background: none; color: var(--fg); font: inherit; font-size: 1.4rem; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.gear:hover, .gear[aria-pressed="true"] { color: var(--hover); }
-.esavebar { font-size: 1rem; line-height: 1.2; position: fixed; top: var(--side); right: calc(var(--side) + var(--ctl) + var(--pad-x)); z-index: 3; display: flex; gap: var(--gap-item); align-items: center; }
+:root { --ctl: 1.5rem; --gear-size: calc(var(--item-font) * var(--leading)); }
+.gear { position: fixed; top: var(--side); right: var(--side); z-index: 3; width: var(--gear-size); height: var(--gear-size); padding: 0; border: 0; background: none; color: var(--gear); font: inherit; font-size: var(--item-font); line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.gear:hover, .gear[aria-pressed="true"] { color: var(--gear-hover); }
+.esavebar { font-size: 1rem; line-height: 1.2; position: fixed; top: var(--side); right: calc(var(--side) + var(--gear-size) + var(--pad-x)); z-index: 3; display: flex; gap: var(--gap-item); align-items: center; }
 .esavebar[hidden] { display: none; }
 .gear:focus-visible, .ebtn:focus-visible, .ctl:focus-visible, .editor input:focus-visible, .editor select:focus-visible, .ebox input:focus-visible { outline: 2px solid var(--hover); outline-offset: 2px; }
 
@@ -28,7 +28,7 @@
 
 /* Settings panel under the gear. */
 .editor[hidden] { display: none; }
-.editor { position: fixed; top: calc(var(--side) + var(--ctl) + 12px); right: var(--side); z-index: 3; max-width: calc(100vw - 2 * var(--side)); max-height: calc(100lvh - 2 * var(--side) - var(--ctl) - 12px); overflow: auto; padding: var(--pad-x); background: var(--bg); box-shadow: 0 0 0 2px var(--fg); font-size: 1rem; line-height: 1.2; }
+.editor { position: fixed; top: calc(var(--side) + var(--gear-size) + 12px); right: var(--side); z-index: 3; max-width: calc(100vw - 2 * var(--side)); max-height: calc(100lvh - 2 * var(--side) - var(--gear-size) - 12px); overflow: auto; padding: var(--pad-x); background: var(--bg); box-shadow: 0 0 0 2px var(--fg); font-size: 1rem; line-height: 1.2; }
 .settings { display: flex; flex-wrap: wrap; gap: var(--gap-item); }
 .field { display: flex; flex-direction: column; gap: 2px; }
 .field-label { font-size: 0.75em; }
