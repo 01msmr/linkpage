@@ -9,6 +9,7 @@
     delay: 8,
     layout: 'list',
     height: 0,
+    split: 55,
     items: []
   };
   var DESIGNS = ['giant-type', 'giant-numerals', 'vertical-heading', 'bracket-terminal',
@@ -23,13 +24,11 @@
     countdown: 'Redirect in {n} s to:',
     unknown: 'Unknown link: {slug}'
   };
-  var SPLIT = { query: '(min-width: 601px)', newTabHosts: ['icloud.com'], open: 'Open in new tab \u2197', frameTitle: 'Preview' };
+  var SPLIT = { query: '(min-width: 601px)', min: 20, max: 80, newTabHosts: ['icloud.com'], open: 'Open in new tab \u2197', frameTitle: 'Preview' };
   var FOLDER = { chevron: '›', closeLabel: 'Close {name}' };
   var EDIT = {
     endpoint: '/edit/save.php',
-    gear: '\u2699',
     flagKey: 'linkpage-edit',
-    gearLabel: 'Edit mode',
     save: 'Save',
     saving: 'Saving\u2026',
     closeDelay: 3000,

@@ -125,7 +125,7 @@
   function fit() {
     var html = document.documentElement;
     html.style.setProperty('--fit', '1');
-    if (!splitOn()) return;
+    if (!splitOn() || settings.height > 0) return;
     var f = 1;
     Array.prototype.forEach.call(document.querySelectorAll('#list .item'), function (it) {
       var cs = getComputedStyle(it);
@@ -155,6 +155,7 @@
     html.dataset.numbers = String(settings.numbers === true);
     html.dataset.font = settings.font;
     html.dataset.layout = settings.layout;
+    html.style.setProperty('--pane', settings.split + '%');
     var pill = L.pillFont(settings.height);
     if (pill) html.style.setProperty('--pill-font', pill); else html.style.removeProperty('--pill-font');
     draw();

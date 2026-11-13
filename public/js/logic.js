@@ -17,6 +17,7 @@
       caps: pick(raw.caps, d.caps),
       font: font,
       delay: Number.isInteger(raw.delay) ? raw.delay : d.delay,
+      split: Number.isInteger(raw.split) && raw.split >= C.SPLIT.min && raw.split <= C.SPLIT.max ? raw.split : d.split,
       height: raw.height === 0 || C.HEIGHTS.indexOf(raw.height) >= 0 ? raw.height : d.height,
       layout: C.LAYOUTS.indexOf(raw.layout) >= 0 ? raw.layout : d.layout,
       items: Array.isArray(raw.items) ? raw.items : d.items

@@ -10,7 +10,7 @@
   var dragFrom = null;
   var editPath = null;
   var saving = false;
-  var gear, bar, saveBtn, status, closeTimer, fadeTimer;
+  var bar, saveBtn, status, closeTimer, fadeTimer;
   var slots = [];
 
   function el(tag, cls, text) {
@@ -363,6 +363,26 @@
     }, E.closeDelay);
   }
 
+  // Dragging the divider sets the pane width in whole percent, within the config limits.
+  function buildDivider() {
+    var d = el('div', 'divider');
+    d.id = 'divider';
+    d.addEventListener('pointerdown', function (e) {
+      d.setPointerCapture(e.pointerId);
+      d.dataset.drag = '';
+    });
+    d.addEventListener('pointermove', function (e) {
+      if (!('drag' in d.dataset)) return;
+      var pct = Math.round((root.innerWidth - e.clientX) / root.innerWidth * 100);
+      pct = Math.max(C.SPLIT.min, Math.min(C.SPLIT.max, pct));
+      if (L.resolveSettings(draft).split !== pct) setting('split', pct);
+    });
+    function end() { delete d.dataset.drag; }
+    d.addEventListener('pointerup', end);
+    d.addEventListener('pointercancel', end);
+    return d;
+  }
+
   function build() {
     var bar0 = el('div', 'toolbar');
     bar = el('div', 'esavebar');
@@ -373,12 +393,10 @@
     status = el('span', 'estatus');
     status.setAttribute('role', 'status');
     bar.appendChild(status);
-    gear = el('span', 'gear', E.gear);
-    gear.title = E.gearLabel;
     bar0.appendChild(bar);
     bar0.appendChild(buildDock());
-    bar0.appendChild(gear);
     document.body.appendChild(bar0);
+    document.body.appendChild(buildDivider());
   }
 
   function start(site) {
