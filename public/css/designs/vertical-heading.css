@@ -15,5 +15,5 @@
   line-height: var(--leading);
   overflow: hidden;
 }
-:root[data-design="vertical-heading"] body { padding-left: calc(var(--item-height) + 2 * var(--side)); }
+:root[data-design="vertical-heading"] body { padding-left: calc(var(--item-height) + var(--pad-page)); }
 :root[data-design="vertical-heading"] .item { font-weight: bold; }
