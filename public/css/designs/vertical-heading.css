@@ -32,3 +32,7 @@
 :root[data-design="vertical-heading"] .dot:hover .ico { color: var(--hover); }
 :root[data-design="vertical-heading"] .menu { top: 0; left: 100%; right: auto; padding: 0 0 0 calc(var(--side) / 4); transform: translateX(calc(var(--side) * -0.5)); }
 :root[data-design="vertical-heading"] .menu[data-open] { transform: none; }
+/* The chevron is drawn: its ink ends at the box edge, which sits where the pill radius begins. */
+:root[data-design="vertical-heading"] .chev { width: auto; font-size: 0; line-height: 0; display: flex; align-items: center; transform: none; }
+:root[data-design="vertical-heading"] .folder-head[aria-expanded="true"] .chev, :root[data-design="vertical-heading"] .folder-closer .chev { transform: none; }
+:root[data-design="vertical-heading"] .chev-ink { display: block; width: calc(var(--item-font) * 0.5); height: calc(var(--item-font) * 0.5); fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }

@@ -18,7 +18,20 @@
   var activeUrl = null;
   var modeOverride = null;
 
-  function chevron(ch) { return el('span', 'chev', ch); }
+  // The chevron is a text glyph; one design draws it as an SVG whose ink ends exactly at the box edge (shape: right, down or up).
+  function chevron(ch, shape) {
+    var s = el('span', 'chev', ch);
+    var ns = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('class', 'chev-ink');
+    svg.setAttribute('viewBox', '0 0 10 10');
+    svg.setAttribute('aria-hidden', 'true');
+    var p = document.createElementNS(ns, 'path');
+    p.setAttribute('d', C.FOLDER.shapes[shape]);
+    svg.appendChild(p);
+    s.appendChild(svg);
+    return s;
+  }
 
   function toggle(path) {
     open = L.toggleOpen(open, path);
@@ -89,7 +102,7 @@
     head.setAttribute('aria-expanded', String(isOpen));
     head.appendChild(el('span', 'num', L.numberLabel(index)));
     head.appendChild(el('span', 'name', item.name));
-    head.appendChild(chevron(C.FOLDER.chevron));
+    head.appendChild(chevron(C.FOLDER.chevron, isOpen ? 'down' : 'right'));
     head.addEventListener('click', function () { toggle(path); });
     return head;
   }
@@ -99,7 +112,7 @@
     closer.type = 'button';
     closer.dataset.path = path;
     closer.setAttribute('aria-label', C.FOLDER.closeLabel.replace('{name}', item.name));
-    closer.appendChild(chevron(C.FOLDER.chevron));
+    closer.appendChild(chevron(C.FOLDER.chevron, 'up'));
     closer.addEventListener('click', function () { toggle(path); });
     return closer;
   }

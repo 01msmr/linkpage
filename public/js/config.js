@@ -25,7 +25,7 @@
   };
   var SPLIT = { query: '(min-width: 601px)', queryEmbedded: '(min-width: 450px)', min: 20, max: 80, fitSlack: 0.98, newTabHosts: ['icloud.com'], open: 'Open in new tab \u2197', frameTitle: 'Preview' };
   var TIP = { showMs: 3000, hideMs: 3000, gap: 8 };
-  var FOLDER = { chevron: '›', closeLabel: 'Close {name}' };
+  var FOLDER = { shapes: { right: 'M3 1.6L9.2 5L3 8.4', down: 'M0.8 3L5 8L9.2 3', up: 'M0.8 7L5 2L9.2 7' }, chevron: '›', closeLabel: 'Close {name}' };
   var EDIT = {
     endpoint: '/edit/save.php',
     probe: '/edit/probe.php',
