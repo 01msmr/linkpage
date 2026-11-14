@@ -410,7 +410,10 @@
     var bar0 = el('div', 'toolbar');
     bar = el('div', 'esavebar');
     bar.hidden = true;
-    saveBtn = button(E.save, 'ebtn esave', save);
+    saveBtn = button('', 'ebtn esave', save);
+    saveBtn.innerHTML = E.saveIcon;
+    saveBtn.title = E.save;
+    saveBtn.setAttribute('aria-label', E.save);
     saveBtn.disabled = true;
     bar.appendChild(saveBtn);
     status = el('span', 'estatus');

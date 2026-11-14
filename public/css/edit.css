@@ -58,3 +58,9 @@ html[data-split] #divider { display: block; position: fixed; top: 0; bottom: 0; 
 
 /* In the split layout the toolbar floats over the pane, so it needs its own backing. */
 html[data-split] .toolbar { background: color-mix(in srgb, var(--bg) var(--toolbar-opacity), transparent); padding: 0 var(--pad-x); }
+
+/* The save button is a floppy-disk icon that only appears while something is unsaved. */
+.esave, .esave:disabled { display: flex; align-items: center; justify-content: center; padding: 0; background: none; color: var(--fg); }
+.esave svg { width: calc(var(--gear-size) * 0.8); height: calc(var(--gear-size) * 0.8); }
+.esave:hover:not(:disabled) { background: none; color: var(--hover); }
+.esave:disabled { opacity: 0.4; }
