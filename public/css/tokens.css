@@ -1,8 +1,11 @@
 /* Light set, dark set, and the sizes every design shares. */
 :root {
   --bg: #fff;
-  --fg: #000;
-  --chip: #000;
+  --intensity: 100%;
+  --fg-raw: #000;
+  --chip-raw: #000;
+  --fg: color-mix(in srgb, var(--fg-raw) var(--intensity), var(--bg));
+  --chip: color-mix(in srgb, var(--chip-raw) var(--intensity), var(--bg));
   --chip-fg: #fff;
   --hover: #00f;
   --hover-fg: #fff;
@@ -28,8 +31,8 @@
 }
 :root[data-mode="dark"] {
   --bg: #000;
-  --fg: #fff;
-  --chip: #fff;
+  --fg-raw: #fff;
+  --chip-raw: #fff;
   --chip-fg: #000;
   --hover: #6b6bff;
   --hover-fg: #000;

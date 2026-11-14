@@ -17,3 +17,18 @@
 }
 :root[data-design="vertical-heading"] body { padding-left: calc(var(--item-height) + var(--pad-page)); }
 :root[data-design="vertical-heading"] .item { font-weight: bold; }
+
+/* Folder ends: chevron centered, its right edge where the pill radius starts; the closer is half height. */
+:root[data-design="vertical-heading"] .folder-head { align-items: center; padding-right: calc(var(--item-height) / 2); }
+:root[data-design="vertical-heading"] .folder-closer { height: calc(var(--item-height) / 2); min-height: 0; padding: 0 calc(var(--item-height) / 2) 0 var(--pad-x); align-items: center; overflow: hidden; }
+
+/* The settings live in the left rail: dots stacked, menus open to the right and run down. */
+:root[data-design="vertical-heading"] .toolbar { display: contents; }
+:root[data-design="vertical-heading"] .dock { position: fixed; top: var(--side); left: 0; width: var(--item-height); z-index: 4; flex-direction: column; }
+:root[data-design="vertical-heading"] .esavebar { position: fixed; top: var(--side); right: var(--side); z-index: 3; }
+:root[data-design="vertical-heading"] .slot { width: 100%; }
+:root[data-design="vertical-heading"] .dot { width: 100%; color: var(--chip-fg); }
+:root[data-design="vertical-heading"] .dot .pt { background: color-mix(in srgb, var(--chip-fg) 50%, transparent); }
+:root[data-design="vertical-heading"] .dot:hover .ico { color: var(--hover); }
+:root[data-design="vertical-heading"] .menu { top: 0; left: 100%; right: auto; padding: 0 0 0 calc(var(--side) / 4); transform: translateX(calc(var(--side) * -0.5)); }
+:root[data-design="vertical-heading"] .menu[data-open] { transform: none; }

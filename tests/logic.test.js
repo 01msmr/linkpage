@@ -33,12 +33,12 @@ test('toggleOpen / isOpen', () => {
   o = L.toggleOpen(o, '0.1');
   assert.ok(L.isOpen(o, '0.1'));
   o = L.toggleOpen(o, '0');
-  assert.deepEqual(o, []);
-  assert.deepEqual(L.toggleOpen(o, '1'), ['1']);
+  assert.deepEqual(o, ['0.1']);
+  assert.deepEqual(L.toggleOpen(o, '1'), ['0.1', '1']);
   assert.equal(L.isOpen(o, '1'), false);
 });
-test('toggleOpen close keeps siblings like 10 when closing 1', () => {
-  assert.deepEqual(L.toggleOpen(['1', '1.0', '10'], '1'), ['10']);
+test('toggleOpen close keeps inner folders open and siblings like 10', () => {
+  assert.deepEqual(L.toggleOpen(['1', '1.0', '10'], '1'), ['1.0', '10']);
 });
 
 const tree = () => [
@@ -158,4 +158,11 @@ test('reindexOpen shifts only inside the changed list', () => {
 });
 test('reindexOpen shifts siblings at or after an insertion up', () => {
   assert.deepEqual(L.reindexOpen(['0', '1', '1.0'], [], 1, 1), ['0', '2', '2.0']);
+});
+test('intensity defaults to 100; steps of 10 from 10 to 100 are kept; others fall back', () => {
+  assert.equal(L.resolveSettings({}).intensity, 100);
+  assert.equal(L.resolveSettings({ intensity: 40 }).intensity, 40);
+  assert.equal(L.resolveSettings({ intensity: 45 }).intensity, 100);
+  assert.equal(L.resolveSettings({ intensity: 0 }).intensity, 100);
+  assert.equal(L.resolveSettings({ intensity: 110 }).intensity, 100);
 });

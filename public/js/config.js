@@ -8,11 +8,14 @@
     font: 'system',
     layout: 'list',
     height: 46,
+    intensity: 100,
     items: []
   };
   var DESIGNS = ['giant-type', 'giant-numerals', 'vertical-heading', 'bracket-terminal',
     'headline-tiny-links', 'raw-listing', 'tracked-rows', 'plain-inverted'];
   var LAYOUTS = ['list', 'split'];
+  var INTENSITIES = [];
+  for (var i = 10; i <= 100; i += 10) INTENSITIES.push(i);
   var HEIGHTS = [];
   for (var h = 30; h <= 70; h += 4) HEIGHTS.push(h);
   var FONTS = {};
@@ -21,14 +24,18 @@
     unknown: 'Unknown link: {slug}'
   };
   var SPLIT = { query: '(min-width: 601px)', queryEmbedded: '(min-width: 450px)', min: 20, max: 80, fitSlack: 0.98, newTabHosts: ['icloud.com'], open: 'Open in new tab \u2197', frameTitle: 'Preview' };
+  var TIP = { showMs: 3000, hideMs: 3000, gap: 8 };
   var FOLDER = { chevron: '›', closeLabel: 'Close {name}' };
   var EDIT = {
     endpoint: '/edit/save.php',
+    probe: '/edit/probe.php',
+    autoProbe: false,
     flagKey: 'linkpage-edit',
-    save: 'Save',
+    modeKey: 'linkpage-mode',
+    modes: ['light', 'dark'],
+    save: 'save?',
     saving: 'Saving\u2026',
-    closeDelay: 3000,
-    unsaved: 'Unsaved changes',
+    closeDelay: 2000,
     icons: { pen: '\u270E', plus: '+', remove: '\u00d7', done: '\u2713', handle: '\u2630' },
     labels: {
       pen: 'Edit {name}',
@@ -53,6 +60,7 @@
       { key: 'numbers', icon: '#', label: 'Numbers', values: [true, false] },
       { key: 'caps', icon: 'Aa', label: 'Caps', values: ['regular', 'versalien'] },
       { key: 'layout', icon: '\u25EB', label: 'Layout', values: LAYOUTS },
+      { key: 'intensity', icon: '%', label: 'Intensity (%)', values: INTENSITIES },
       { key: 'height', icon: '\u2195', label: 'Pill height (px)', values: HEIGHTS }
     ].concat(Object.keys(FONTS).length ? [{ key: 'font', icon: 'F', label: 'Font', values: ['system'].concat(Object.keys(FONTS)) }] : []),
     itemFields: { name: 'Name', url: 'URL' },
@@ -63,7 +71,7 @@
       other: 'Saving failed (HTTP {status}). Your edits are kept.'
     }
   };
-  var api = { EDIT: EDIT, FOLDER: FOLDER, SPLIT: SPLIT, DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, LAYOUTS: LAYOUTS, HEIGHTS: HEIGHTS, FONTS: FONTS };
+  var api = { EDIT: EDIT, FOLDER: FOLDER, SPLIT: SPLIT, TIP: TIP, DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, LAYOUTS: LAYOUTS, HEIGHTS: HEIGHTS, INTENSITIES: INTENSITIES, FONTS: FONTS };
   root.LinkpagesConfig = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);

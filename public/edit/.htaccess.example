@@ -3,3 +3,8 @@ AuthType Basic
 AuthName "Edit"
 AuthUserFile /absolute/path/to/edit/.htpasswd
 Require valid-user
+
+# probe.php lets the page ask "am I signed in?" without showing a login prompt to visitors.
+<Files "probe.php">
+  Header always unset WWW-Authenticate
+</Files>

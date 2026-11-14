@@ -16,6 +16,7 @@
   var editor = null;
   var readyFns = [];
   var activeUrl = null;
+  var modeOverride = null;
 
   function chevron(ch) { return el('span', 'chev', ch); }
 
@@ -65,6 +66,7 @@
   function linkCore(item, index) {
     var a = el('a', 'item');
     if (item.slug) a.href = '/' + item.slug + '/';
+    if (item.url) a.dataset.url = item.url;
     var split = splitOn();
     if (item.url && split && embeddable(item.url)) {
       a.href = item.url;
@@ -113,8 +115,8 @@
     wrap.dataset.state = isOpen ? 'open' : 'closed';
     var head = box || headCore(item, index, path, isOpen);
     wrap.appendChild(editor ? editor.wrap(head, item, path) : head);
+    wrap.appendChild(sub(item.items, path));
     if (isOpen) {
-      wrap.appendChild(sub(item.items, path));
       var closer = closerCore(item, path);
       wrap.appendChild(editor ? editor.spacer(closer) : closer);
     }
@@ -131,6 +133,47 @@
     var box = el('div', 'items folder-body');
     fill(box, items, path);
     return box;
+  }
+
+  // Hover a link for TIP.showMs to see its URL beside it; then other items show theirs at once until TIP.hideMs after leaving.
+  var tip = null;
+  var tipOn = false;
+  var tipTimer = 0;
+  var tipHideTimer = 0;
+
+  function hideTip() {
+    clearTimeout(tipTimer);
+    if (tip) delete tip.dataset.show;
+  }
+
+  function showTip(a) {
+    if (!tip) {
+      tip = el('div', 'urltip');
+      document.body.appendChild(tip);
+    }
+    var b = a.getBoundingClientRect();
+    tip.textContent = a.dataset.url;
+    tip.style.left = (b.right + C.TIP.gap) + 'px';
+    tip.style.top = (b.top + b.height / 2) + 'px';
+    tip.dataset.show = '';
+  }
+
+  function tipOver(e) {
+    var it = e.target.closest ? e.target.closest('.item') : null;
+    if (!it) return;
+    clearTimeout(tipHideTimer);
+    clearTimeout(tipTimer);
+    if (!it.dataset.url) { hideTip(); return; }
+    if (tipOn) showTip(it);
+    else tipTimer = setTimeout(function () { tipOn = true; showTip(it); }, C.TIP.showMs);
+  }
+
+  function tipOut(e) {
+    var to = e.relatedTarget;
+    if (to && to.closest && to.closest('#list .item')) return;
+    clearTimeout(tipTimer);
+    clearTimeout(tipHideTimer);
+    tipHideTimer = setTimeout(function () { tipOn = false; hideTip(); }, C.TIP.hideMs);
   }
 
   // Split pane: scale every item by the same factor so the widest one fits without wrapping.
@@ -152,6 +195,7 @@
   }
 
   function draw() {
+    hideTip();
     var main = document.getElementById('list');
     main.textContent = '';
     fill(main, settings.items, '');
@@ -164,13 +208,14 @@
     settings = L.resolveSettings(site);
     var html = document.documentElement;
     html.dataset.design = settings.design;
-    html.dataset.mode = settings.mode;
+    html.dataset.mode = modeOverride || settings.mode;
     html.dataset.caps = settings.caps;
     html.dataset.numbers = String(settings.numbers === true);
     html.dataset.font = settings.font;
     html.dataset.layout = settings.layout;
     syncSplit();
     html.style.setProperty('--pill-font', L.pillFont(settings.height));
+    html.style.setProperty('--intensity', settings.intensity + '%');
     draw();
   }
 
@@ -194,9 +239,15 @@
     getSite: function () { return raw; },
     whenReady: function (fn) { if (raw) fn(raw); else readyFns.push(fn); },
     getOpen: function () { return open; },
+    getMode: function () { return modeOverride || (settings && settings.mode); },
+    setMode: function (m) { modeOverride = m; },
     setOpen: function (paths) { open = paths; },
     setEditor: function (e) { editor = e; }
   };
+
+  var listBox = document.getElementById('list');
+  listBox.addEventListener('mouseover', tipOver);
+  listBox.addEventListener('mouseout', tipOut);
 
   root.addEventListener('resize', function () {
     if (!settings) return;

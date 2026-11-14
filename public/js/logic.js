@@ -16,6 +16,7 @@
       numbers: pick(raw.numbers, d.numbers),
       caps: pick(raw.caps, d.caps),
       font: font,
+      intensity: C.INTENSITIES.indexOf(raw.intensity) >= 0 ? raw.intensity : d.intensity,
       height: C.HEIGHTS.indexOf(raw.height) >= 0 ? raw.height : d.height,
       layout: C.LAYOUTS.indexOf(raw.layout) >= 0 ? raw.layout : d.layout,
       items: Array.isArray(raw.items) ? raw.items : d.items
@@ -99,7 +100,7 @@
 
   function toggleOpen(open, path) {
     if (!isOpen(open, path)) return open.concat([path]);
-    return open.filter(function (p) { return p !== path && p.indexOf(path + '.') !== 0; });
+    return open.filter(function (p) { return p !== path; });
   }
 
   function clone(v) { return JSON.parse(JSON.stringify(v)); }

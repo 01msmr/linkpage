@@ -35,10 +35,7 @@
 
   function refresh() {
     saveBtn.disabled = saving || !changed();
-    if (!saving) {
-      if (changed()) status.textContent = E.unsaved;
-      else status.textContent = '';
-    }
+    if (!saving && !changed()) status.textContent = '';
     bar.hidden = !changed() && !status.textContent;
   }
 
@@ -63,11 +60,23 @@
     fadeTimer = setTimeout(function () { html.classList.remove('mode-fade'); }, ms + 50);
   }
 
+  // The look-and-feel mode is a per-browser view choice: it is never saved and never opens the save bar.
+  function setMode(value) {
+    fadeMode();
+    R.setMode(value);
+    try { root.localStorage.setItem(E.modeKey, value); } catch (e) { /* view only */ }
+    R.show(draft);
+  }
+
   function setting(key, value) {
-    if (key === 'mode') fadeMode();
+    if (key === 'mode') return setMode(value);
     draft[key] = value;
     touched();
     R.show(draft);
+  }
+
+  function currentOf(key) {
+    return key === 'mode' ? R.getMode() : L.resolveSettings(draft)[key];
   }
 
   function labelOf(v) { return Object.prototype.hasOwnProperty.call(E.valueLabels, String(v)) ? E.valueLabels[String(v)] : String(v); }
@@ -75,9 +84,8 @@
   function valuesOf(c, cur) { return c.values.indexOf(cur) >= 0 ? c.values : c.values.concat([cur]); }
 
   function refreshDock() {
-    var cur = L.resolveSettings(draft);
     slots.forEach(function (x) {
-      var now = cur[x.c.key];
+      var now = currentOf(x.c.key);
       x.btn.title = x.c.label + ': ' + labelOf(now);
       x.btn.setAttribute('aria-label', x.btn.title);
       if (x.opts) x.opts.forEach(function (o) { if (o.value === now) o.btn.setAttribute('aria-current', 'true'); else o.btn.removeAttribute('aria-current'); });
@@ -88,9 +96,14 @@
     slots.forEach(function (x) { if (x.menu && x.slot !== except) delete x.menu.dataset.open; });
   }
 
+  // Hovering an icon two or more places away from an open menu closes it.
+  function closeFar(index) {
+    slots.forEach(function (x, i) { if (x.menu && Math.abs(i - index) >= 2) delete x.menu.dataset.open; });
+  }
+
   // Two values switch on click; more values open a menu on hover.
   function dockSlot(c) {
-    var cur = L.resolveSettings(draft)[c.key];
+    var cur = currentOf(c.key);
     var values = valuesOf(c, cur);
     var slot = el('div', 'slot');
     var btn = el('button', 'dot');
@@ -101,10 +114,11 @@
     var x = { c: c, slot: slot, btn: btn };
     if (values.length === 2) {
       btn.addEventListener('click', function () {
-        var now = L.resolveSettings(draft)[c.key];
+        var now = currentOf(c.key);
         setting(c.key, values[values[0] === now ? 1 : 0]);
         refreshDock();
       });
+      slot.addEventListener('mouseenter', function () { closeFar(slots.indexOf(x)); });
     } else {
       x.menu = el('div', 'menu');
       x.opts = values.map(function (v) {
@@ -412,6 +426,10 @@
     original = L.clone(site);
     draft = L.clone(site);
     build();
+    try {
+      var m = root.localStorage.getItem(E.modeKey);
+      if (m && E.modes.indexOf(m) >= 0) R.setMode(m);
+    } catch (e) { /* default mode */ }
     R.setEditor(api);
     R.show(draft);
     root.addEventListener('keydown', function (e) {
@@ -440,5 +458,22 @@
     }
   }
 
-  if (enabled()) R.whenReady(start);
+  // A browser with cached credentials starts editing by itself; visitors get a silent 401.
+  function probe() {
+    return fetch(E.probe, { credentials: 'same-origin', cache: 'no-store' })
+      .then(function (r) { return r.ok; })
+      .catch(function () { return false; });
+  }
+
+  function boot() {
+    if (enabled()) return R.whenReady(start);
+    if (!E.autoProbe || new URLSearchParams(root.location.search).get('edit') === '0') return;
+    probe().then(function (ok) {
+      if (!ok) return;
+      try { root.localStorage.setItem(E.flagKey, '1'); } catch (e) { /* flag only helps next time */ }
+      R.whenReady(start);
+    });
+  }
+
+  boot();
 })(window);

@@ -22,6 +22,7 @@
     html.dataset.numbers = String(s.numbers === true);
     html.dataset.font = s.font;
     html.style.setProperty('--pill-font', L.pillFont(s.height));
+    html.style.setProperty('--intensity', s.intensity + '%');
   }
 
   function show(node) {
