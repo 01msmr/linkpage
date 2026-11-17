@@ -29,6 +29,8 @@ Apache 2.4 with PHP; the document root is `<repo>/public`.
 Open `/edit/` once; the browser then edits inline (`/?edit=0` switches it off). Visitors see no controls. Hover an entry:
 
 - left: drag handle and pen (name and URL); right: `+` adds a link, the pill adds a folder after it; on an open folder's head they add as its first item
+- the icons show when the pointer is anywhere on the entry's line except the item itself (left gutter, the stretch after the item, the icon column); they appear after `--icon-delay` (0.35 s) at `--icon-opacity` (0.5), fade in 0.09 s, take no clicks and show no hand cursor until visible; touch devices always show them
+- all add icons stand in one column, right of the longest open item, each centred in its own line; items and folders light up on hover at once
 - grey dots in the corner change settings (design, mode, numbers, caps, layout, intensity, pill height); a floppy icon appears when something is unsaved, Cmd/Ctrl+S saves
 - in the split layout the divider between list and pane can be dragged (this view only)
 - the light/dark switch is a view choice of this browser and is not saved
@@ -59,6 +61,12 @@ A design is either the pill form (`vertical-heading`, listed in `PILL_DESIGNS`) 
     npm test                                              # unit tests (node --test)
 
 Bump the `?v=N` on the CSS and JS links in `index.html` and `go.html` with every change to the file (browsers cache them for an hour).
+
+## Status
+
+Working and checked in the browser: all eight designs, folders with open/close animation, `?open` paths, inline editing (add, rename, move, remove, settings dock, save), icon hover behaviour above, 43 unit tests. Content is dummy. Pushed to `main` (deploys to l.msmr.co via Plesk Git); the live host was not re-checked after the latest pushes.
+
+Not yet checked: edit mode in the split layout, in narrow windows and in the text-form designs; very long (wrapped) entries with the icon column.
 
 ## Known limits
 
