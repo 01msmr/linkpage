@@ -10,7 +10,7 @@
   var dragFrom = null;
   var editPath = null;
   var saving = false;
-  var bar, saveBtn, status, closeTimer, fadeTimer;
+  var saveBtn, status, closeTimer, fadeTimer;
   var slots = [];
 
   function el(tag, cls, text) {
@@ -36,13 +36,15 @@
   function refresh() {
     saveBtn.disabled = saving || !changed();
     if (!saving && !changed()) status.textContent = '';
-    bar.hidden = !changed() && !status.textContent;
+    saveBtn.hidden = !changed() && !saving;
+    status.hidden = !status.textContent;
   }
 
   function say(text, kind) {
     status.textContent = text;
     status.dataset.kind = kind;
-    bar.hidden = false;
+    status.hidden = false;
+    saveBtn.hidden = false;
   }
 
   function touched() {
@@ -429,19 +431,19 @@
 
   function build() {
     var bar0 = el('div', 'toolbar');
-    bar = el('div', 'esavebar');
-    bar.hidden = true;
+    var dock = buildDock();
     saveBtn = button('', 'ebtn esave', save);
     saveBtn.innerHTML = E.saveIcon;
     saveBtn.title = E.save;
     saveBtn.setAttribute('aria-label', E.save);
     saveBtn.disabled = true;
-    bar.appendChild(saveBtn);
+    saveBtn.hidden = true;
+    dock.appendChild(saveBtn);
     status = el('span', 'estatus');
     status.setAttribute('role', 'status');
-    bar.appendChild(status);
-    bar0.appendChild(bar);
-    bar0.appendChild(buildDock());
+    status.hidden = true;
+    bar0.appendChild(dock);
+    bar0.appendChild(status);
     document.body.appendChild(bar0);
     document.body.appendChild(buildDivider());
   }

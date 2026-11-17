@@ -33,11 +33,50 @@
     return s;
   }
 
-  function toggle(path) {
+  var folding = false;
+
+  function bodyOf(path) {
+    var head = document.querySelector('.folder-head[data-path="' + path + '"]');
+    var wrap = head && head.closest('.folder');
+    return wrap && wrap.querySelector(':scope > .folder-body');
+  }
+
+  // Slides a folder body between two heights, then calls done.
+  function slide(body, from, to, done) {
+    folding = true;
+    var finished = false;
+    function end() {
+      if (finished) return;
+      finished = true;
+      body.style.cssText = '';
+      folding = false;
+      if (done) done();
+    }
+    body.style.overflow = 'hidden';
+    body.style.height = from + 'px';
+    void body.offsetHeight;
+    body.style.transition = 'height ' + C.FOLDER.foldMs + 'ms ease';
+    body.style.height = to + 'px';
+    body.addEventListener('transitionend', end, { once: true });
+    setTimeout(end, C.FOLDER.foldMs + 60);
+  }
+
+  function flip(path) {
     open = L.toggleOpen(open, path);
     draw();
     var f = document.querySelector('.folder-head[data-path="' + path + '"]');
     if (f) f.focus();
+  }
+
+  // Opening and closing a folder slides its contents (skipped for reduced motion).
+  function toggle(path) {
+    if (folding) return;
+    var body = bodyOf(path);
+    if (!body || root.matchMedia('(prefers-reduced-motion: reduce)').matches) return flip(path);
+    if (L.isOpen(open, path)) return slide(body, body.offsetHeight, 0, function () { flip(path); });
+    flip(path);
+    var fresh = bodyOf(path);
+    if (fresh) slide(fresh, 0, fresh.scrollHeight);
   }
 
   // Split needs room; a page inside a frame gets a lower threshold so frames can nest.

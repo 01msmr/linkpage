@@ -27,7 +27,8 @@
 /* The settings live in the left rail: dots stacked, menus open to the right and run down. */
 :root[data-design="vertical-heading"] .toolbar { display: contents; }
 :root[data-design="vertical-heading"] .dock { position: fixed; top: var(--side); left: 0; width: var(--item-height); z-index: 4; flex-direction: column; }
-:root[data-design="vertical-heading"] .esavebar { position: fixed; top: var(--side); right: var(--side); z-index: 3; }
+:root[data-design="vertical-heading"] .estatus { position: fixed; top: var(--side); right: var(--side); z-index: 3; }
+:root[data-design="vertical-heading"] .esave { align-self: center; color: var(--chip-fg); }
 :root[data-design="vertical-heading"] .slot { width: 100%; }
 :root[data-design="vertical-heading"] .dot { width: 100%; color: var(--chip-fg); }
 :root[data-design="vertical-heading"] .dot .pt { background: color-mix(in srgb, var(--chip-fg) 50%, transparent); }
