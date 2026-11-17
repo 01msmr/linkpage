@@ -18,7 +18,7 @@
 :root[data-design="vertical-heading"] body { padding-left: calc(var(--item-height) + var(--pad-page)); }
 :root[data-design="vertical-heading"] { --item-pad-x: 1.25rem; }
 :root[data-design="vertical-heading"] .item { font-weight: bold; padding-left: var(--item-pad-x); padding-right: var(--item-pad-x); }
-:root[data-design="vertical-heading"] .folder-head, :root[data-design="vertical-heading"] .folder-closer { font-weight: normal; }
+:root[data-design="vertical-heading"] .folder-head, :root[data-design="vertical-heading"] .folder-closer { font-weight: 300; }
 
 /* Folder ends: chevron centered, its right edge where the pill radius starts; the closer is half height. */
 :root[data-design="vertical-heading"] .folder-head { align-items: center; padding-right: calc(var(--item-height) / 2 - var(--item-font) * 0.25); }
@@ -49,7 +49,9 @@
 :root[data-design="vertical-heading"] .folder-body > .folder::before, :root[data-design="vertical-heading"] .folder-body > .folder::after { content: none; position: absolute; left: calc(var(--gutter) - var(--line-gap)); width: calc(var(--r) + var(--line-gap)); height: calc(var(--r) + var(--line-gap)); pointer-events: none; }
 :root[data-design="vertical-heading"] .folder-body > :not(.folder) + .folder::before, :root[data-design="vertical-heading"] .folder-body > .folder:first-child::before { content: ""; top: calc(var(--line-gap) * -1); background: radial-gradient(circle at 100% 100%, transparent calc(var(--r) + var(--line-gap) - 0.5px), var(--chip) calc(var(--r) + var(--line-gap))); }
 :root[data-design="vertical-heading"] .folder-body > .folder:has(+ :not(.folder))::after, :root[data-design="vertical-heading"] .folder-body > .folder:last-child::after { content: ""; top: calc(100% - var(--r)); background: radial-gradient(circle at 100% 0, transparent calc(var(--r) + var(--line-gap) - 0.5px), var(--chip) calc(var(--r) + var(--line-gap))); }
-:root[data-design="vertical-heading"] .folder-body > .folder + * { margin-top: 0; }
+:root[data-design="vertical-heading"] .folder + * { margin-top: 0; }
+:root[data-design="vertical-heading"] #list > .folder { margin-bottom: calc(var(--line-gap) - var(--gap-item)); }
+:root[data-design="vertical-heading"] #list > :not(.folder) + .folder { margin-top: calc(var(--line-gap) - var(--gap-item)); }
 
 /* The thick line sits behind the rows, so the 1px dividers inside an open folder are drawn on the rows to keep their full length. */
 :root[data-design="vertical-heading"] .folder-body > :is(.ent, a.item) { position: relative; }

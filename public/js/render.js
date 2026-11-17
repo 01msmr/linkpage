@@ -50,7 +50,7 @@
   }
 
   // Moves parts together, then calls done. A part is { el, prop: 'height' | 'margin-top', from, to (px), fade?: { el, from, to } }.
-  function slide(parts, done) {
+  function slide(parts, done, lifted) {
     folding = true;
     var finished = false;
     var ms = C.FOLDER.foldMs;
@@ -61,6 +61,7 @@
         p.el.style.cssText = '';
         if (p.fade) p.fade.el.style.opacity = '';
       });
+      if (lifted) lifted.style.cssText = '';
       folding = false;
       if (done) done();
     }
@@ -111,6 +112,19 @@
     el.style.transform = isOpen ? 'rotate(90deg)' : 'rotate(0deg)';
   }
 
+  // While the closing line overlaps a filled head, only the head's upper half keeps its fill so the text stays on top of the line.
+  function liftHead(path) {
+    var head = document.querySelector('.folder-head[data-path="' + path + '"]');
+    if (!head) return null;
+    var fill = getComputedStyle(head).backgroundColor;
+    if (fill === 'rgba(0, 0, 0, 0)' || fill === 'transparent') return null;
+    head.style.position = 'relative';
+    head.style.zIndex = '2';
+    head.style.backgroundColor = 'transparent';
+    head.style.backgroundImage = 'linear-gradient(' + fill + ' 50%, transparent 50%)';
+    return head;
+  }
+
   // The closing line travels over the head's lower half (and back) so it forms the closed folder's bottom corners itself.
   function closerParts(wrap, closer, fromOpen) {
     var gap = parseFloat(getComputedStyle(wrap).rowGap) || 0;
@@ -129,7 +143,7 @@
       turnChevron(chevOf(path), false);
       var parts = [{ el: body, prop: 'height', from: body.offsetHeight, to: 0 }];
       if (closer) parts.push(closerParts(body.parentElement, closer, true));
-      return slide(parts, function () { flip(path); });
+      return slide(parts, function () { flip(path); }, liftHead(path));
     }
     flip(path);
     var fresh = bodyOf(path);
@@ -140,7 +154,7 @@
     turnChevron(chevOf(path), true);
     var opening = [{ el: fresh, prop: 'height', from: 0, to: fresh.scrollHeight }];
     if (fresher) opening.push(closerParts(fresh.parentElement, fresher, false));
-    slide(opening);
+    slide(opening, null, liftHead(path));
   }
 
   // Split needs room; a page inside a frame gets a lower threshold so frames can nest.
