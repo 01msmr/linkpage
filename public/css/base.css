@@ -66,7 +66,6 @@ html[data-split] #pane-frame { flex: 1 1 auto; width: 100%; border: 0; backgroun
 html[data-split] .item { white-space: nowrap; overflow-wrap: normal; overflow: hidden; text-overflow: ellipsis; }
 html[data-split] .item .name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 html[data-split] .item .chev { flex: none; }
-html[data-split] a.item[aria-current] { background: var(--hover); color: var(--hover-fg); }
 
 .mode-fade, .mode-fade * { transition: background-color var(--fade), color var(--fade), box-shadow var(--fade), outline-color var(--fade) !important; }
 @media (prefers-reduced-motion: reduce) { .mode-fade, .mode-fade * { transition: none !important; } }
@@ -76,10 +75,11 @@ html.measure .item, html.measure .item .name { text-overflow: clip !important; }
 
 /* A folder keeps its closed contents in the layout, so it does not change size when opened. */
 .folder[data-state="closed"] > .folder-body { height: 0; overflow: hidden; visibility: hidden; margin-top: calc(var(--gap-item) * -1); }
-.folder-body .folder[data-state] > .ent > .folder-head, .folder-body .folder[data-state] > .folder-head { border-top-left-radius: 0; }
 
 /* URL beside a hovered link. */
 .urltip { position: fixed; z-index: 5; transform: translateY(-50%); max-width: 50vw; padding: var(--pad-y) var(--pad-x); background: var(--bg); color: var(--fg); box-shadow: 0 0 0 1px var(--fg); font-size: 1rem; line-height: 1.2; overflow-wrap: anywhere; pointer-events: none; opacity: 0; transition: opacity var(--fade-fast); }
 .urltip[data-show] { opacity: 1; }
 
 .chev-ink { display: none; }
+
+a.item[aria-current] { background: var(--hover); color: var(--hover-fg); }

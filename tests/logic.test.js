@@ -7,7 +7,9 @@ test('resolveSettings({}) equals defaults', () => {
   assert.deepEqual(L.resolveSettings({}), C.DEFAULTS);
 });
 test('unknown design falls back to default', () => {
-  assert.equal(L.resolveSettings({ design: 'nope' }).design, 'giant-type');
+  assert.equal(L.resolveSettings({ design: 'nope' }).design, C.DEFAULTS.design);
+  assert.equal(C.DEFAULTS.design, 'vertical-heading');
+  assert.equal(C.DESIGNS[0], 'vertical-heading');
 });
 test('unknown font falls back to the default (system) font', () => {
   assert.equal(L.resolveSettings({ font: 'nope' }).font, C.DEFAULTS.font);
@@ -165,4 +167,47 @@ test('intensity defaults to 100; steps of 10 from 10 to 100 are kept; others fal
   assert.equal(L.resolveSettings({ intensity: 45 }).intensity, 100);
   assert.equal(L.resolveSettings({ intensity: 0 }).intensity, 100);
   assert.equal(L.resolveSettings({ intensity: 110 }).intensity, 100);
+});
+test('slugify makes a folder slug from a name', () => {
+  assert.equal(L.slugify('tbx.li'), 'tbx-li');
+  assert.equal(L.slugify('Über uns!'), 'ueber-uns');
+});
+const openTree = () => [
+  { name: 'a', slug: 'a', url: 'u' },
+  { name: 'Tools', items: [{ name: 'x', slug: 'x', url: 'v' }, { name: 'Sub X', items: [{ name: 'deep', slug: 'deep', url: 'w' }] }] }
+];
+test('resolveOpen follows folder slugs to a link and returns the folders to open', () => {
+  const r = L.resolveOpen(openTree(), ['tools', 'sub-x', 'deep']);
+  assert.deepEqual(r.open, ['1', '1.1']);
+  assert.equal(r.target.slug, 'deep');
+  assert.equal(r.path, '1.1.0');
+});
+test('resolveOpen on a folder opens it and targets the folder', () => {
+  const r = L.resolveOpen(openTree(), ['tools']);
+  assert.deepEqual(r.open, ['1']);
+  assert.equal(r.target.name, 'Tools');
+});
+test('resolveOpen finds a bare link slug anywhere and opens its folders', () => {
+  const r = L.resolveOpen(openTree(), ['deep']);
+  assert.deepEqual(r.open, ['1', '1.1']);
+  assert.equal(r.target.slug, 'deep');
+});
+test('resolveOpen returns null for an unknown path', () => {
+  assert.equal(L.resolveOpen(openTree(), ['nope']), null);
+  assert.equal(L.resolveOpen(openTree(), ['tools', 'nope']), null);
+  assert.equal(L.resolveOpen(openTree(), []), null);
+});
+test('entriesFor sorts folders first only when asked, otherwise keeps the stored order', () => {
+  const items = [{ name: 'a', slug: 'a', url: 'u' }, { name: 'F', items: [] }, { name: 'b', slug: 'b', url: 'v' }];
+  assert.deepEqual(L.entriesFor(items, true).map(e => e.index), [1, 0, 2]);
+  assert.deepEqual(L.entriesFor(items, false).map(e => e.index), [0, 1, 2]);
+});
+test('openAfterMove keeps a moved folder and its inner folders open at the new place', () => {
+  assert.deepEqual(L.openAfterMove(['1', '1.0'], [1], [], 3), ['2', '2.0']);
+});
+test('openAfterMove shifts other open folders after a link leaves a folder', () => {
+  assert.deepEqual(L.openAfterMove(['1'], [1, 0], [], 0), ['2']);
+});
+test('openAfterMove opens the folder a moved open folder lands in', () => {
+  assert.deepEqual(L.openAfterMove(['1'], [1], [0], 0).sort(), ['0', '0.0']);
 });

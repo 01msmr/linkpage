@@ -21,7 +21,7 @@ Everything lives in `edit/site.json`:
 
 | Field | Values |
 |-------|--------|
-| `design` | `giant-type` (default), `giant-numerals`, `vertical-heading`, `bracket-terminal`, `headline-tiny-links`, `raw-listing`, `tracked-rows`, `plain-inverted` |
+| `design` | `vertical-heading` (default), `giant-type`, `giant-numerals`, `bracket-terminal`, `headline-tiny-links`, `raw-listing`, `tracked-rows`, `plain-inverted` |
 | `mode` | `light` or `dark` |
 | `numbers` | `true` or `false` |
 | `caps` | `regular` or `versalien` |
@@ -33,6 +33,8 @@ A link is `{ "name", "url", "slug" }`. A folder is `{ "name", "items": [...] }` 
 Auto start (off by default, `EDIT.autoProbe` in `js/config.js`): after adding the `<Files "probe.php">` block from `edit/.htaccess.example` to the live `edit/.htaccess`, set it to `true`; a browser that already has cached credentials then starts editing by itself, everyone else gets a silent 401 (without the block visitors would see a login prompt).
 
 Editing is inline and always on in a browser that has opened `/edit/` once (it signs you in and redirects to `/?edit=1`, which sets a flag in that browser; `/?edit=0` clears it). Visitors see no controls. Hover an entry for its small controls: a pen edits the name (and URL for a link), with a red x to delete and a check to finish; a folder also shows a plus before it (a new folder after it) and a plus after it (a new folder inside it); a plus under every list adds a link, and `+›` adds a folder. The ☰ handle drags an entry to another place or into a folder. A Save button appears top right when something changed. A new link's slug is made from its name and stays when you rename it. Small grey dots top left of the corner show their icon on hover and change the settings: design, mode, numbers, caps, layout and pill height (two values switch on click, more open a menu).
+
+**Open an entry in the list:** `/<folder>/<link>/?open` (also `/<link>/?open` or `/<folder>/?open`; folder slugs are the folder names in lower case with `-` for other characters, e.g. `tbx.li` becomes `tbx-li`) shows the list with the tree opened down to that entry and marks it; in the split layout it also loads the link in the pane. Without `?open` the short address redirects as before. Real folders such as `/edit/` are never rewritten.
 
 ## Commands
 

@@ -195,6 +195,9 @@
     return open;
   }
 
+  // A new folder starts with one placeholder link so it can be filled right away (it may stay as it is).
+  function newFolder() { return { name: E.newFolderName, items: [L.clone(E.newLink)] }; }
+
   function addTo(pp, item) {
     settle();
     var index = listAt(pp).length;
@@ -207,20 +210,27 @@
     var parent = p.slice(0, -1);
     var index = p[p.length - 1] + 1;
     draft.items = L.insertAt(draft.items, parent, index, item);
-    afterChange(parent, parent.concat([index]).join('.'), openWith(parent, index));
+    var path = parent.concat([index]).join('.');
+    var open = openWith(parent, index);
+    if (Array.isArray(item.items)) open.push(path);
+    afterChange(parent, path, open);
   }
 
   function remove(p, item) {
     var n = L.countDescendants(item);
     if (n > 0 && !root.confirm(E.confirmFolder.replace('{name}', item.name || '').replace('{n}', n))) return;
     editPath = null;
-    var open = L.reindexOpen(R.getOpen(), p.slice(0, -1), p[p.length - 1], -1);
+    var parent = p.slice(0, -1);
+    var open = L.reindexOpen(R.getOpen(), parent, p[p.length - 1], -1);
+    var last = parent.length > 0 && listAt(parent).length === 1;
     draft.items = L.removeAt(draft.items, p).items;
-    afterChange(p.slice(0, -1), undefined, open);
+    if (last) draft.items = L.insertAt(draft.items, parent, 0, L.clone(E.newLink));
+    afterChange(parent, undefined, last ? L.reindexOpen(open, parent, 0, 1) : open);
   }
 
   function ctl(icon, label, cls, onClick) {
-    var b = button(icon, 'ctl ' + cls, function (e) { e.stopPropagation(); onClick(); });
+    var b = button(icon.charAt(0) === '<' ? '' : icon, 'ctl ' + cls, function (e) { e.stopPropagation(); onClick(); });
+    if (icon.charAt(0) === '<') b.innerHTML = icon;
     b.setAttribute('aria-label', label);
     b.title = label;
     return b;
@@ -273,8 +283,9 @@
     clearDrop();
     var moved = L.moveItem(draft.items, from, parent, index);
     if (moved) {
+      var open = L.openAfterMove(R.getOpen(), from, parent, index);
       draft.items = moved;
-      afterChange(L.parentAfterRemoval(from, parent));
+      afterChange(L.parentAfterRemoval(from, parent), undefined, open);
     }
   }
 
@@ -306,6 +317,7 @@
     var I = E.icons;
     var r = el('div', 'ent');
     r.dataset.path = path;
+    r.style.setProperty('--depth', String(Math.max(0, isFolder ? p.length - 1 : p.length - 2)));
     var gl = el('div', 'gl');
     var gr = el('div', 'gr');
     if (editPath === path) {
@@ -315,11 +327,8 @@
     } else {
       var handle = ctl(I.handle, fill(E.labels.handle, item.name), 'ctl-handle', function () {});
       gl.appendChild(handle);
-      if (isFolder) gl.appendChild(ctl(I.plus, fill(E.labels.folderInside, item.name), 'ctl-plus', function () { addTo(p, { name: E.newFolderName, items: [] }); }));
-      else gl.appendChild(el('span', 'ctl-gap'));
-      var after = isFolder ? E.labels.folderAfter : E.labels.linkAfter;
-      gr.appendChild(ctl(I.plus, fill(after, item.name), 'ctl-plus', function () { addAfter(p, isFolder ? { name: E.newFolderName, items: [] } : L.clone(E.newLink)); }));
-      gr.appendChild(ctl(I.pen, fill(E.labels.pen, item.name), 'ctl-pen', function () { startEdit(path); }));
+      gl.appendChild(ctl(I.pen, fill(E.labels.pen, item.name), 'ctl-pen', function () { startEdit(path); }));
+      if (!(isFolder && L.isOpen(R.getOpen(), path))) gr.appendChild(belowDuo(item, p));
       wireDrag(r, handle, p, isFolder, item);
     }
     r.appendChild(gl);
@@ -328,11 +337,23 @@
     return r;
   }
 
-  function spacer(core) {
+  // The add icons behind a row: a link or a folder after it.
+  function belowDuo(item, p) {
+    var I = E.icons;
+    var below = el('span', 'ctl-below');
+    below.appendChild(ctl(I.plus, fill(E.labels.linkAfter, item.name), 'ctl-plus ctl-link', function () { addAfter(p, L.clone(E.newLink)); }));
+    below.appendChild(ctl(I.folderPlus, fill(E.labels.folderAfter, item.name), 'ctl-plus ctl-folder', function () { addAfter(p, newFolder()); }));
+    return below;
+  }
+
+  // The closing line of an open folder carries the add icons for "after this folder".
+  function spacer(core, item, path) {
     var r = el('div', 'ent');
     r.appendChild(el('div', 'gl'));
     r.appendChild(core);
-    r.appendChild(el('div', 'gr'));
+    var gr = el('div', 'gr');
+    if (item) gr.appendChild(belowDuo(item, parse(path)));
+    r.appendChild(gr);
     return r;
   }
 
@@ -340,7 +361,7 @@
     var pp = parse(path);
     var core = el('div', 'lend');
     core.appendChild(ctl(E.icons.plus, E.labels.addLink, 'ctl-plus', function () { addTo(pp, L.clone(E.newLink)); }));
-    core.appendChild(ctl(E.icons.plus + C.FOLDER.chevron, E.labels.addFolder, 'ctl-plus', function () { addTo(pp, { name: E.newFolderName, items: [] }); }));
+    core.appendChild(ctl(E.icons.plus + C.FOLDER.chevron, E.labels.addFolder, 'ctl-plus', function () { addTo(pp, newFolder()); }));
     var r = spacer(core);
     r.className += ' listend';
     return r;
@@ -428,6 +449,7 @@
   function start(site) {
     original = L.clone(site);
     draft = L.clone(site);
+    root.document.documentElement.dataset.editing = '';
     build();
     try {
       var m = root.localStorage.getItem(E.modeKey);

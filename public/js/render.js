@@ -80,10 +80,10 @@
     var a = el('a', 'item');
     if (item.slug) a.href = '/' + item.slug + '/';
     if (item.url) a.dataset.url = item.url;
+    if (item.url && item.url === activeUrl) a.setAttribute('aria-current', 'true');
     var split = splitOn();
     if (item.url && split && embeddable(item.url)) {
       a.href = item.url;
-      if (item.url === activeUrl) a.setAttribute('aria-current', 'true');
       a.addEventListener('click', function (e) { e.preventDefault(); openInPane(item.url); });
     } else if (item.url) {
       a.href = item.url;
@@ -131,15 +131,15 @@
     wrap.appendChild(sub(item.items, path));
     if (isOpen) {
       var closer = closerCore(item, path);
-      wrap.appendChild(editor ? editor.spacer(closer) : closer);
+      wrap.appendChild(editor ? editor.spacer(closer, item, path) : closer);
     }
     return wrap;
   }
 
   function fill(box, items, path) {
     var prefix = path === '' ? '' : path + '.';
-    L.sortedEntries(items).forEach(function (e, i) { box.appendChild(entry(e.item, i, prefix + e.index)); });
-    if (editor && items.length === 0) box.appendChild(editor.listEnd(path));
+    L.entriesFor(items, path === '').forEach(function (e, i) { box.appendChild(entry(e.item, i, prefix + e.index)); });
+    if (editor && items.length === 0 && path === '') box.appendChild(editor.listEnd(path));
   }
 
   function sub(items, path) {
@@ -232,9 +232,26 @@
     draw();
   }
 
+  // ?open on /folder/link/ opens the tree down to that entry, marks it and, in the split layout, loads it.
+  function applyOpen() {
+    if (!new URLSearchParams(root.location.search).has('open')) return;
+    var res = L.resolveOpen(raw.items, root.location.pathname.split('/').filter(Boolean));
+    if (!res) return;
+    res.open.forEach(function (p) { if (open.indexOf(p) < 0) open.push(p); });
+    var url = res.target.url;
+    if (url && splitOn() && embeddable(url)) openInPane(url);
+    else {
+      activeUrl = url || null;
+      draw();
+    }
+    var mark = document.querySelector('a.item[aria-current]');
+    if (mark && mark.scrollIntoView) mark.scrollIntoView({ block: 'center' });
+  }
+
   function render(site) {
     open = [];
     show(site);
+    applyOpen();
     readyFns.splice(0).forEach(function (fn) { fn(site); });
   }
 

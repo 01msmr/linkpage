@@ -51,6 +51,11 @@
     return all.filter(function (e) { return isFolder(e.item); }).concat(all.filter(function (e) { return !isFolder(e.item); }));
   }
 
+  // Entries in display order: folders first on request, else as stored (inside folders entries sit where they were put).
+  function entriesFor(items, foldersFirst) {
+    return foldersFirst ? sortedEntries(items) : items.map(function (item, index) { return { item: item, index: index }; });
+  }
+
   // ['1', '1.0'] for path [1, 0]: the folders that must be open to show it.
   function prefixPaths(path) {
     return path.map(function (_, i) { return path.slice(0, i + 1).join('.'); });
@@ -73,6 +78,29 @@
     return out;
   }
 
+  // Open-folder paths after moveItem(from -> toParent/toIndex): the moved subtree keeps its state, others follow their indices.
+  function openAfterMove(open, from, toParent, toIndex) {
+    var key = from.join('.');
+    var suffixes = [];
+    var rest = [];
+    open.forEach(function (p) {
+      if (p === key) suffixes.push('');
+      else if (p.indexOf(key + '.') === 0) suffixes.push(p.slice(key.length));
+      else rest.push(p);
+    });
+    var up = from.slice(0, -1);
+    var last = from[from.length - 1];
+    rest = reindexOpen(rest, up, last, -1);
+    var parent = parentAfterRemoval(from, toParent);
+    var index = toIndex;
+    if (parent.length === up.length && startsWith(parent, up) && last < toIndex) index--;
+    rest = reindexOpen(rest, parent, index, 1);
+    var base = parent.concat([index]).join('.');
+    suffixes.forEach(function (s) { rest.push(base + s); });
+    prefixPaths(parent).forEach(function (p) { if (rest.indexOf(p) < 0) rest.push(p); });
+    return rest;
+  }
+
   function allSlugs(items, out) {
     items.forEach(function (it) {
       if (isFolder(it)) allSlugs(it.items, out);
@@ -81,14 +109,57 @@
     return out;
   }
 
-  function slugFor(name, items) {
-    var base = String(name).toLowerCase()
+  function slugify(name) {
+    return String(name).toLowerCase()
       .replace(/\u00e4/g, 'ae').replace(/\u00f6/g, 'oe').replace(/\u00fc/g, 'ue').replace(/\u00df/g, 'ss')
-      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'link';
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+
+  function slugFor(name, items) {
+    var base = slugify(name) || 'link';
     var taken = allSlugs(items, []);
     var slug = base;
     for (var n = 2; taken.indexOf(slug) >= 0; n++) slug = base + '-' + n;
     return slug;
+  }
+
+  // The link with this slug anywhere in the tree: { open: [folder paths], target, path }.
+  function locate(items, slug, prefix, open) {
+    for (var i = 0; i < items.length; i++) {
+      var it = items[i];
+      var path = prefix.concat(i);
+      if (isFolder(it)) {
+        var hit = locate(it.items, slug, path, open.concat(path.join('.')));
+        if (hit) return hit;
+      } else if (it.slug === slug) return { open: open, target: it, path: path.join('.') };
+    }
+    return null;
+  }
+
+  // ?open on /folder/folder/link/: the folders to open and the entry to mark (null if the path matches nothing).
+  function resolveOpen(items, segs) {
+    if (!segs.length) return null;
+    var list = items;
+    var prefix = [];
+    var open = [];
+    var found = null;
+    for (var s = 0; s < segs.length; s++) {
+      var last = s === segs.length - 1;
+      var next = null;
+      for (var i = 0; i < list.length && !next; i++) {
+        var it = list[i];
+        if (isFolder(it) && slugify(it.name) === segs[s]) next = { item: it, index: i, folder: true };
+        else if (last && !isFolder(it) && it.slug === segs[s]) next = { item: it, index: i, folder: false };
+      }
+      if (!next) return s === 0 && segs.length === 1 ? locate(items, segs[0], [], []) : null;
+      var path = prefix.concat(next.index);
+      found = { item: next.item, path: path.join('.') };
+      if (!next.folder) return { open: open, target: next.item, path: found.path };
+      open.push(found.path);
+      prefix = path;
+      list = next.item.items;
+    }
+    return { open: open, target: found.item, path: found.path };
   }
 
   function numberLabel(index) {
@@ -164,8 +235,8 @@
     return item.items.reduce(function (n, i) { return n + 1 + countDescendants(i); }, 0);
   }
 
-  var api = { resolveSettings: resolveSettings, pillFont: pillFont, findLink: findLink,
-    sortItems: sortItems, sortedEntries: sortedEntries, prefixPaths: prefixPaths, reindexOpen: reindexOpen, slugFor: slugFor, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen,
+  var api = { resolveSettings: resolveSettings, pillFont: pillFont, slugify: slugify, resolveOpen: resolveOpen, findLink: findLink,
+    sortItems: sortItems, sortedEntries: sortedEntries, entriesFor: entriesFor, prefixPaths: prefixPaths, reindexOpen: reindexOpen, openAfterMove: openAfterMove, slugFor: slugFor, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen,
     clone: clone, itemAt: itemAt, removeAt: removeAt, insertAt: insertAt, moveItem: moveItem, parentAfterRemoval: parentAfterRemoval,
     setField: setField, hasChanged: hasChanged, countDescendants: countDescendants };
   root.LinkpagesLogic = api;
