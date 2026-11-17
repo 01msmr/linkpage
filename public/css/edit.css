@@ -26,26 +26,26 @@
 .gr { width: var(--gutter-right); }
 /* Handle and pen stay at one left position whatever the nesting (each indented folder wrapper is undone). */
 .gl { position: relative; left: calc(var(--depth, 0) * var(--indent, 0px) * -1); }
-/* The closing line is lower than the add icons next to it; they must not make its row taller. */
-.ent-closer > .gl, .ent-closer > .gr { height: 0; }
+/* The closing line is lower than the add icons next to it; its gutters lie over the row so the icons do not make it taller. */
+.ent-closer { padding: 0 var(--gutter-right) 0 var(--gutter-edit); }
+.ent-closer > .gl, .ent-closer > .gr { position: absolute; top: 0; bottom: 0; }
+.ent-closer > .gr { right: 0; }
 .ent[data-drop="before"] { box-shadow: 0 calc(var(--drop-w) * -1) 0 var(--hover); }
 .ent[data-drop="after"] { box-shadow: 0 var(--drop-w) 0 var(--hover); }
 .ent[data-drop="into"] { box-shadow: inset 0 0 0 var(--drop-w) var(--hover); }
 .lend { display: flex; gap: var(--gap-item); }
 
 /* Controls: appear on hovering the gutter beside an entry. */
-.ctl { display: flex; align-items: center; justify-content: center; width: var(--ctl); height: var(--ctl); padding: 0; border: 0; border-radius: 50%; background: none; color: var(--fg); font: inherit; font-size: var(--item-font); font-weight: 300; line-height: 1; cursor: default; opacity: 0; transform: scale(0.8); transition: opacity var(--fade-icon), transform var(--fade-icon); }
+.ctl { display: flex; align-items: center; justify-content: center; width: var(--ctl); height: var(--ctl); padding: 0; border: 0; border-radius: 50%; background: none; color: var(--fg); font: inherit; font-size: var(--item-font); font-weight: 300; line-height: 1; cursor: pointer; pointer-events: none; opacity: 0; transform: scale(0.8); transition: opacity var(--fade-icon), transform var(--fade-icon); }
 /* Hovering any icon of a row shows all of them, left and right (the entry itself does not), after a short delay so quick passes stay clean. */
-/* The cursor turns into a hand only once the icon is visible. */
+/* An icon takes clicks and the hand cursor only once it is visible (it stays focusable by keyboard). */
 .ent:has(.gl:hover, .gr:hover) .ctl { opacity: var(--icon-opacity); transform: none; transition-delay: var(--icon-delay); animation: ctl-live 0s var(--icon-delay) forwards; }
-.ent:has(.gl:hover, .gr:hover) .ctl-handle { animation-name: ctl-live-grab; }
-.ctl:focus-visible, .ent[data-editing] .ctl, .listend .ctl { opacity: var(--icon-opacity); transform: none; cursor: pointer; }
-@keyframes ctl-live { to { cursor: pointer; } }
-@keyframes ctl-live-grab { to { cursor: grab; } }
+.ctl:focus-visible, .ent[data-editing] .ctl, .listend .ctl { opacity: var(--icon-opacity); transform: none; pointer-events: auto; }
+@keyframes ctl-live { to { pointer-events: auto; } }
 /* The hamburger glyph sits low in its line box; lift it so its ink is centered. */
-.ctl-handle { font-weight: 400; position: relative; top: calc(var(--handle-lift) * -1); }
+.ctl-handle { cursor: grab; font-weight: 400; position: relative; top: calc(var(--handle-lift) * -1); }
 .ctl-remove, .ctl-remove:hover { color: var(--danger); }
-@media (hover: none) { .ctl { opacity: var(--icon-opacity); transform: none; cursor: pointer; } }
+@media (hover: none) { .ctl { opacity: var(--icon-opacity); transform: none; pointer-events: auto; } }
 
 /* Add icons behind an entry, vertically centered: a plus for a link, a small filled pill (2.5 times as wide as high) with a plus for a folder. */
 .ctl-below { display: flex; align-items: center; }
@@ -53,10 +53,6 @@
 .ctl-link svg { display: block; width: calc(var(--item-font) * 0.78); height: calc(var(--item-font) * 0.78); }
 .ctl-folder { width: calc(var(--ctl) * 1.75); height: calc(var(--ctl) * 0.7); margin: 0 calc(var(--ctl) * 0.05); border-radius: 0; background: none; color: var(--fg); }
 .ctl-folder svg { display: block; width: 100%; height: 100%; }
-
-/* In edit mode a hovered entry lights up only when its row's icons start to appear. */
-:root[data-editing] .item { transition: background-color var(--fade-icon), color var(--fade-icon); }
-:root[data-editing] .item:hover { transition-delay: var(--icon-delay); }
 
 /* Entry editing */
 .ebox { display: flex; flex-wrap: wrap; gap: var(--gap-item); }
