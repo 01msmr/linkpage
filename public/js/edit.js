@@ -197,8 +197,14 @@
     return open;
   }
 
-  // A new folder starts with one placeholder link so it can be filled right away (it may stay as it is).
-  function newFolder() { return { name: E.newFolderName, items: [L.clone(E.newLink)] }; }
+  function newFolder() { return { name: E.newFolderName, items: [] }; }
+
+  // Inside a folder, at the top.
+  function addInside(p, item) {
+    settle();
+    draft.items = L.insertAt(draft.items, p, 0, item);
+    afterChange(p, p.concat([0]).join('.'), openWith(p, 0));
+  }
 
   function addTo(pp, item) {
     settle();
@@ -224,10 +230,8 @@
     editPath = null;
     var parent = p.slice(0, -1);
     var open = L.reindexOpen(R.getOpen(), parent, p[p.length - 1], -1);
-    var last = parent.length > 0 && listAt(parent).length === 1;
     draft.items = L.removeAt(draft.items, p).items;
-    if (last) draft.items = L.insertAt(draft.items, parent, 0, L.clone(E.newLink));
-    afterChange(parent, undefined, last ? L.reindexOpen(open, parent, 0, 1) : open);
+    afterChange(parent, undefined, open);
   }
 
   function ctl(icon, label, cls, onClick) {
@@ -330,7 +334,7 @@
       var handle = ctl(I.handle, fill(E.labels.handle, item.name), 'ctl-handle', function () {});
       gl.appendChild(handle);
       gl.appendChild(ctl(I.pen, fill(E.labels.pen, item.name), 'ctl-pen', function () { startEdit(path); }));
-      if (!(isFolder && L.isOpen(R.getOpen(), path))) gr.appendChild(belowDuo(item, p));
+      gr.appendChild(belowDuo(item, p, isFolder && L.isOpen(R.getOpen(), path)));
       wireDrag(r, handle, p, isFolder, item);
     }
     r.appendChild(gl);
@@ -340,11 +344,13 @@
   }
 
   // The add icons behind a row: a link or a folder after it.
-  function belowDuo(item, p) {
+  // The add icons behind a row: after it, or (the head of an open folder) as its first item.
+  function belowDuo(item, p, inside) {
     var I = E.icons;
+    var add = inside ? addInside : addAfter;
     var below = el('span', 'ctl-below');
-    below.appendChild(ctl(I.linkPlus, fill(E.labels.linkAfter, item.name), 'ctl-plus ctl-link', function () { addAfter(p, L.clone(E.newLink)); }));
-    below.appendChild(ctl(I.folderPlus, fill(E.labels.folderAfter, item.name), 'ctl-plus ctl-folder', function () { addAfter(p, newFolder()); }));
+    below.appendChild(ctl(I.linkPlus, fill(inside ? E.labels.linkInside : E.labels.linkAfter, item.name), 'ctl-plus ctl-link', function () { add(p, L.clone(E.newLink)); }));
+    below.appendChild(ctl(I.folderPlus, fill(inside ? E.labels.folderInside : E.labels.folderAfter, item.name), 'ctl-plus ctl-folder', function () { add(p, newFolder()); }));
     return below;
   }
 

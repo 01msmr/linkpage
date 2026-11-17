@@ -67,7 +67,8 @@
     }
     parts.forEach(function (p) {
       if (p.prop === 'height') {
-        p.el.style.overflow = 'hidden';
+        p.el.style.overflowX = 'visible';
+        p.el.style.overflowY = 'clip';
         p.el.style.minHeight = '0';
         p.el.style.height = p.from + 'px';
       } else {
