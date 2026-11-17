@@ -22,7 +22,7 @@
 
 /* Folder ends: chevron centered, its right edge where the pill radius starts; the closer is half height. */
 :root[data-design="vertical-heading"] .folder-head { align-items: center; padding-right: calc(var(--item-height) / 2 - var(--item-font) * 0.25); }
-:root[data-design="vertical-heading"] .folder-closer { height: calc(var(--item-height) / 2); min-height: 0; padding: 0 calc(var(--item-height) / 2 - var(--item-font) * 0.25) 0 var(--item-pad-x); align-items: center; overflow: hidden; }
+:root[data-design="vertical-heading"] .folder-closer { height: calc(var(--item-height) / 2); min-height: 0; padding: 0 calc(var(--item-height) / 2 - var(--item-font) * 0.25 * var(--chev-closer)) 0 var(--item-pad-x); align-items: center; overflow: hidden; }
 
 /* The settings live in the left rail: dots stacked, menus open to the right and run down. */
 :root[data-design="vertical-heading"] .toolbar { display: contents; }
@@ -38,7 +38,7 @@
 /* The chevron is drawn and turns about its own centre, which sits on the centre of the pill's end radius. */
 :root[data-design="vertical-heading"] .chev { width: auto; font-size: 0; line-height: 0; display: flex; align-items: center; transform: none; }
 :root[data-design="vertical-heading"] .folder-head[aria-expanded="true"] .chev-ink { transform: rotate(90deg); }
-:root[data-design="vertical-heading"] .folder-closer .chev-ink { transform: rotate(-90deg); }
+:root[data-design="vertical-heading"] .folder-closer .chev-ink { transform: rotate(-90deg); width: calc(var(--item-font) * 0.5 * var(--chev-closer)); height: calc(var(--item-font) * 0.5 * var(--chev-closer)); }
 :root[data-design="vertical-heading"] .chev-ink { display: block; width: calc(var(--item-font) * 0.5); height: calc(var(--item-font) * 0.5); fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
 
 /* Open folder: a 2px line joins head and closer; inner links sit on it, the line is one radius thick, subfolders are round, 4px (0.25rem) off it and their neighbours and one radius longer than the folder around them, links around them flow into the line with pill-radius fillets. */
