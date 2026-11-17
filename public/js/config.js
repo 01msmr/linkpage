@@ -3,7 +3,7 @@
   var DEFAULTS = {
     design: 'vertical-heading',
     mode: 'light',
-    numbers: true,
+    numbers: false,
     caps: 'regular',
     font: 'system',
     layout: 'list',
@@ -25,7 +25,7 @@
   };
   var SPLIT = { query: '(min-width: 601px)', queryEmbedded: '(min-width: 450px)', min: 20, max: 80, fitSlack: 0.98, newTabHosts: ['icloud.com'], open: 'Open in new tab \u2197', frameTitle: 'Preview' };
   var TIP = { showMs: 2000, hideMs: 3000, gap: 8 };
-  var FOLDER = { foldMs: 200, shapes: { right: 'M3 1.6L9.2 5L3 8.4', down: 'M0.8 3L5 8L9.2 3', up: 'M0.8 7L5 2L9.2 7' }, chevron: '›', closeLabel: 'Close {name}' };
+  var FOLDER = { foldMs: 200, shape: 'M3 1.6L9.2 5L3 8.4', chevron: '›', closeLabel: 'Close {name}' };
   var EDIT = {
     endpoint: '/edit/save.php',
     probe: '/edit/probe.php',
@@ -37,7 +37,7 @@
     saveIcon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h13l3 3v15H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 3v6h8V3M7 21v-7h10v7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
     saving: 'Saving\u2026',
     closeDelay: 2000,
-    icons: { folderPlus: '<svg viewBox="0 0 60 24" aria-hidden="true"><rect width="60" height="24" rx="12" fill="currentColor"/><path d="M30 6.5v11M24.5 12h11" style="stroke:var(--bg)" stroke-width="2" fill="none"/></svg>', pen: '\u270E', plus: '+', remove: '\u00d7', done: '\u2713', handle: '\u2630' },
+    icons: { linkPlus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v17M3.5 12h17" style="stroke:currentColor" stroke-width="3.6" fill="none"/></svg>', folderPlus: '<svg viewBox="0 0 60 24" aria-hidden="true"><rect width="60" height="24" rx="12" fill="currentColor"/><path d="M30 5.3v13.4M23.3 12h13.4" style="stroke:var(--bg)" stroke-width="2.4" fill="none"/></svg>', pen: '\u270E', plus: '+', remove: '\u00d7', done: '\u2713', handle: '\u2630' },
     labels: {
       pen: 'Edit {name}',
       done: 'Done',

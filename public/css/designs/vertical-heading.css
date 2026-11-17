@@ -16,13 +16,13 @@
   overflow: hidden;
 }
 :root[data-design="vertical-heading"] body { padding-left: calc(var(--item-height) + var(--pad-page)); }
-:root[data-design="vertical-heading"] .item { font-weight: bold; }
-:root[data-design="vertical-heading"] .folder-head, :root[data-design="vertical-heading"] .folder-closer { font-weight: normal; color: color-mix(in srgb, var(--chip-fg) 66%, var(--chip)); }
-:root[data-design="vertical-heading"] .folder-head:hover, :root[data-design="vertical-heading"] .folder-closer:hover { color: color-mix(in srgb, var(--hover-fg) 66%, var(--hover)); }
+:root[data-design="vertical-heading"] { --item-pad-x: 1.25rem; }
+:root[data-design="vertical-heading"] .item { font-weight: bold; padding-left: var(--item-pad-x); padding-right: var(--item-pad-x); }
+:root[data-design="vertical-heading"] .folder-head, :root[data-design="vertical-heading"] .folder-closer { font-weight: normal; }
 
 /* Folder ends: chevron centered, its right edge where the pill radius starts; the closer is half height. */
-:root[data-design="vertical-heading"] .folder-head { align-items: center; padding-right: calc(var(--item-height) / 2); }
-:root[data-design="vertical-heading"] .folder-closer { height: calc(var(--item-height) / 2); min-height: 0; padding: 0 calc(var(--item-height) / 2) 0 var(--pad-x); align-items: center; overflow: hidden; }
+:root[data-design="vertical-heading"] .folder-head { align-items: center; padding-right: calc(var(--item-height) / 2 - var(--item-font) * 0.25); }
+:root[data-design="vertical-heading"] .folder-closer { height: calc(var(--item-height) / 2); min-height: 0; padding: 0 calc(var(--item-height) / 2 - var(--item-font) * 0.25) 0 var(--item-pad-x); align-items: center; overflow: hidden; }
 
 /* The settings live in the left rail: dots stacked, menus open to the right and run down. */
 :root[data-design="vertical-heading"] .toolbar { display: contents; }
@@ -35,13 +35,14 @@
 :root[data-design="vertical-heading"] .dot:hover .ico { color: var(--hover); }
 :root[data-design="vertical-heading"] .menu { top: 0; left: 100%; right: auto; padding: 0 0 0 calc(var(--side) / 4); transform: translateX(calc(var(--side) * -0.5)); }
 :root[data-design="vertical-heading"] .menu[data-open] { transform: none; }
-/* The chevron is drawn: its ink ends at the box edge, which sits where the pill radius begins. */
+/* The chevron is drawn and turns about its own centre, which sits on the centre of the pill's end radius. */
 :root[data-design="vertical-heading"] .chev { width: auto; font-size: 0; line-height: 0; display: flex; align-items: center; transform: none; }
-:root[data-design="vertical-heading"] .folder-head[aria-expanded="true"] .chev, :root[data-design="vertical-heading"] .folder-closer .chev { transform: none; }
+:root[data-design="vertical-heading"] .folder-head[aria-expanded="true"] .chev-ink { transform: rotate(90deg); }
+:root[data-design="vertical-heading"] .folder-closer .chev-ink { transform: rotate(-90deg); }
 :root[data-design="vertical-heading"] .chev-ink { display: block; width: calc(var(--item-font) * 0.5); height: calc(var(--item-font) * 0.5); fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
 
-/* Open folder: a 2px line joins head and closer; inner links sit on it, the line is one radius thick, subfolders are round, 3px (0.1875rem) off it and their neighbours and one radius longer than the folder around them, links around them flow into the line with pill-radius fillets. */
-:root[data-design="vertical-heading"] { --r: calc(var(--item-height) / 2); --line: var(--r); --line-gap: 0.1875rem; --indent: calc(var(--line) + var(--line-gap)); }
+/* Open folder: a 2px line joins head and closer; inner links sit on it, the line is one radius thick, subfolders are round, 4px (0.25rem) off it and their neighbours and one radius longer than the folder around them, links around them flow into the line with pill-radius fillets. */
+:root[data-design="vertical-heading"] { --r: calc(var(--item-height) / 2); --line: var(--r); --line-gap: 0.25rem; --indent: calc(var(--line) + var(--line-gap)); }
 :root[data-design="vertical-heading"] .folder-body { position: relative; isolation: isolate; }
 :root[data-design="vertical-heading"] .folder-body::before { content: ""; position: absolute; top: calc(var(--gap-item) * -1); bottom: calc(var(--gap-item) * -1); left: var(--gutter); width: var(--line); background: var(--chip); z-index: -1; }
 :root[data-design="vertical-heading"] .folder-body > .folder { position: relative; margin: calc(var(--line-gap) - var(--gap-item)) calc(var(--r) * -1) calc(var(--line-gap) - var(--gap-item)) var(--indent); }

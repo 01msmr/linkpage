@@ -18,8 +18,8 @@
   var activeUrl = null;
   var modeOverride = null;
 
-  // The chevron is a text glyph; one design draws it as an SVG whose ink ends exactly at the box edge (shape: right, down or up).
-  function chevron(ch, shape) {
+  // The chevron is a text glyph; one design draws it as an SVG whose ink ends exactly at the box edge. Both turn by rotation.
+  function chevron(ch) {
     var s = el('span', 'chev', ch);
     var ns = 'http://www.w3.org/2000/svg';
     var svg = document.createElementNS(ns, 'svg');
@@ -27,7 +27,7 @@
     svg.setAttribute('viewBox', '0 0 10 10');
     svg.setAttribute('aria-hidden', 'true');
     var p = document.createElementNS(ns, 'path');
-    p.setAttribute('d', C.FOLDER.shapes[shape]);
+    p.setAttribute('d', C.FOLDER.shape);
     svg.appendChild(p);
     s.appendChild(svg);
     return s;
@@ -49,29 +49,43 @@
     return last && (last.classList.contains('folder-closer') || last.querySelector('.folder-closer')) ? last : null;
   }
 
-  // Slides parts ({ el, from, to } heights in px) together, then calls done.
+  // Moves parts together, then calls done. A part is { el, prop: 'height' | 'margin-top', from, to (px), fade?: { el, from, to } }.
   function slide(parts, done) {
     folding = true;
     var finished = false;
+    var ms = C.FOLDER.foldMs;
     function end() {
       if (finished) return;
       finished = true;
-      parts.forEach(function (p) { p.el.style.cssText = ''; });
+      parts.forEach(function (p) {
+        p.el.style.cssText = '';
+        if (p.fade) p.fade.el.style.opacity = '';
+      });
       folding = false;
       if (done) done();
     }
     parts.forEach(function (p) {
-      p.el.style.overflow = 'hidden';
-      p.el.style.minHeight = '0';
-      p.el.style.height = p.from + 'px';
+      if (p.prop === 'height') {
+        p.el.style.overflow = 'hidden';
+        p.el.style.minHeight = '0';
+        p.el.style.height = p.from + 'px';
+      } else {
+        p.el.style.marginTop = p.from + 'px';
+      }
+      if (p.fade) p.fade.el.style.opacity = String(p.fade.from);
     });
     void document.body.offsetHeight;
     parts.forEach(function (p) {
-      p.el.style.transition = 'height ' + C.FOLDER.foldMs + 'ms ease';
-      p.el.style.height = p.to + 'px';
+      p.el.style.transition = (p.prop === 'height' ? 'height ' : 'margin-top ') + ms + 'ms ease';
+      if (p.prop === 'height') p.el.style.height = p.to + 'px';
+      else p.el.style.marginTop = p.to + 'px';
+      if (p.fade) {
+        p.fade.el.style.transition = 'opacity ' + ms + 'ms ease';
+        p.fade.el.style.opacity = String(p.fade.to);
+      }
     });
     parts[0].el.addEventListener('transitionend', function (e) { if (e.target === parts[0].el && e.propertyName === 'height') end(); });
-    setTimeout(end, C.FOLDER.foldMs + 60);
+    setTimeout(end, ms + 60);
   }
 
   function flip(path) {
@@ -81,6 +95,30 @@
     if (f) f.focus();
   }
 
+  function chevOf(path) {
+    var head = document.querySelector('.folder-head[data-path="' + path + '"]');
+    return head && head.querySelector('.chev');
+  }
+
+  // Turns a folder chevron to its open (down) or closed (right) angle.
+  function turnChevron(chev, isOpen, instant) {
+    if (!chev) return;
+    var svg = chev.querySelector('.chev-ink');
+    var el = svg && getComputedStyle(svg).display !== 'none' ? svg : chev;
+    chev.style.position = 'relative';
+    chev.style.zIndex = '2';
+    el.style.transition = instant ? 'none' : 'transform ' + C.FOLDER.foldMs + 'ms ease';
+    el.style.transform = isOpen ? 'rotate(90deg)' : 'rotate(0deg)';
+  }
+
+  // The closing line travels over the head's lower half (and back) so it forms the closed folder's bottom corners itself.
+  function closerParts(wrap, closer, fromOpen) {
+    var gap = parseFloat(getComputedStyle(wrap).rowGap) || 0;
+    var reach = -(closer.offsetHeight + 2 * gap);
+    var chev = closer.querySelector('.chev') || closer;
+    return { el: closer, prop: 'margin-top', from: fromOpen ? 0 : reach, to: fromOpen ? reach : 0, fade: { el: chev, from: fromOpen ? 1 : 0, to: fromOpen ? 0 : 1 } };
+  }
+
   // Opening and closing a folder slides its contents and its closing line (skipped for reduced motion).
   function toggle(path) {
     if (folding) return;
@@ -88,16 +126,20 @@
     if (!body || root.matchMedia('(prefers-reduced-motion: reduce)').matches) return flip(path);
     if (L.isOpen(open, path)) {
       var closer = closerOf(path);
-      var parts = [{ el: body, from: body.offsetHeight, to: 0 }];
-      if (closer) parts.push({ el: closer, from: closer.offsetHeight, to: 0 });
+      turnChevron(chevOf(path), false);
+      var parts = [{ el: body, prop: 'height', from: body.offsetHeight, to: 0 }];
+      if (closer) parts.push(closerParts(body.parentElement, closer, true));
       return slide(parts, function () { flip(path); });
     }
     flip(path);
     var fresh = bodyOf(path);
     var fresher = closerOf(path);
     if (!fresh) return;
-    var opening = [{ el: fresh, from: 0, to: fresh.scrollHeight }];
-    if (fresher) opening.push({ el: fresher, from: 0, to: fresher.offsetHeight });
+    turnChevron(chevOf(path), false, true);
+    void document.body.offsetHeight;
+    turnChevron(chevOf(path), true);
+    var opening = [{ el: fresh, prop: 'height', from: 0, to: fresh.scrollHeight }];
+    if (fresher) opening.push(closerParts(fresh.parentElement, fresher, false));
     slide(opening);
   }
 
@@ -163,7 +205,7 @@
     head.setAttribute('aria-expanded', String(isOpen));
     head.appendChild(el('span', 'num', L.numberLabel(index)));
     head.appendChild(el('span', 'name', item.name));
-    head.appendChild(chevron(C.FOLDER.chevron, isOpen ? 'down' : 'right'));
+    head.appendChild(chevron(C.FOLDER.chevron));
     head.addEventListener('click', function () { toggle(path); });
     return head;
   }
@@ -173,7 +215,7 @@
     closer.type = 'button';
     closer.dataset.path = path;
     closer.setAttribute('aria-label', C.FOLDER.closeLabel.replace('{name}', item.name));
-    closer.appendChild(chevron(C.FOLDER.chevron, 'up'));
+    closer.appendChild(chevron(C.FOLDER.chevron));
     closer.addEventListener('click', function () { toggle(path); });
     return closer;
   }

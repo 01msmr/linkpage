@@ -343,7 +343,7 @@
   function belowDuo(item, p) {
     var I = E.icons;
     var below = el('span', 'ctl-below');
-    below.appendChild(ctl(I.plus, fill(E.labels.linkAfter, item.name), 'ctl-plus ctl-link', function () { addAfter(p, L.clone(E.newLink)); }));
+    below.appendChild(ctl(I.linkPlus, fill(E.labels.linkAfter, item.name), 'ctl-plus ctl-link', function () { addAfter(p, L.clone(E.newLink)); }));
     below.appendChild(ctl(I.folderPlus, fill(E.labels.folderAfter, item.name), 'ctl-plus ctl-folder', function () { addAfter(p, newFolder()); }));
     return below;
   }

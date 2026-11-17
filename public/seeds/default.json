@@ -1,7 +1,7 @@
 {
   "design": "vertical-heading",
   "mode": "light",
-  "numbers": true,
+  "numbers": false,
   "caps": "regular",
   "font": "system",
   "items": [
