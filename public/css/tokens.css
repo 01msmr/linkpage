@@ -46,6 +46,7 @@
   /* Edit sizes */
   --ctl: calc(var(--item-font) * 1.1);
   --gear-size: calc(var(--item-size) * 1.2);
+  --handle-lift: 0.117em;
   --dot-w: calc(var(--gear-size) * 0.8);
   --gutter-edit: calc(var(--ctl) * 2);
   --gutter-right: calc(var(--ctl) * 4.4);
