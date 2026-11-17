@@ -19,17 +19,16 @@
 .opt { display: block; border: 0; border-radius: 0; padding: var(--pad-y) var(--pad-x); background: var(--bg); color: var(--fg); font: inherit; text-align: left; cursor: pointer; box-shadow: 0 0 0 1px var(--fg); }
 .opt[aria-current] { font-weight: bold; }
 
-/* Inline editing: a row is gutter, entry, gutter. */
+/* Inline editing: a row is left gutter and entry; the right gutter (add icons) is placed by edit.js. */
 .ent { position: relative; display: flex; align-items: center; max-width: 100%; }
 .ent > .item, .ent > .ebox, .ent > .lend { flex: 1 1 auto; min-width: 0; width: auto; }
 .gl, .gr { display: flex; flex: none; align-items: center; width: var(--gutter-edit); }
-.gr { width: var(--gutter-right); }
+.gr { position: absolute; top: 0; bottom: 0; width: var(--gutter-right); }
 /* Handle and pen stay at one left position whatever the nesting (each indented folder wrapper is undone). */
 .gl { position: relative; left: calc(var(--depth, 0) * var(--indent, 0px) * -1); }
-/* The closing line is lower than the add icons next to it; its gutters lie over the row so the icons do not make it taller. */
-.ent-closer { padding: 0 var(--gutter-right) 0 var(--gutter-edit); }
-.ent-closer > .gl, .ent-closer > .gr { position: absolute; top: 0; bottom: 0; }
-.ent-closer > .gr { right: 0; }
+/* The closing line is lower than the add icons next to it; its left gutter lies over the row so the icons do not make it taller. */
+.ent-closer { padding-left: var(--gutter-edit); }
+.ent-closer > .gl { position: absolute; top: 0; bottom: 0; }
 .ent[data-drop="before"] { box-shadow: 0 calc(var(--drop-w) * -1) 0 var(--hover); }
 .ent[data-drop="after"] { box-shadow: 0 var(--drop-w) 0 var(--hover); }
 .ent[data-drop="into"] { box-shadow: inset 0 0 0 var(--drop-w) var(--hover); }

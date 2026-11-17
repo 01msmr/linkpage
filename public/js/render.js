@@ -328,12 +328,18 @@
     html.style.setProperty('--fit', String(f));
   }
 
+  // After a layout change: fit the list, then let the editor line up its icons.
+  function settle() {
+    fit();
+    if (editor && editor.afterDraw) editor.afterDraw();
+  }
+
   function draw() {
     hideTip();
     var main = document.getElementById('list');
     main.textContent = '';
     fill(main, settings.items, '');
-    fit();
+    settle();
   }
 
   // Shows a site and keeps the open folders (edit mode redraws through this).
@@ -404,9 +410,9 @@
 
   root.addEventListener('resize', function () {
     if (!settings) return;
-    if (syncSplit()) draw(); else fit();
+    if (syncSplit()) draw(); else settle();
   });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (settings) fit(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (settings) settle(); });
 
   fetch('/site.php', { cache: 'no-store' })
     .then(function (r) {

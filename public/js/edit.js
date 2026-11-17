@@ -375,7 +375,22 @@
     return r;
   }
 
-  var api = { wrap: wrap, spacer: spacer, editBox: editBox, listEnd: listEnd };
+  // All add icons stand at one x, right of the longest entry, each in its own line.
+  function alignIcons() {
+    var rows = [].slice.call(document.querySelectorAll('#list .ent'));
+    var live = rows.filter(function (r) { return !r.closest('.folder[data-state="closed"] > .folder-body'); });
+    var right = 0;
+    live.forEach(function (r) {
+      var core = r.querySelector(':scope > .item, :scope > .ebox, :scope > .lend');
+      if (core) right = Math.max(right, core.getBoundingClientRect().right);
+    });
+    rows.forEach(function (r) {
+      var gr = r.querySelector(':scope > .gr');
+      if (gr) gr.style.left = Math.round(right - r.getBoundingClientRect().left) + 'px';
+    });
+  }
+
+  var api = { wrap: wrap, spacer: spacer, editBox: editBox, listEnd: listEnd, afterDraw: alignIcons };
 
   function failure(res) {
     if (res === 'network') return E.errors.network;
