@@ -34,11 +34,12 @@
 .lend { display: flex; gap: var(--gap-item); }
 
 /* Controls: appear on hovering the gutter beside an entry. */
-.ctl { display: flex; align-items: center; justify-content: center; width: var(--ctl); height: var(--ctl); padding: 0; border: 0; border-radius: 50%; background: none; color: var(--fg); font: inherit; font-size: var(--item-font); font-weight: 300; line-height: 1; cursor: pointer; opacity: 0; transition: opacity var(--fade-fast), color var(--fade-fast); }
-.gl:hover .ctl, .gr:hover .ctl, .ctl:focus-visible, .ent[data-editing] .ctl, .listend .ctl { opacity: 1; }
+.ctl { display: flex; align-items: center; justify-content: center; width: var(--ctl); height: var(--ctl); padding: 0; border: 0; border-radius: 50%; background: none; color: var(--fg); font: inherit; font-size: var(--item-font); font-weight: 300; line-height: 1; cursor: pointer; opacity: 0; transform: scale(0.8); transition: opacity var(--fade-icon), transform var(--fade-icon); }
+/* Hovering any icon of a row shows all of them, left and right (the entry itself does not). */
+.ent:has(.gl:hover, .gr:hover) .ctl, .ctl:focus-visible, .ent[data-editing] .ctl, .listend .ctl { opacity: var(--icon-opacity); transform: none; }
 .ctl-handle { cursor: grab; font-weight: 400; }
 .ctl-remove, .ctl-remove:hover { color: var(--danger); }
-@media (hover: none) { .ctl { opacity: 1; } }
+@media (hover: none) { .ctl { opacity: var(--icon-opacity); transform: none; } }
 
 /* Add icons behind an entry, vertically centered: a plus for a link, a small filled pill (2.5 times as wide as high) with a plus for a folder. */
 .ctl-below { display: flex; align-items: center; }
@@ -46,7 +47,6 @@
 .ctl-link svg { display: block; width: calc(var(--item-font) * 0.78); height: calc(var(--item-font) * 0.78); }
 .ctl-folder { width: calc(var(--ctl) * 1.75); height: calc(var(--ctl) * 0.7); margin: 0 calc(var(--ctl) * 0.05); border-radius: 0; background: none; color: var(--fg); }
 .ctl-folder svg { display: block; width: 100%; height: 100%; }
-.ctl-folder:hover { color: var(--hover); --pill-ink: color-mix(in srgb, var(--hover-fg) var(--folder-ink), var(--hover)); }
 
 /* Entry editing */
 .ebox { display: flex; flex-wrap: wrap; gap: var(--gap-item); }
