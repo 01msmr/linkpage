@@ -23,6 +23,7 @@
 .ent { position: relative; display: flex; align-items: center; max-width: 100%; }
 .ent > .item, .ent > .ebox, .ent > .lend { flex: 1 1 auto; min-width: 0; width: auto; }
 .gl, .gr { display: flex; flex: none; align-items: center; width: var(--gutter-edit); }
+.gap { position: absolute; top: 0; bottom: 0; left: 100%; width: var(--gap-w, 0px); }
 .gr { position: absolute; top: 0; bottom: 0; width: var(--gutter-right); }
 /* Handle and pen stay at one left position whatever the nesting (each indented folder wrapper is undone). */
 .gl { position: relative; left: calc(var(--depth, 0) * var(--indent, 0px) * -1); }
@@ -36,9 +37,9 @@
 
 /* Controls: appear on hovering the gutter beside an entry. */
 .ctl { display: flex; align-items: center; justify-content: center; width: var(--ctl); height: var(--ctl); padding: 0; border: 0; border-radius: 50%; background: none; color: var(--fg); font: inherit; font-size: var(--item-font); font-weight: 300; line-height: 1; cursor: pointer; pointer-events: none; opacity: 0; transform: scale(0.8); transition: opacity var(--fade-icon), transform var(--fade-icon); }
-/* Hovering any icon of a row shows all of them, left and right (the entry itself does not), after a short delay so quick passes stay clean. */
+/* Hovering the row anywhere but on the entry itself (its gutters or the empty stretch after it) shows all its icons after a short delay so quick passes stay clean. */
 /* An icon takes clicks and the hand cursor only once it is visible (it stays focusable by keyboard). */
-.ent:has(.gl:hover, .gr:hover) .ctl { opacity: var(--icon-opacity); transform: none; transition-delay: var(--icon-delay); animation: ctl-live 0s var(--icon-delay) forwards; }
+.ent:has(.gl:hover, .gr:hover, .gap:hover) .ctl { opacity: var(--icon-opacity); transform: none; transition-delay: var(--icon-delay); animation: ctl-live 0s var(--icon-delay) forwards; }
 .ctl:focus-visible, .ent[data-editing] .ctl, .listend .ctl { opacity: var(--icon-opacity); transform: none; pointer-events: auto; }
 @keyframes ctl-live { to { pointer-events: auto; } }
 /* The hamburger glyph sits low in its line box; lift it so its ink is centered. */

@@ -339,6 +339,7 @@
     }
     r.appendChild(gl);
     r.appendChild(core);
+    r.appendChild(el('div', 'gap'));
     r.appendChild(gr);
     return r;
   }
@@ -359,6 +360,7 @@
     var r = el('div', 'ent ent-closer');
     r.appendChild(el('div', 'gl'));
     r.appendChild(core);
+    r.appendChild(el('div', 'gap'));
     var gr = el('div', 'gr');
     if (item) gr.appendChild(belowDuo(item, parse(path)));
     r.appendChild(gr);
@@ -375,7 +377,7 @@
     return r;
   }
 
-  // All add icons stand at one x, right of the longest entry, each in its own line.
+  // All add icons stand at one x, right of the longest entry, each in its own line; the empty stretch up to them (.gap) also shows them.
   function alignIcons() {
     var rows = [].slice.call(document.querySelectorAll('#list .ent'));
     var live = rows.filter(function (r) { return !r.closest('.folder[data-state="closed"] > .folder-body'); });
@@ -386,7 +388,9 @@
     });
     rows.forEach(function (r) {
       var gr = r.querySelector(':scope > .gr');
-      if (gr) gr.style.left = Math.round(right - r.getBoundingClientRect().left) + 'px';
+      var box = r.getBoundingClientRect();
+      if (gr) gr.style.left = Math.round(right - box.left) + 'px';
+      r.style.setProperty('--gap-w', Math.max(0, Math.round(right - box.right)) + 'px');
     });
   }
 
