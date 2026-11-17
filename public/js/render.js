@@ -35,6 +35,11 @@
 
   var folding = false;
 
+  // A time token from the CSS (like --fold: 0.2s) in milliseconds, so the stylesheet is the only place that sets it.
+  function cssMs(name) {
+    return parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) * 1000 || 0;
+  }
+
   function bodyOf(path) {
     var head = document.querySelector('.folder-head[data-path="' + path + '"]');
     var wrap = head && head.closest('.folder');
@@ -53,7 +58,7 @@
   function slide(parts, done, lifted) {
     folding = true;
     var finished = false;
-    var ms = C.FOLDER.foldMs;
+    var ms = cssMs('--fold');
     function end() {
       if (finished) return;
       finished = true;
@@ -109,7 +114,7 @@
     var el = svg && getComputedStyle(svg).display !== 'none' ? svg : chev;
     chev.style.position = 'relative';
     chev.style.zIndex = '2';
-    el.style.transition = instant ? 'none' : 'transform ' + C.FOLDER.foldMs + 'ms ease';
+    el.style.transition = instant ? 'none' : 'transform ' + cssMs('--fold') + 'ms ease';
     el.style.transform = isOpen ? 'rotate(90deg)' : 'rotate(0deg)';
   }
 
@@ -342,6 +347,7 @@
     html.dataset.numbers = String(settings.numbers === true);
     html.dataset.font = settings.font;
     html.dataset.layout = settings.layout;
+    html.dataset.form = L.formOf(settings.design);
     syncSplit();
     html.style.setProperty('--pill-font', L.pillFont(settings.height));
     html.style.setProperty('--intensity', settings.intensity + '%');
@@ -384,6 +390,7 @@
     showError: showError,
     getSite: function () { return raw; },
     whenReady: function (fn) { if (raw) fn(raw); else readyFns.push(fn); },
+    cssMs: cssMs,
     getOpen: function () { return open; },
     getMode: function () { return modeOverride || (settings && settings.mode); },
     setMode: function (m) { modeOverride = m; },

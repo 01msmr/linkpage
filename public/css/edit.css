@@ -1,85 +1,72 @@
-/* Edit mode: tokens only, no borders or outlines on chips. */
-:root { --ctl: calc(var(--item-font) * 1.1); --gear-size: calc(var(--item-size) * 1.2); }
+/* Edit mode: the settings dock, inline editing, the add icons and the save icon. */
+:root[data-editing] { --gutter: var(--gutter-edit); }
 .toolbar { position: fixed; top: var(--side); right: var(--side); z-index: 3; display: flex; align-items: center; gap: var(--pad-x); }
-@media (prefers-reduced-motion: reduce) { .menu, .dot .pt, .dot .ico, .ctl { transition: none; animation: none; } }
-.estatus { font-size: 1rem; line-height: 1.2; }
+.estatus { font-size: var(--ui-font); line-height: var(--ui-leading); }
+.estatus[data-kind="error"] { font-weight: bold; }
 .estatus[hidden], .esave[hidden] { display: none; }
-.ebtn:focus-visible, .ctl:focus-visible, .ebox input:focus-visible, .dot:focus-visible, .opt:focus-visible { outline: 2px solid var(--hover); outline-offset: 2px; }
 
 /* Settings: grey dots that show their icon on hover; two values switch, more open a menu. */
 .dock { display: flex; align-items: center; }
 .slot { position: relative; }
-.dot { display: flex; align-items: center; justify-content: center; position: relative; width: calc(var(--gear-size) * 0.8); height: var(--gear-size); padding: 0; border: 0; background: none; color: var(--gear-hover); font: inherit; font-size: calc(var(--gear-size) * 0.6); line-height: 1; cursor: pointer; }
+.dot { display: flex; align-items: center; justify-content: center; position: relative; width: var(--dot-w); height: var(--gear-size); padding: 0; border: 0; background: none; color: var(--gear-hover); font: inherit; font-size: calc(var(--gear-size) * 0.6); line-height: 1; cursor: pointer; }
 .dot .pt { width: 0.2em; height: 0.2em; border-radius: 50%; background: var(--gear); transition: opacity var(--fade), transform var(--fade); }
 .dot .ico { position: absolute; opacity: 0; transform: scale(0.2); transition: opacity var(--fade), transform var(--fade), color var(--fade-fast); }
 .dock:hover .pt { opacity: 0; transform: scale(4); }
 .dock:hover .ico { opacity: 1; transform: none; }
 .dot:hover .ico { color: var(--fg); }
-.menu { position: absolute; top: 100%; right: 0; min-width: 100%; padding-top: calc(var(--side) / 4); opacity: 0; visibility: hidden; transform: translateY(calc(var(--side) * -0.25)); transition: opacity var(--fade), transform var(--fade), visibility 0s var(--fade); font-size: 1rem; line-height: 1.2; }
+.menu { position: absolute; top: 100%; right: 0; display: flex; flex-direction: column; align-items: stretch; width: max-content; min-width: 100%; padding-top: var(--menu-gap); opacity: 0; visibility: hidden; transform: translateY(calc(var(--menu-slide) * -1)); transition: opacity var(--fade), transform var(--fade), visibility 0s var(--fade); font-size: var(--ui-font); line-height: var(--ui-leading); }
 .menu[data-open] { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
-.menu { display: flex; flex-direction: column; align-items: stretch; width: max-content; }
 .opt { display: block; border: 0; border-radius: 0; padding: var(--pad-y) var(--pad-x); background: var(--bg); color: var(--fg); font: inherit; text-align: left; cursor: pointer; box-shadow: 0 0 0 1px var(--fg); }
-.opt:hover { background: var(--hover); color: var(--hover-fg); }
 .opt[aria-current] { font-weight: bold; }
 
 /* Inline editing: a row is gutter, entry, gutter. */
 .ent { position: relative; display: flex; align-items: center; max-width: 100%; }
 .ent > .item, .ent > .ebox, .ent > .lend { flex: 1 1 auto; min-width: 0; width: auto; }
-.gl, .gr { display: flex; flex: none; align-items: center; width: calc(var(--ctl) * 2); }
-.gr { width: calc(var(--ctl) * 4.4); }
-.ctl-gap { width: var(--ctl); height: var(--ctl); }
-.ctl { display: flex; align-items: center; justify-content: center; width: var(--ctl); height: var(--ctl); padding: 0; border: 0; border-radius: 50%; background: none; color: var(--fg); font: inherit; font-size: var(--item-font); font-weight: 300; line-height: 1; cursor: pointer; opacity: 0; transition: opacity var(--fade-fast), color var(--fade-fast); }
-.gl:hover .ctl, .gr:hover .ctl, .ctl:focus-visible, .ent[data-editing] .ctl, .listend .ctl { opacity: 1; }
-.ctl-handle { cursor: grab; }
-.ctl-remove, .ctl-remove:hover { color: var(--danger); }
-.ent[data-drop="before"] { box-shadow: 0 -3px 0 var(--hover); }
-.ent[data-drop="after"] { box-shadow: 0 3px 0 var(--hover); }
-.ent[data-drop="into"] { box-shadow: inset 0 0 0 3px var(--hover); }
+.gl, .gr { display: flex; flex: none; align-items: center; width: var(--gutter-edit); }
+.gr { width: var(--gutter-right); }
+/* Handle and pen stay at one left position whatever the nesting (each indented folder wrapper is undone). */
+.gl { position: relative; left: calc(var(--depth, 0) * var(--indent, 0px) * -1); }
+/* The closing line is lower than the add icons next to it; they must not make its row taller. */
+.ent-closer > .gl, .ent-closer > .gr { height: 0; }
+.ent[data-drop="before"] { box-shadow: 0 calc(var(--drop-w) * -1) 0 var(--hover); }
+.ent[data-drop="after"] { box-shadow: 0 var(--drop-w) 0 var(--hover); }
+.ent[data-drop="into"] { box-shadow: inset 0 0 0 var(--drop-w) var(--hover); }
 .lend { display: flex; gap: var(--gap-item); }
 
-.ebox { display: flex; flex-wrap: wrap; gap: var(--gap-item); }
-.ebox input { flex: 1 1 8em; min-width: 0; border: 0; border-radius: 0; padding: var(--pad-y) var(--pad-x); background: var(--chip); color: var(--chip-fg); font: inherit; font-size: var(--item-font); line-height: var(--leading); }
-.ebox .in-url { flex: 2 1 12em; }
-.ebox.efolder input { border-radius: calc(var(--item-height) / 2); }
-
-.ebtn { border: 0; border-radius: var(--radius-chip); padding: var(--pad-y) var(--pad-x); background: var(--chip); color: var(--chip-fg); font: inherit; cursor: pointer; }
-.ebtn:hover { background: var(--hover); color: var(--hover-fg); }
-.ebtn:disabled { opacity: 0.4; cursor: default; background: var(--chip); color: var(--chip-fg); }
-.estatus[data-kind="error"] { font-weight: bold; }
-
+/* Controls: appear on hovering the gutter beside an entry. */
+.ctl { display: flex; align-items: center; justify-content: center; width: var(--ctl); height: var(--ctl); padding: 0; border: 0; border-radius: 50%; background: none; color: var(--fg); font: inherit; font-size: var(--item-font); font-weight: 300; line-height: 1; cursor: pointer; opacity: 0; transition: opacity var(--fade-fast), color var(--fade-fast); }
+.gl:hover .ctl, .gr:hover .ctl, .ctl:focus-visible, .ent[data-editing] .ctl, .listend .ctl { opacity: 1; }
+.ctl-handle { cursor: grab; font-weight: 400; }
+.ctl-remove, .ctl-remove:hover { color: var(--danger); }
 @media (hover: none) { .ctl { opacity: 1; } }
 
-/* Draggable divider between list and pane (split layout, wide screens, edit mode). */
-#divider { display: none; }
-html[data-split] #divider { display: block; position: fixed; top: 0; bottom: 0; right: var(--pane); width: 12px; transform: translateX(50%); z-index: 2; cursor: col-resize; touch-action: none; }
-#divider::after { content: ""; position: absolute; top: 0; bottom: 0; left: 4px; width: 4px; background: var(--hover); opacity: 0; transition: opacity var(--fade-fast); }
-#divider:hover::after, #divider[data-drag]::after { opacity: 1; }
-
-/* In the split layout the toolbar floats over the pane, so it needs its own backing. */
-html[data-split] .toolbar { background: color-mix(in srgb, var(--bg) var(--toolbar-opacity), transparent); padding: 0 var(--pad-x); }
-
-/* The save button is a floppy-disk icon that only appears while something is unsaved. */
-.esave, .esave:disabled { display: flex; align-items: center; justify-content: center; padding: 0; background: none; color: var(--fg); }
-.esave svg { width: calc(var(--gear-size) * 0.8); height: calc(var(--gear-size) * 0.8); }
-.esave:hover:not(:disabled) { background: none; color: var(--hover); }
-.esave:disabled { opacity: 0.4; }
-
-:root[data-editing] { --gutter: calc(var(--ctl) * 2); }
-
-.ctl-handle { font-weight: 400; }
-
-/* Add icons: a light plus for a link, a bold plus knocked out of a filled circle for a folder. */
+/* Add icons behind an entry, vertically centered: a plus for a link, a small filled pill (2.5 times as wide as high) with a plus for a folder. */
+.ctl-below { display: flex; align-items: center; }
 .ctl-link { margin: 0 calc(var(--ctl) * 0.3); }
 .ctl-link svg { display: block; width: calc(var(--item-font) * 0.78); height: calc(var(--item-font) * 0.78); }
 .ctl-folder { width: calc(var(--ctl) * 1.75); height: calc(var(--ctl) * 0.7); margin: 0 calc(var(--ctl) * 0.05); border-radius: 0; background: none; color: var(--fg); }
 .ctl-folder svg { display: block; width: 100%; height: 100%; }
 .ctl-folder:hover { color: var(--hover); --pill-ink: color-mix(in srgb, var(--hover-fg) var(--folder-ink), var(--hover)); }
 
-/* The add icons come after an element, vertically centered: a bold plus for a link, a pill (2.5 times as wide as high) with a plus for a folder. */
-.ctl-below { display: flex; align-items: center; }
+/* Entry editing */
+.ebox { display: flex; flex-wrap: wrap; gap: var(--gap-item); }
+.ebox input { flex: 1 1 8em; min-width: 0; border: 0; border-radius: 0; padding: var(--pad-y) var(--pad-x); background: var(--chip); color: var(--chip-fg); font: inherit; font-size: var(--item-font); line-height: var(--leading); }
+.ebox .in-url { flex: 2 1 12em; }
+.ebox.efolder input { border-radius: var(--r); }
+.ebtn { border: 0; border-radius: var(--radius-chip); padding: var(--pad-y) var(--pad-x); background: var(--chip); color: var(--chip-fg); font: inherit; cursor: pointer; }
+.ebtn:disabled { opacity: 0.4; cursor: default; background: var(--chip); color: var(--chip-fg); }
 
-/* Handle and pen stay at one left position whatever the nesting (each indented folder wrapper is undone). */
-.gl { position: relative; left: calc(var(--depth, 0) * var(--indent, 0px) * -1); }
+/* Save: a floppy-disk icon that only appears while something is unsaved. */
+.esave, .esave:disabled { display: flex; align-items: center; justify-content: center; padding: 0; background: none; color: var(--fg); }
+.esave svg { width: var(--dot-w); height: var(--dot-w); }
+.esave:hover:not(:disabled) { background: none; color: var(--hover); }
+.esave:disabled { opacity: 0.4; }
 
-/* The closing line is lower than the add icons next to it; they must not make its row taller. */
-.ent-closer > .gl, .ent-closer > .gr { height: 0; }
+/* Split layout: the draggable divider between list and pane, and the toolbar floating over the pane. */
+#divider { display: none; }
+html[data-split] #divider { display: block; position: fixed; top: 0; bottom: 0; right: var(--pane); width: 12px; transform: translateX(50%); z-index: 2; cursor: col-resize; touch-action: none; }
+#divider::after { content: ""; position: absolute; top: 0; bottom: 0; left: 4px; width: 4px; background: var(--hover); opacity: 0; transition: opacity var(--fade-fast); }
+#divider:hover::after, #divider[data-drag]::after { opacity: 1; }
+html[data-split] .toolbar { background: color-mix(in srgb, var(--bg) var(--toolbar-opacity), transparent); padding: 0 var(--pad-x); }
+
+@media (prefers-reduced-motion: reduce) { .menu, .dot .pt, .dot .ico, .ctl { transition: none; animation: none; } }

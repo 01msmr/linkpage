@@ -211,3 +211,7 @@ test('openAfterMove shifts other open folders after a link leaves a folder', () 
 test('openAfterMove opens the folder a moved open folder lands in', () => {
   assert.deepEqual(L.openAfterMove(['1'], [1], [0], 0).sort(), ['0', '0.0']);
 });
+test('formOf says pill for the pill design and text for every other design', () => {
+  assert.equal(L.formOf('vertical-heading'), 'pill');
+  assert.ok(C.DESIGNS.filter(d => d !== 'vertical-heading').every(d => L.formOf(d) === 'text'));
+});

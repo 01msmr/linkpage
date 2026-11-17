@@ -21,6 +21,7 @@
     html.dataset.caps = s.caps;
     html.dataset.numbers = String(s.numbers === true);
     html.dataset.font = s.font;
+    html.dataset.form = L.formOf(s.design);
     html.style.setProperty('--pill-font', L.pillFont(s.height));
     html.style.setProperty('--intensity', s.intensity + '%');
   }

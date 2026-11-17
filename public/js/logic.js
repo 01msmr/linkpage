@@ -23,6 +23,9 @@
     };
   }
 
+  // 'pill' designs draw shapes, every other design is plain text.
+  function formOf(design) { return C.PILL_DESIGNS.indexOf(design) >= 0 ? 'pill' : 'text'; }
+
   // The font size that gives a pill of `height` px.
   function pillFont(height) {
     return 'calc((' + height + 'px - 2 * var(--pad-y)) / var(--leading))';
@@ -235,7 +238,7 @@
     return item.items.reduce(function (n, i) { return n + 1 + countDescendants(i); }, 0);
   }
 
-  var api = { resolveSettings: resolveSettings, pillFont: pillFont, slugify: slugify, resolveOpen: resolveOpen, findLink: findLink,
+  var api = { resolveSettings: resolveSettings, pillFont: pillFont, formOf: formOf, slugify: slugify, resolveOpen: resolveOpen, findLink: findLink,
     sortItems: sortItems, sortedEntries: sortedEntries, entriesFor: entriesFor, prefixPaths: prefixPaths, reindexOpen: reindexOpen, openAfterMove: openAfterMove, slugFor: slugFor, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen,
     clone: clone, itemAt: itemAt, removeAt: removeAt, insertAt: insertAt, moveItem: moveItem, parentAfterRemoval: parentAfterRemoval,
     setField: setField, hasChanged: hasChanged, countDescendants: countDescendants };

@@ -1,7 +1,4 @@
-:root { --item-size: clamp(1.25rem, 5vw, 1.75rem); }
-@media (min-width: 601px) {
-  :root { --item-size: clamp(1.75rem, 3vw, 2.75rem); --side: 32px; }
-}
+/* Page */
 * { box-sizing: border-box; }
 html { background: var(--bg); }
 body {
@@ -16,6 +13,12 @@ body {
 }
 h1 { margin: 0 0 var(--side); font-size: inherit; font-weight: normal; overflow-wrap: anywhere; }
 #list { display: flex; flex-direction: column; gap: var(--gap-item); align-items: flex-start; }
+.error { color: var(--fg); overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  #list { align-items: stretch; }
+}
+
+/* Items: links, and the heads and closing lines of folders */
 .item {
   display: block;
   max-width: 100%;
@@ -30,56 +33,58 @@ h1 { margin: 0 0 var(--side); font-size: inherit; font-weight: normal; overflow-
   text-decoration: none;
   overflow-wrap: anywhere;
 }
+a.item { border-radius: 0; }
 button.item { font-family: inherit; line-height: inherit; text-align: left; cursor: pointer; width: 100%; display: flex; align-items: baseline; }
-.item:focus-visible { outline: 2px solid var(--hover); outline-offset: 2px; }
+.num { margin-right: 0.5em; }
+:root:not([data-numbers="true"]) .num { display: none; }
+:root[data-caps="versalien"] .item, :root[data-caps="versalien"] h1 { text-transform: uppercase; }
+
+/* Folders */
 .chev { display: inline-block; width: 1em; margin-left: auto; text-align: center; line-height: inherit; text-transform: none; transform: rotate(0deg); }
+.chev-ink { display: none; }
 .folder-head .name { margin-right: 0.5em; }
 .folder-head[aria-expanded="true"] .chev { transform: rotate(90deg); }
 .folder-closer .chev { transform: rotate(-90deg); font-size: calc(1em * var(--chev-closer)); }
 .folder, .items { display: flex; flex-direction: column; gap: var(--gap-item); align-items: stretch; }
 .folder { max-width: 100%; }
-.folder-head { border-radius: calc(var(--item-height) / 2); }
-.folder[data-state="open"] > .folder-head, .folder[data-state="open"] > .ent > .folder-head { border-radius: calc(var(--item-height) / 2) calc(var(--item-height) / 2) 0 0; }
-.folder-closer { border-radius: 0 0 calc(var(--item-height) / 2) calc(var(--item-height) / 2); min-height: var(--item-height); }
-a.item { border-radius: 0; }
-.folder-head:hover, .folder-closer:hover { background: var(--hover); color: var(--hover-fg); }
-a.item:hover { background: var(--hover); color: var(--hover-fg); }
+.folder-head { border-radius: var(--r); }
+.folder[data-state="open"] > .folder-head, .folder[data-state="open"] > .ent > .folder-head { border-radius: var(--r) var(--r) 0 0; }
+.folder-closer { border-radius: 0 0 var(--r) var(--r); min-height: var(--item-height); }
 .folder + * { margin-top: var(--gap-folder); }
-.num { margin-right: 0.5em; }
-:root:not([data-numbers="true"]) .num { display: none; }
-:root[data-caps="versalien"] .item, :root[data-caps="versalien"] h1 { text-transform: uppercase; }
-.error { color: var(--fg); overflow-wrap: anywhere; }
-@media (max-width: 600px) {
-  #list { align-items: stretch; }
-}
+/* A folder keeps its closed contents in the layout, so it does not change size when opened. */
+.folder[data-state="closed"] > .folder-body { height: 0; overflow: hidden; visibility: hidden; margin-top: calc(var(--gap-item) * -1); }
+
+/* Hover and focus looks, shared by items and the edit controls */
+:root[data-form] .item:hover, :root[data-form] a.item[aria-current], .ebtn:hover:not(:disabled), .opt:hover { background: var(--hover); color: var(--hover-fg); }
+.item:focus-visible, .ebtn:focus-visible, .ctl:focus-visible, .ebox input:focus-visible, .dot:focus-visible, .opt:focus-visible { outline: 2px solid var(--hover); outline-offset: 2px; }
+
+/* Text form (every design but the pill one): no shapes, the chevron follows the name, the closing line is bare. */
+:root[data-form="text"] { --pad-x: 0px; }
+:root[data-form="text"] .item { display: block; width: auto; border-radius: 0; background: transparent; color: var(--fg); }
+:root[data-form="text"] .folder-head .name { margin-right: 0; }
+:root[data-form="text"] .chev { margin-left: var(--chev-gap); }
+:root[data-form="text"] .folder-closer { min-height: 0; }
+:root[data-form="text"] .folder-closer .chev { margin-left: 0; }
 
 /* Split layout: the list keeps the left side, the chosen link shows in a pane on the right. */
 #pane { display: none; }
-:root { --pane: 55%; }
 html[data-split] body { padding-right: calc(var(--pane) + var(--pad-page)); }
 html[data-split] #list { align-items: stretch; }
 html[data-split] .ent { width: 100%; }
 html[data-split] #pane { position: fixed; top: 0; right: 0; bottom: 0; width: var(--pane); display: flex; flex-direction: column; background: var(--bg); box-shadow: -2px 0 0 var(--fg); }
-html[data-split] #pane-open { position: absolute; z-index: 1; top: var(--side); left: var(--pad-page); background: var(--bg); padding: var(--pad-y) var(--pad-x); font-size: 1rem; line-height: 1.2; color: var(--fg); }
+html[data-split] #pane-open { position: absolute; z-index: 1; top: var(--side); left: var(--pad-page); background: var(--bg); padding: var(--pad-y) var(--pad-x); font-size: var(--ui-font); line-height: var(--ui-leading); color: var(--fg); }
 html[data-split] #pane-open:hover { color: var(--hover); }
 html[data-split] #pane-frame { flex: 1 1 auto; width: 100%; border: 0; background: var(--bg); }
 html[data-split] .item { white-space: nowrap; overflow-wrap: normal; overflow: hidden; text-overflow: ellipsis; }
 html[data-split] .item .name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 html[data-split] .item .chev { flex: none; }
-
-.mode-fade, .mode-fade * { transition: background-color var(--fade), color var(--fade), box-shadow var(--fade), outline-color var(--fade) !important; }
-@media (prefers-reduced-motion: reduce) { .mode-fade, .mode-fade * { transition: none !important; } }
-
 /* While fitting, ellipsis would hide the overflow being measured. */
 html.measure .item, html.measure .item .name { text-overflow: clip !important; }
 
-/* A folder keeps its closed contents in the layout, so it does not change size when opened. */
-.folder[data-state="closed"] > .folder-body { height: 0; overflow: hidden; visibility: hidden; margin-top: calc(var(--gap-item) * -1); }
-
-/* URL beside a hovered link. */
-.urltip { position: fixed; z-index: 5; transform: translateY(-50%); max-width: 50vw; padding: var(--pad-y) var(--pad-x); background: var(--bg); color: var(--fg); box-shadow: 0 0 0 1px var(--fg); font-size: 1rem; line-height: 1.2; overflow-wrap: anywhere; pointer-events: none; opacity: 0; transition: opacity var(--fade-fast); }
+/* URL beside a hovered link */
+.urltip { position: fixed; z-index: 5; transform: translateY(-50%); max-width: 50vw; padding: var(--pad-y) var(--pad-x); background: var(--bg); color: var(--fg); box-shadow: 0 0 0 1px var(--fg); font-size: var(--ui-font); line-height: var(--ui-leading); overflow-wrap: anywhere; pointer-events: none; opacity: 0; transition: opacity var(--fade-fast); }
 .urltip[data-show] { opacity: 1; }
 
-.chev-ink { display: none; }
-
-a.item[aria-current] { background: var(--hover); color: var(--hover-fg); }
+/* Colors cross-fade while the mode changes */
+.mode-fade, .mode-fade * { transition: background-color var(--fade), color var(--fade), box-shadow var(--fade), outline-color var(--fade) !important; }
+@media (prefers-reduced-motion: reduce) { .mode-fade, .mode-fade * { transition: none !important; } }

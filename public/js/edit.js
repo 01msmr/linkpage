@@ -55,7 +55,7 @@
   // Colors cross-fade while the mode changes (the class stays on for one fade).
   function fadeMode() {
     var html = document.documentElement;
-    var ms = parseFloat(getComputedStyle(html).getPropertyValue('--fade')) * 1000 || 0;
+    var ms = R.cssMs('--fade');
     html.classList.add('mode-fade');
     void html.offsetWidth;
     clearTimeout(fadeTimer);

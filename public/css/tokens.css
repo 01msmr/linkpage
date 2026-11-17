@@ -1,37 +1,61 @@
-/* Light set, dark set, and the sizes every design shares. */
+/* Every value that more than one rule uses lives here: colors (light and dark), type and spacing, layout, edit sizes, timings. */
 :root {
+  /* Colors */
   --bg: #fff;
-  --intensity: 100%;
   --fg-raw: #000;
   --chip-raw: #000;
+  --intensity: 100%;
   --fg: color-mix(in srgb, var(--fg-raw) var(--intensity), var(--bg));
   --chip: color-mix(in srgb, var(--chip-raw) var(--intensity), var(--bg));
   --chip-fg: #fff;
   --hover: #00f;
   --hover-fg: #fff;
   --danger: #e00;
-  --toolbar-opacity: 20%;
-  --fade: 0.25s;
-  --fade-fast: 0.1s;
   --gear: #bbb;
   --gear-hover: #777;
-  --radius-chip: 6px;
-  --gap-item: 1px;
-  --gap-folder: 16px;
-  --pad-y: 4px;
-  --pad-x: 12px;
-  --side: 16px;
-  --pad-page: 8px;
-  --chev-closer: 0.5;
   --folder-ink: 66%;
   --pill-ink: color-mix(in srgb, var(--bg) var(--folder-ink), var(--fg));
-  --gutter: 0px;
-  --leading: 1.2;
-  --item-scale: 1;
+  --toolbar-opacity: 20%;
+
+  /* Type and spacing */
   --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --item-size: clamp(1.25rem, 5vw, 1.75rem);
+  --item-scale: 1;
+  --leading: 1.2;
   --fit: 1;
   --item-font: calc(var(--pill-font, calc(var(--item-size) * var(--item-scale))) * var(--fit));
   --item-height: round(nearest, calc(var(--item-font) * var(--leading) + 2 * var(--pad-y)), 2px);
+  --r: calc(var(--item-height) / 2);
+  --ui-font: 1rem;
+  --ui-leading: 1.2;
+  --radius-chip: 6px;
+  --pad-y: 4px;
+  --pad-x: 12px;
+  --pad-page: 8px;
+  --side: 16px;
+  --gap-item: 1px;
+  --gap-folder: 16px;
+  --chev-gap: 0.4em;
+  --chev-closer: 0.5;
+
+  /* Layout */
+  --pane: 55%;
+  --gutter: 0px;
+
+  /* Edit sizes */
+  --ctl: calc(var(--item-font) * 1.1);
+  --gear-size: calc(var(--item-size) * 1.2);
+  --dot-w: calc(var(--gear-size) * 0.8);
+  --gutter-edit: calc(var(--ctl) * 2);
+  --gutter-right: calc(var(--ctl) * 4.4);
+  --drop-w: 3px;
+  --menu-gap: calc(var(--side) / 4);
+  --menu-slide: calc(var(--side) * 0.25);
+
+  /* Motion */
+  --fade: 0.25s;
+  --fade-fast: 0.1s;
+  --fold: 0.2s;
 }
 :root[data-mode="dark"] {
   --bg: #000;
@@ -42,4 +66,7 @@
   --hover-fg: #000;
   --gear: #555;
   --gear-hover: #999;
+}
+@media (min-width: 601px) {
+  :root { --item-size: clamp(1.75rem, 3vw, 2.75rem); --side: 32px; }
 }

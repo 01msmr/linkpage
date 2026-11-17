@@ -36,6 +36,26 @@ Editing is inline and always on in a browser that has opened `/edit/` once (it s
 
 **Open an entry in the list:** `/<folder>/<link>/?open` (also `/<link>/?open` or `/<folder>/?open`; folder slugs are the folder names in lower case with `-` for other characters, e.g. `tbx.li` becomes `tbx-li`) shows the list with the tree opened down to that entry and marks it; in the split layout it also loads the link in the pane. Without `?open` the short address redirects as before. Real folders such as `/edit/` are never rewritten.
 
+## Project layout
+
+    public/                 the document root
+      index.html, go.html   the list page and the /<slug>/ redirect page
+      css/tokens.css        every shared value: colors (light and dark), type, spacing, layout, edit sizes, timings
+      css/base.css          page, items, folders, hover and focus looks, text form, split layout, URL tip
+      css/edit.css          settings dock, inline editing, add icons, save icon
+      css/designs/          one file per design, only what differs from base (see form below)
+      js/config.js          every settable value: defaults, option lists, labels, icons
+      js/logic.js           pure logic, covered by tests/
+      js/render.js          list, folders and their animation, split pane, URL tip
+      js/edit.js            inline editing, settings dock, save
+      js/go.js              redirect page
+      edit/                 login, save and probe (PHP; site.json and the Apache files stay out of git)
+      seeds/, icons/        dummy content, app icons (manifest.webmanifest)
+    tests/  docs/  tools/   unit tests, specs and plans, the dev router
+    local/                  git-ignored scratch data
+
+A design is either the **pill** form (`vertical-heading`: shapes, filled chips) or the **text** form (all others: no shapes). `PILL_DESIGNS` in `js/config.js` lists the pill designs; `html[data-form]` is set from it, and the text form's shared rules live once in `css/base.css`. Durations are set in `css/tokens.css` (`--fade`, `--fold`) and read from there by the scripts. Change a value in one place: tokens first, then config.
+
 ## Commands
 
     php -S 0.0.0.0:8080 -t public tools/dev-router.php   # local server, no-store, maps /<slug>/ to go.html

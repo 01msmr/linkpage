@@ -13,6 +13,8 @@
   };
   var DESIGNS = ['vertical-heading', 'giant-type', 'giant-numerals', 'bracket-terminal',
     'headline-tiny-links', 'raw-listing', 'tracked-rows', 'plain-inverted'];
+  var PILL_DESIGNS = ['vertical-heading'];
+  var MODES = ['light', 'dark'];
   var LAYOUTS = ['list', 'split'];
   var INTENSITIES = [];
   for (var i = 10; i <= 100; i += 10) INTENSITIES.push(i);
@@ -25,14 +27,14 @@
   };
   var SPLIT = { query: '(min-width: 601px)', queryEmbedded: '(min-width: 450px)', min: 20, max: 80, fitSlack: 0.98, newTabHosts: ['icloud.com'], open: 'Open in new tab \u2197', frameTitle: 'Preview' };
   var TIP = { showMs: 2000, hideMs: 3000, gap: 8 };
-  var FOLDER = { foldMs: 200, shape: 'M3 1.6L9.2 5L3 8.4', chevron: '›', closeLabel: 'Close {name}' };
+  var FOLDER = { shape: 'M3 1.6L9.2 5L3 8.4', chevron: '›', closeLabel: 'Close {name}' };
   var EDIT = {
     endpoint: '/edit/save.php',
     probe: '/edit/probe.php',
     autoProbe: false,
     flagKey: 'linkpage-edit',
     modeKey: 'linkpage-mode',
-    modes: ['light', 'dark'],
+    modes: MODES,
     save: 'Save',
     saveIcon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h13l3 3v15H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 3v6h8V3M7 21v-7h10v7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
     saving: 'Saving\u2026',
@@ -58,7 +60,7 @@
     valueLabels: { true: 'on', false: 'off' },
     controls: [
       { key: 'design', icon: '\u25A7', label: 'Design', values: DESIGNS },
-      { key: 'mode', icon: '\u25D0', label: 'Mode', values: ['light', 'dark'] },
+      { key: 'mode', icon: '\u25D0', label: 'Mode', values: MODES },
       { key: 'numbers', icon: '#', label: 'Numbers', values: [true, false] },
       { key: 'caps', icon: 'Aa', label: 'Caps', values: ['regular', 'versalien'] },
       { key: 'layout', icon: '\u25EB', label: 'Layout', values: LAYOUTS },
@@ -73,7 +75,7 @@
       other: 'Saving failed (HTTP {status}). Your edits are kept.'
     }
   };
-  var api = { EDIT: EDIT, FOLDER: FOLDER, SPLIT: SPLIT, TIP: TIP, DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, LAYOUTS: LAYOUTS, HEIGHTS: HEIGHTS, INTENSITIES: INTENSITIES, FONTS: FONTS };
+  var api = { EDIT: EDIT, FOLDER: FOLDER, SPLIT: SPLIT, TIP: TIP, DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, PILL_DESIGNS: PILL_DESIGNS, MODES: MODES, LAYOUTS: LAYOUTS, HEIGHTS: HEIGHTS, INTENSITIES: INTENSITIES, FONTS: FONTS };
   root.LinkpagesConfig = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);
