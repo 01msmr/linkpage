@@ -37,7 +37,7 @@
     saveIcon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h13l3 3v15H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 3v6h8V3M7 21v-7h10v7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
     saving: 'Saving\u2026',
     closeDelay: 2000,
-    icons: { linkPlus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v17M3.5 12h17" style="stroke:currentColor" stroke-width="3.6" fill="none"/></svg>', folderPlus: '<svg viewBox="0 0 60 24" aria-hidden="true"><rect width="60" height="24" rx="12" fill="currentColor"/><path d="M30 5.3v13.4M23.3 12h13.4" style="stroke:var(--bg)" stroke-width="2.4" fill="none"/></svg>', pen: '\u270E', plus: '+', remove: '\u00d7', done: '\u2713', handle: '\u2630' },
+    icons: { linkPlus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v17M3.5 12h17" style="stroke:currentColor" stroke-width="3.6" fill="none"/></svg>', folderPlus: '<svg viewBox="0 0 60 24" aria-hidden="true"><rect x="1.2" y="1.2" width="57.6" height="21.6" rx="10.8" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M30 4v16M22 12h16" stroke="currentColor" stroke-width="3.6" fill="none"/></svg>', pen: '\u270E', plus: '+', remove: '\u00d7', done: '\u2713', handle: '\u2630' },
     labels: {
       pen: 'Edit {name}',
       done: 'Done',
