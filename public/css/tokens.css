@@ -14,7 +14,7 @@
   --gear: #bbb;
   --gear-hover: #777;
   --folder-ink: 66%;
-  --icon-opacity: 0.66;
+  --icon-opacity: 0.5;
   --pill-ink: color-mix(in srgb, var(--bg) var(--folder-ink), var(--fg));
   --toolbar-opacity: 20%;
 
@@ -57,8 +57,8 @@
   /* Motion */
   --fade: 0.25s;
   --fade-fast: 0.1s;
-  --fade-icon: 0.06s;
-  --icon-delay: 0.3s;
+  --fade-icon: 0.09s;
+  --icon-delay: 0.5s;
   --fold: 0.2s;
 }
 :root[data-mode="dark"] {
