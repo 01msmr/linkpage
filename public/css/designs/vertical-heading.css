@@ -18,7 +18,8 @@
 :root[data-design="vertical-heading"] body { padding-left: calc(var(--item-height) + var(--pad-page)); }
 :root[data-design="vertical-heading"] { --item-pad-x: 1.25rem; }
 :root[data-design="vertical-heading"] .item { font-weight: bold; padding-left: var(--item-pad-x); padding-right: var(--item-pad-x); }
-:root[data-design="vertical-heading"] .folder-head, :root[data-design="vertical-heading"] .folder-closer { font-weight: 300; }
+:root[data-design="vertical-heading"] .folder-head, :root[data-design="vertical-heading"] .folder-closer { font-weight: 300; color: color-mix(in srgb, var(--chip-fg) var(--folder-ink), var(--chip)); }
+:root[data-design="vertical-heading"] .folder-head:hover, :root[data-design="vertical-heading"] .folder-closer:hover { color: color-mix(in srgb, var(--hover-fg) var(--folder-ink), var(--hover)); }
 
 /* Folder ends: chevron centered, its right edge where the pill radius starts; the closer is half height. */
 :root[data-design="vertical-heading"] .folder-head { align-items: center; padding-right: calc(var(--item-height) / 2 - var(--item-font) * 0.25); }
