@@ -61,7 +61,7 @@
         p.el.style.cssText = '';
         if (p.fade) p.fade.el.style.opacity = '';
       });
-      if (lifted) lifted.style.cssText = '';
+      if (lifted) lifted.forEach(function (t) { t.style.cssText = ''; });
       folding = false;
       if (done) done();
     }
@@ -113,17 +113,15 @@
     el.style.transform = isOpen ? 'rotate(90deg)' : 'rotate(0deg)';
   }
 
-  // While the closing line overlaps a filled head, only the head's upper half keeps its fill so the text stays on top of the line.
+  // While the closing line overlaps a filled head, the head's number and name stay above the line.
   function liftHead(path) {
     var head = document.querySelector('.folder-head[data-path="' + path + '"]');
     if (!head) return null;
     var fill = getComputedStyle(head).backgroundColor;
     if (fill === 'rgba(0, 0, 0, 0)' || fill === 'transparent') return null;
-    head.style.position = 'relative';
-    head.style.zIndex = '2';
-    head.style.backgroundColor = 'transparent';
-    head.style.backgroundImage = 'linear-gradient(' + fill + ' 50%, transparent 50%)';
-    return head;
+    var texts = Array.prototype.slice.call(head.querySelectorAll('.num, .name'));
+    texts.forEach(function (t) { t.style.position = 'relative'; t.style.zIndex = '3'; });
+    return texts;
   }
 
   // The closing line travels over the head's lower half (and back) so it forms the closed folder's bottom corners itself.
