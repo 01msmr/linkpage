@@ -35,8 +35,9 @@
 
 /* Controls: appear on hovering the gutter beside an entry. */
 .ctl { display: flex; align-items: center; justify-content: center; width: var(--ctl); height: var(--ctl); padding: 0; border: 0; border-radius: 50%; background: none; color: var(--fg); font: inherit; font-size: var(--item-font); font-weight: 300; line-height: 1; cursor: pointer; opacity: 0; transform: scale(0.8); transition: opacity var(--fade-icon), transform var(--fade-icon); }
-/* Hovering any icon of a row shows all of them, left and right (the entry itself does not). */
-.ent:has(.gl:hover, .gr:hover) .ctl, .ctl:focus-visible, .ent[data-editing] .ctl, .listend .ctl { opacity: var(--icon-opacity); transform: none; }
+/* Hovering any icon of a row shows all of them, left and right (the entry itself does not), after a short delay so quick passes stay clean. */
+.ent:has(.gl:hover, .gr:hover) .ctl { opacity: var(--icon-opacity); transform: none; transition-delay: var(--icon-delay); }
+.ctl:focus-visible, .ent[data-editing] .ctl, .listend .ctl { opacity: var(--icon-opacity); transform: none; }
 /* The hamburger glyph sits low in its line box; lift it so its ink is centered. */
 .ctl-handle { cursor: grab; font-weight: 400; position: relative; top: calc(var(--handle-lift) * -1); }
 .ctl-remove, .ctl-remove:hover { color: var(--danger); }

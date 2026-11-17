@@ -58,6 +58,7 @@
   --fade: 0.25s;
   --fade-fast: 0.1s;
   --fade-icon: 0.06s;
+  --icon-delay: 0.3s;
   --fold: 0.2s;
 }
 :root[data-mode="dark"] {
