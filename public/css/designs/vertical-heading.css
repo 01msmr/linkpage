@@ -17,7 +17,7 @@
 }
 :root[data-design="vertical-heading"] body { padding-left: calc(var(--item-height) + var(--pad-page)); }
 :root[data-design="vertical-heading"] .item { font-weight: bold; }
-:root[data-design="vertical-heading"] .folder-head, :root[data-design="vertical-heading"] .folder-closer { color: color-mix(in srgb, var(--chip-fg) 66%, var(--chip)); }
+:root[data-design="vertical-heading"] .folder-head, :root[data-design="vertical-heading"] .folder-closer { font-weight: normal; color: color-mix(in srgb, var(--chip-fg) 66%, var(--chip)); }
 :root[data-design="vertical-heading"] .folder-head:hover, :root[data-design="vertical-heading"] .folder-closer:hover { color: color-mix(in srgb, var(--hover-fg) 66%, var(--hover)); }
 
 /* Folder ends: chevron centered, its right edge where the pill radius starts; the closer is half height. */

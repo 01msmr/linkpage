@@ -350,7 +350,7 @@
 
   // The closing line of an open folder carries the add icons for "after this folder".
   function spacer(core, item, path) {
-    var r = el('div', 'ent');
+    var r = el('div', 'ent ent-closer');
     r.appendChild(el('div', 'gl'));
     r.appendChild(core);
     var gr = el('div', 'gr');

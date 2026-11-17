@@ -41,23 +41,36 @@
     return wrap && wrap.querySelector(':scope > .folder-body');
   }
 
-  // Slides a folder body between two heights, then calls done.
-  function slide(body, from, to, done) {
+  // The closing line of a folder (the line itself, or its row in edit mode), if the folder is open.
+  function closerOf(path) {
+    var head = document.querySelector('.folder-head[data-path="' + path + '"]');
+    var wrap = head && head.closest('.folder');
+    var last = wrap && wrap.lastElementChild;
+    return last && (last.classList.contains('folder-closer') || last.querySelector('.folder-closer')) ? last : null;
+  }
+
+  // Slides parts ({ el, from, to } heights in px) together, then calls done.
+  function slide(parts, done) {
     folding = true;
     var finished = false;
     function end() {
       if (finished) return;
       finished = true;
-      body.style.cssText = '';
+      parts.forEach(function (p) { p.el.style.cssText = ''; });
       folding = false;
       if (done) done();
     }
-    body.style.overflow = 'hidden';
-    body.style.height = from + 'px';
-    void body.offsetHeight;
-    body.style.transition = 'height ' + C.FOLDER.foldMs + 'ms ease';
-    body.style.height = to + 'px';
-    body.addEventListener('transitionend', end, { once: true });
+    parts.forEach(function (p) {
+      p.el.style.overflow = 'hidden';
+      p.el.style.minHeight = '0';
+      p.el.style.height = p.from + 'px';
+    });
+    void document.body.offsetHeight;
+    parts.forEach(function (p) {
+      p.el.style.transition = 'height ' + C.FOLDER.foldMs + 'ms ease';
+      p.el.style.height = p.to + 'px';
+    });
+    parts[0].el.addEventListener('transitionend', function (e) { if (e.target === parts[0].el && e.propertyName === 'height') end(); });
     setTimeout(end, C.FOLDER.foldMs + 60);
   }
 
@@ -68,15 +81,24 @@
     if (f) f.focus();
   }
 
-  // Opening and closing a folder slides its contents (skipped for reduced motion).
+  // Opening and closing a folder slides its contents and its closing line (skipped for reduced motion).
   function toggle(path) {
     if (folding) return;
     var body = bodyOf(path);
     if (!body || root.matchMedia('(prefers-reduced-motion: reduce)').matches) return flip(path);
-    if (L.isOpen(open, path)) return slide(body, body.offsetHeight, 0, function () { flip(path); });
+    if (L.isOpen(open, path)) {
+      var closer = closerOf(path);
+      var parts = [{ el: body, from: body.offsetHeight, to: 0 }];
+      if (closer) parts.push({ el: closer, from: closer.offsetHeight, to: 0 });
+      return slide(parts, function () { flip(path); });
+    }
     flip(path);
     var fresh = bodyOf(path);
-    if (fresh) slide(fresh, 0, fresh.scrollHeight);
+    var fresher = closerOf(path);
+    if (!fresh) return;
+    var opening = [{ el: fresh, from: 0, to: fresh.scrollHeight }];
+    if (fresher) opening.push({ el: fresher, from: 0, to: fresher.offsetHeight });
+    slide(opening);
   }
 
   // Split needs room; a page inside a frame gets a lower threshold so frames can nest.

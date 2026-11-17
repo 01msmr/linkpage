@@ -26,11 +26,10 @@
 .ent { position: relative; display: flex; align-items: center; max-width: 100%; }
 .ent > .item, .ent > .ebox, .ent > .lend { flex: 1 1 auto; min-width: 0; width: auto; }
 .gl, .gr { display: flex; flex: none; align-items: center; width: calc(var(--ctl) * 2); }
-.gr { width: calc(var(--ctl) * 2.7); }
+.gr { width: calc(var(--ctl) * 3.8); }
 .ctl-gap { width: var(--ctl); height: var(--ctl); }
 .ctl { display: flex; align-items: center; justify-content: center; width: var(--ctl); height: var(--ctl); padding: 0; border: 0; border-radius: 50%; background: none; color: var(--fg); font: inherit; font-size: var(--item-font); font-weight: 300; line-height: 1; cursor: pointer; opacity: 0; transition: opacity var(--fade-fast), color var(--fade-fast); }
 .gl:hover .ctl, .gr:hover .ctl, .ctl:focus-visible, .ent[data-editing] .ctl, .listend .ctl { opacity: 1; }
-.ctl:hover { color: var(--hover); }
 .ctl-handle { cursor: grab; }
 .ctl-remove, .ctl-remove:hover { color: var(--danger); }
 .ent[data-drop="before"] { box-shadow: 0 -3px 0 var(--hover); }
@@ -71,12 +70,14 @@ html[data-split] .toolbar { background: color-mix(in srgb, var(--bg) var(--toolb
 
 /* Add icons: a light plus for a link, a bold plus knocked out of a filled circle for a folder. */
 .ctl-link { font-weight: 700; }
-.ctl-folder { width: calc(var(--ctl) * 1.5); height: calc(var(--ctl) * 0.6); margin: 0 calc(var(--ctl) * 0.05); border-radius: 0; background: none; color: var(--fg); }
+.ctl-folder { width: calc(var(--ctl) * 2.5); height: var(--ctl); margin: 0 calc(var(--ctl) * 0.05); border-radius: 0; background: none; color: var(--fg); }
 .ctl-folder svg { display: block; width: 100%; height: 100%; }
-.ctl-folder:hover { background: none; color: var(--hover); }
 
 /* The add icons come after an element, vertically centered: a bold plus for a link, a pill (2.5 times as wide as high) with a plus for a folder. */
 .ctl-below { display: flex; align-items: center; }
 
 /* Handle and pen stay at one left position whatever the nesting (each indented folder wrapper is undone). */
 .gl { position: relative; left: calc(var(--depth, 0) * var(--indent, 0px) * -1); }
+
+/* The closing line is lower than the add icons next to it; they must not make its row taller. */
+.ent-closer > .gl, .ent-closer > .gr { height: 0; }
