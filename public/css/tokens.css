@@ -49,6 +49,8 @@
   --gear-size: calc(var(--item-size) * 1.2);
   --handle-lift: 0.117em;
   --dot-w: calc(var(--gear-size) * 0.8);
+  --ebox-name: 6em;
+  --ebox-url: 9em;
   --gutter-edit: calc(var(--ctl) * 2);
   --gutter-right: calc(var(--ctl) * 4.4);
   --drop-w: 3px;
