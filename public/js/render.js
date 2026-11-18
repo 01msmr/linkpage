@@ -343,7 +343,7 @@
     settle();
   }
 
-  // Arrow keys (display mode): up/down move, right opens or enters a folder, left closes it or goes to its parent; Enter is the native click.
+  // Arrow keys (not while a field or control has focus): up/down move, right opens or enters a folder, left closes it or goes to its parent; Enter is the native click.
   function navRows() {
     return Array.prototype.filter.call(document.querySelectorAll('#list .item:not(.folder-closer)'), function (it) {
       return !it.closest('.folder[data-state="closed"] > .folder-body');
@@ -353,13 +353,15 @@
   // Focusing an entry (keyboard or mouse) puts its address in the location bar.
   function onFocusIn(e) {
     var it = e.target.closest && e.target.closest('#list .item[data-path]');
-    if (!it || editor || !settings) return;
+    if (!it || !settings) return;
     var url = L.urlFor(raw.items, it.dataset.path, open);
     if (url !== root.location.pathname) root.history.replaceState(null, '', url);
   }
 
   function onNavKey(e) {
-    if (editor || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || !settings) return;
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || !settings) return;
+    var at = document.activeElement;
+    if (at && at !== document.body && !at.classList.contains('item')) return;
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.key) < 0) return;
     var items = navRows();
     var rows = items.map(function (it) {
