@@ -26,9 +26,13 @@
   // 'pill' designs draw shapes, every other design is plain text.
   function formOf(design) { return C.PILL_DESIGNS.indexOf(design) >= 0 ? 'pill' : 'text'; }
 
-  // The font size that gives a pill of `height` px.
+  function num(n) { return String(parseFloat(n.toFixed(3))); }
+
+  // The font size for a pill of `height` px at the reference width; the pill grows and shrinks with the viewport between SCALE.min and SCALE.max times that height.
   function pillFont(height) {
-    return 'calc((' + height + 'px - 2 * var(--pad-y)) / var(--leading))';
+    var S = C.SCALE;
+    var px = 'clamp(' + num(height * S.min) + 'px, ' + num(height / S.ref * 100) + 'vw, ' + num(height * S.max) + 'px)';
+    return 'calc((' + px + ' - 2 * var(--pad-y)) / var(--leading))';
   }
 
   function isFolder(item) { return Array.isArray(item.items); }

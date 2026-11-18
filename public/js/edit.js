@@ -473,6 +473,17 @@
     document.body.appendChild(buildDivider());
   }
 
+  // Touch: a tap on a row but beside its entry shows that row's icons; a tap anywhere else (not on an icon) hides them.
+  function touchRow(e) {
+    if (e.pointerType !== 'touch') return;
+    var t = e.target;
+    if (t.closest && t.closest('.ctl')) return;
+    var row = t.closest && t.closest('#list .ent');
+    var beside = row && !t.closest('.item, .ebox, .lend');
+    Array.prototype.forEach.call(document.querySelectorAll('.ent[data-touch]'), function (r) { if (r !== row || !beside) delete r.dataset.touch; });
+    if (beside) row.dataset.touch = '';
+  }
+
   function start(site) {
     original = L.clone(site);
     draft = L.clone(site);
@@ -484,6 +495,7 @@
     } catch (e) { /* default mode */ }
     R.setEditor(api);
     R.show(draft);
+    root.addEventListener('pointerdown', touchRow);
     root.addEventListener('keydown', function (e) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
         e.preventDefault();

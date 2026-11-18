@@ -38,14 +38,15 @@
 /* Controls: appear on hovering the gutter beside an entry. */
 .ctl { display: flex; align-items: center; justify-content: center; width: var(--ctl); height: var(--ctl); padding: 0; border: 0; border-radius: 50%; background: none; color: var(--fg); font: inherit; font-size: var(--item-font); font-weight: 300; line-height: 1; cursor: pointer; pointer-events: none; opacity: 0; transform: scale(0.8); transition: opacity var(--fade-icon), transform var(--fade-icon); }
 /* Hovering the row anywhere but on the entry itself (its gutters or the empty stretch after it) shows all its icons after a short delay so quick passes stay clean. */
+/* On touch a tap beside the entry (gutters, the stretch after it) sets data-touch on that row, which then shows its icons like a hover; a tap elsewhere clears it. */
 /* An icon takes clicks and the hand cursor only once it is visible (it stays focusable by keyboard). */
-.ent:has(.gl:hover, .gr:hover, .gap:hover) .ctl { opacity: var(--icon-opacity); transform: none; transition-delay: var(--icon-delay); animation: ctl-live 0s var(--icon-delay) forwards; }
+.ent:has(.gl:hover, .gr:hover, .gap:hover) .ctl, .ent[data-touch] .ctl { opacity: var(--icon-opacity); transform: none; transition-delay: var(--icon-delay); animation: ctl-live 0s var(--icon-delay) forwards; }
 .ctl:focus-visible, .ent[data-editing] .ctl, .listend .ctl { opacity: var(--icon-opacity); transform: none; pointer-events: auto; }
+.ctl:hover { background: var(--chip); color: var(--chip-fg); }
 @keyframes ctl-live { to { pointer-events: auto; } }
 /* The hamburger glyph sits low in its line box; lift it so its ink is centered. */
 .ctl-handle { cursor: grab; font-weight: 400; position: relative; top: calc(var(--handle-lift) * -1); }
 .ctl-remove, .ctl-remove:hover { color: var(--danger); }
-@media (hover: none) { .ctl { opacity: var(--icon-opacity); transform: none; pointer-events: auto; } }
 
 /* Add icons behind an entry, vertically centered: a plus for a link, a small filled pill (2.5 times as wide as high) with a plus for a folder. */
 .ctl-below { display: flex; align-items: center; }

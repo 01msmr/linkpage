@@ -149,8 +149,9 @@ test('HEIGHTS run from 30 to 70 in steps of 4 and include the default', () => {
   assert.ok(C.HEIGHTS.includes(C.DEFAULTS.height));
   assert.ok(C.HEIGHTS.every((h, i) => i === 0 || h - C.HEIGHTS[i - 1] === 4));
 });
-test('pillFont gives the font size for a pill height', () => {
-  assert.equal(L.pillFont(48), 'calc((48px - 2 * var(--pad-y)) / var(--leading))');
+test('pillFont scales the pill height with the viewport around the reference width', () => {
+  assert.equal(L.pillFont(48), 'calc((clamp(31.68px, 3.75vw, 72px) - 2 * var(--pad-y)) / var(--leading))');
+  assert.equal(L.pillFont(46), 'calc((clamp(30.36px, 3.594vw, 69px) - 2 * var(--pad-y)) / var(--leading))');
 });
 test('reindexOpen drops the removed folder and shifts later siblings down', () => {
   assert.deepEqual(L.reindexOpen(['0', '1', '1.0', '2', '2.1'], [], 1, -1), ['0', '1', '1.1']);
