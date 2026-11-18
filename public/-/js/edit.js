@@ -297,7 +297,25 @@
 
   function rowAt(x, y) {
     var t = document.elementFromPoint(x, y);
-    return t && t.closest ? t.closest('#list .ent[data-path]') : null;
+    return t && t.closest ? t.closest('#list .ent') : null;
+  }
+
+  // The drop target under the pointer: a row's own zone, or on a folder's closing line: the upper half is the end of the folder, the lower half is after it.
+  function targetAt(ev) {
+    var row = rowAt(ev.clientX, ev.clientY);
+    if (!row) return null;
+    var closer = row.classList.contains('ent-closer') ? row.querySelector('.folder-closer[data-path]') : null;
+    if (closer) {
+      var b = row.getBoundingClientRect();
+      var inside = (ev.clientY - b.top) / b.height < 0.5;
+      var folder = parse(closer.dataset.path);
+      return { row: row, show: inside ? 'before' : 'after', path: folder, zone: inside ? 'into' : 'after', item: L.itemAt(draft.items, folder) };
+    }
+    if (!row.dataset.path) return null;
+    var path = parse(row.dataset.path);
+    var item = L.itemAt(draft.items, path);
+    var zone = zoneOf(row, ev, Array.isArray(item.items));
+    return { row: row, show: zone, path: path, zone: zone, item: item };
   }
 
   // Dragging the handle (mouse, finger, pen): the row under the pointer shows its drop zone; the page scrolls near its top and bottom edge.
@@ -317,14 +335,8 @@
         last = ev;
         clearDrop();
         target = null;
-        var row = rowAt(ev.clientX, ev.clientY);
-        if (row) {
-          var path = parse(row.dataset.path);
-          var item = L.itemAt(draft.items, path);
-          var zone = zoneOf(row, ev, Array.isArray(item.items));
-          row.dataset.drop = zone;
-          target = { path: path, zone: zone, item: item };
-        }
+        target = targetAt(ev);
+        if (target) target.row.dataset.drop = target.show;
         scroll = ev.clientY < E.autoscroll.edge ? -1 : ev.clientY > root.innerHeight - E.autoscroll.edge ? 1 : 0;
         if (scroll && !raf) raf = requestAnimationFrame(tick);
       }
