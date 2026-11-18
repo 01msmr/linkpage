@@ -48,21 +48,6 @@
     return null;
   }
 
-  function sortItems(items) {
-    return items.filter(isFolder).concat(items.filter(function (i) { return !isFolder(i); }));
-  }
-
-  // Folders first, stable; each entry keeps its index in the stored list.
-  function sortedEntries(items) {
-    var all = items.map(function (item, index) { return { item: item, index: index }; });
-    return all.filter(function (e) { return isFolder(e.item); }).concat(all.filter(function (e) { return !isFolder(e.item); }));
-  }
-
-  // Entries in display order: folders first on request, else as stored (inside folders entries sit where they were put).
-  function entriesFor(items, foldersFirst) {
-    return foldersFirst ? sortedEntries(items) : items.map(function (item, index) { return { item: item, index: index }; });
-  }
-
   // ['1', '1.0'] for path [1, 0]: the folders that must be open to show it.
   function prefixPaths(path) {
     return path.map(function (_, i) { return path.slice(0, i + 1).join('.'); });
@@ -309,7 +294,7 @@
   }
 
   var api = { resolveSettings: resolveSettings, pillFont: pillFont, formOf: formOf, slugify: slugify, resolveOpen: resolveOpen, findLink: findLink,
-    sortItems: sortItems, sortedEntries: sortedEntries, entriesFor: entriesFor, prefixPaths: prefixPaths, reindexOpen: reindexOpen, openAfterMove: openAfterMove, slugFor: slugFor, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen, navMove: navMove, urlFor: urlFor, keyMove: keyMove, movedPath: movedPath,
+    prefixPaths: prefixPaths, reindexOpen: reindexOpen, openAfterMove: openAfterMove, slugFor: slugFor, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen, navMove: navMove, urlFor: urlFor, keyMove: keyMove, movedPath: movedPath,
     clone: clone, itemAt: itemAt, removeAt: removeAt, insertAt: insertAt, moveItem: moveItem, parentAfterRemoval: parentAfterRemoval,
     setField: setField, hasChanged: hasChanged, countDescendants: countDescendants };
   root.LinkpagesLogic = api;

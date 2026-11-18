@@ -260,7 +260,7 @@
 
   function fill(box, items, path) {
     var prefix = path === '' ? '' : path + '.';
-    L.entriesFor(items, path === '').forEach(function (e, i) { box.appendChild(entry(e.item, i, prefix + e.index)); });
+    items.forEach(function (item, i) { box.appendChild(entry(item, i, prefix + i)); });
     if (editor && items.length === 0 && path === '') box.appendChild(editor.listEnd(path));
   }
 

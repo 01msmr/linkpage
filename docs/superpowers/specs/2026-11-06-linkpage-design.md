@@ -32,7 +32,7 @@ The owner keeps short domains that forward to other things (shortcuts, tools, st
 
 ## The pages
 
-**Index** (`/`): the domain as the heading, then one entry per item (folders first, see Hierarchy). A link entry opens its redirect page; a folder entry opens in place.
+**Index** (`/`): the domain as the heading, then one entry per item in the stored order (folders are no longer sorted first). A link entry opens its redirect page; a folder entry opens in place.
 
 **Redirect page** (`/<slug>/`, so the existing URLs keep working): the browser goes to the target at once (`location.replace`); there is no countdown (changed 2026-11-13).
 

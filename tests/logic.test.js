@@ -21,10 +21,6 @@ test('findLink searches nested folders, ignores folders', () => {
   assert.equal(L.findLink(items, 'f1'), null);
   assert.equal(L.findLink(items, 'f2'), null);
 });
-test('sortItems puts folders first, stable', () => {
-  const items = [{ n: 1, slug: 's' }, { n: 2, items: [] }, { n: 3, slug: 's' }, { n: 4, items: [] }];
-  assert.deepEqual(L.sortItems(items).map(i => i.n), [2, 4, 1, 3]);
-});
 test('numberLabel pads and overflows', () => {
   assert.equal(L.numberLabel(0), '01');
   assert.equal(L.numberLabel(98), '99');
@@ -101,10 +97,6 @@ test('countDescendants counts all nested items', () => {
   assert.equal(L.countDescendants(tree()[0]), 0);
 });
 
-test('sortedEntries puts folders first and keeps the stored index', () => {
-  const items = [{ n: 1, slug: 's' }, { n: 2, items: [] }, { n: 3, slug: 's' }, { n: 4, items: [] }];
-  assert.deepEqual(L.sortedEntries(items).map(e => [e.item.n, e.index]), [[2, 1], [4, 3], [1, 0], [3, 2]]);
-});
 test('prefixPaths lists every folder on the way to a list', () => {
   assert.deepEqual(L.prefixPaths([]), []);
   assert.deepEqual(L.prefixPaths([1]), ['1']);
@@ -197,11 +189,6 @@ test('resolveOpen returns null for an unknown path', () => {
   assert.equal(L.resolveOpen(openTree(), ['nope']), null);
   assert.equal(L.resolveOpen(openTree(), ['tools', 'nope']), null);
   assert.equal(L.resolveOpen(openTree(), []), null);
-});
-test('entriesFor sorts folders first only when asked, otherwise keeps the stored order', () => {
-  const items = [{ name: 'a', slug: 'a', url: 'u' }, { name: 'F', items: [] }, { name: 'b', slug: 'b', url: 'v' }];
-  assert.deepEqual(L.entriesFor(items, true).map(e => e.index), [1, 0, 2]);
-  assert.deepEqual(L.entriesFor(items, false).map(e => e.index), [0, 1, 2]);
 });
 test('openAfterMove keeps a moved folder and its inner folders open at the new place', () => {
   assert.deepEqual(L.openAfterMove(['1', '1.0'], [1], [], 3), ['2', '2.0']);
