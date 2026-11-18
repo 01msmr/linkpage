@@ -16,7 +16,10 @@
   line-height: var(--leading);
   overflow: hidden;
 }
-:root[data-design="vertical-heading"] body { padding-left: var(--list-left); }
+:root[data-design="vertical-heading"] { --top: var(--gap-item); }
+:root[data-design="vertical-heading"]:has(#list > .folder:first-child) { --top: var(--line-gap); }
+/* No special page margin: the list starts as far from the top as an entry sits from its predecessor (1 px for a link, --line-gap for a folder); the rail dots follow. */
+:root[data-design="vertical-heading"] body { padding: var(--top) var(--pad-page) 0 var(--list-left); }
 :root[data-design="vertical-heading"] .item { font-weight: bold; padding-left: var(--item-pad-x); padding-right: var(--item-pad-x); }
 :root[data-design="vertical-heading"] .folder-head, :root[data-design="vertical-heading"] .folder-closer { font-weight: 300; color: color-mix(in srgb, var(--chip-fg) var(--folder-ink), var(--chip)); }
 :root[data-design="vertical-heading"]:not([data-input="key"]) .folder-head:hover, :root[data-design="vertical-heading"]:not([data-input="key"]) .folder-closer:hover { color: color-mix(in srgb, var(--hover-fg) var(--folder-ink), var(--hover)); }
@@ -27,7 +30,7 @@
 
 /* The settings live in the left rail: dots stacked, menus open to the right and run down. */
 :root[data-design="vertical-heading"] .toolbar { display: contents; }
-:root[data-design="vertical-heading"] .dock { position: fixed; top: var(--side); left: 0; width: var(--item-height); z-index: 4; flex-direction: column; }
+:root[data-design="vertical-heading"] .dock { position: fixed; top: var(--top); left: 0; width: var(--item-height); z-index: 4; flex-direction: column; }
 :root[data-design="vertical-heading"] .estatus { position: fixed; top: var(--side); right: var(--side); z-index: 3; }
 :root[data-design="vertical-heading"] .esave { align-self: center; color: var(--chip-fg); }
 :root[data-design="vertical-heading"] .slot { width: 100%; }
