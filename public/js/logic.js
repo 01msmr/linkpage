@@ -189,7 +189,8 @@
     if (key === 'ArrowRight') {
       if (!row.folder) return null;
       if (!row.open) return { act: 'toggle', index: i };
-      return i + 1 < rows.length && rows[i + 1].depth > row.depth ? { act: 'focus', index: i + 1 } : null;
+      for (var k = i + 1; k < rows.length && rows[k].depth > row.depth; k++) if (rows[k].folder) return { act: 'focus', index: k };
+      return null;
     }
     if (key === 'ArrowLeft') {
       if (row.folder && row.open) return { act: 'toggle', index: i };

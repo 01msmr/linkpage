@@ -230,11 +230,15 @@ test('navMove up/down walks the rows and wraps around at the ends', () => {
   assert.deepEqual(L.navMove(navRows, 0, 'ArrowUp'), { act: 'focus', index: 3 });
   assert.deepEqual(L.navMove(navRows, 3, 'ArrowDown'), { act: 'focus', index: 0 });
 });
-test('navMove right opens a closed folder, enters an open one, ignores links', () => {
+test('navMove right opens a closed folder, jumps from an open one to its first subfolder, ignores links', () => {
   assert.deepEqual(L.navMove(navRows, 2, 'ArrowRight'), { act: 'toggle', index: 2 });
-  assert.deepEqual(L.navMove(navRows, 0, 'ArrowRight'), { act: 'focus', index: 1 });
+  assert.deepEqual(L.navMove(navRows, 0, 'ArrowRight'), { act: 'focus', index: 2 });
   assert.equal(L.navMove(navRows, 1, 'ArrowRight'), null);
   assert.equal(L.navMove([{ depth: 0, folder: true, open: true }], 0, 'ArrowRight'), null);
+});
+test('navMove right on an open folder without subfolders, or whose subfolder lies behind it, does nothing', () => {
+  const links = [{ depth: 0, folder: true, open: true }, { depth: 1, folder: false, open: false }, { depth: 0, folder: true, open: false }];
+  assert.equal(L.navMove(links, 0, 'ArrowRight'), null);
 });
 test('navMove left closes an open folder, otherwise goes to the parent folder', () => {
   assert.deepEqual(L.navMove(navRows, 0, 'ArrowLeft'), { act: 'toggle', index: 0 });
