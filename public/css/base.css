@@ -60,8 +60,9 @@ button.item { font-family: inherit; line-height: inherit; text-align: left; curs
 .item:focus-visible, .ebtn:focus-visible, .ctl:focus-visible, .ebox input:focus-visible, .dot:focus-visible, .opt:focus-visible { outline: 2px solid var(--hover); outline-offset: 2px; }
 
 /* Keyboard focus: a 2px line (the item colour) centered in front of the item, from 2px inside the viewport's left edge to 2px before the item; an open folder shows > instead, at one x left of the outermost items at every depth. Out of flow, so nothing moves. */
-/* The list is cut off --focus-edge from the viewport's left, so the line (drawn far to the left) starts there. */
+/* The list is cut off --focus-edge from the viewport's left (--focus-edge-folder while a folder head is focused), so the line (drawn far to the left) starts there: the same item gap on both sides. */
 #list { clip-path: inset(-100vmax -100vmax -100vmax calc(var(--focus-edge) - var(--list-left))); }
+#list:has(.folder-head:focus-visible) { clip-path: inset(-100vmax -100vmax -100vmax calc(var(--focus-edge-folder) - var(--list-left))); }
 #list .item:focus-visible { outline: 0; position: relative; }
 html[data-input="key"] #list .item:focus-visible::before { content: ""; position: absolute; left: auto; top: 50%; right: calc(100% + var(--focus-gap)); width: 100vw; height: var(--focus-line); transform: translateY(-50%); pointer-events: none; background: var(--focus-color); }
 /* The gap before the mark is the item gap: that of a link, or of a folder. */
