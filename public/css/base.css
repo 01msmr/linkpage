@@ -64,6 +64,8 @@ button.item { font-family: inherit; line-height: inherit; text-align: left; curs
 #list { clip-path: inset(-100vmax -100vmax -100vmax calc(var(--focus-edge) - var(--list-left))); }
 #list .item:focus-visible { outline: 0; position: relative; }
 html[data-input="key"] #list .item:focus-visible::before { content: ""; position: absolute; left: auto; top: 50%; right: calc(100% + var(--focus-gap)); width: 100vw; height: var(--focus-line); transform: translateY(-50%); pointer-events: none; background: var(--focus-color); }
+/* The gap before the mark is the item gap: that of a link, or of a folder. */
+html[data-input="key"] #list .folder-head:focus-visible::before { right: calc(100% + var(--focus-gap-folder)); }
 /* On a link the mark is a band as tall as the item. */
 html[data-input="key"] #list a.item:focus-visible::before { height: 100%; }
 html[data-input="key"] #list .folder-head[aria-expanded="true"]:focus-visible::before { content: ">"; position: fixed; top: auto; right: auto; left: calc(var(--list-left) + var(--gutter) - var(--focus-arrow-gap)); width: auto; height: auto; line-height: var(--leading); transform: translateX(-100%); text-transform: none; font-weight: 300; color: var(--focus-color); background: none; }

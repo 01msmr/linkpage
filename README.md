@@ -30,7 +30,7 @@ Works in the list and in edit mode, except while a field, menu or edit button ha
 
 - Up/down move through the visible entries and wrap around; the first key after the mouse continues from the entry under the pointer.
 - Right opens a folder or steps into an open one; left closes it or goes to the parent folder; Enter opens a link in a new tab or toggles a folder.
-- The focused link shows a band as tall as the item, in the item colour, between the left rail and the item with 4 px clear on both sides; a closed folder shows a 2 px line there, an open one a light `>` at one x left of the outermost items (`--focus-*`, `--rail-gap` in `tokens.css`).
+- The focused link shows a band as tall as the item, in the item colour, between the left rail (4 px clear) and the item (the item gap: 1 px before a link, 4 px before a folder); a closed folder shows a 2 px line there, an open one a light `>` at one x left of the outermost items (`--focus-*`, `--rail-gap` in `tokens.css`).
 - The last input method wins: after a key the row icons and mouse-over highlight hide and the mark shows; moving or pressing the mouse reverses it. A page starts in mouse mode.
 - The address bar follows the focus (a closed folder shows its parent), also on clicks; history is untouched.
 
