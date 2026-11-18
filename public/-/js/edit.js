@@ -301,9 +301,20 @@
   }
 
   // The drop target under the pointer: a row's own zone, or on a folder's closing line: the upper half is the end of the folder, the lower half is after it.
+  // Below the whole list: the end of the top level, after its last entry.
+  function listEndTarget(ev) {
+    var list = document.getElementById('list');
+    var n = draft.items.length;
+    if (!n || ev.clientY <= list.getBoundingClientRect().bottom) return null;
+    var last = list.lastElementChild;
+    var row = last.classList.contains('folder') ? (last.querySelector(':scope > .ent-closer') || last.querySelector(':scope > .ent')) : last;
+    if (!row || !row.classList.contains('ent')) return null;
+    return { row: row, show: 'after', path: [n - 1], zone: 'after', item: draft.items[n - 1] };
+  }
+
   function targetAt(ev) {
     var row = rowAt(ev.clientX, ev.clientY);
-    if (!row) return null;
+    if (!row) return listEndTarget(ev);
     var closer = row.classList.contains('ent-closer') ? row.querySelector('.folder-closer[data-path]') : null;
     if (closer) {
       var b = row.getBoundingClientRect();
