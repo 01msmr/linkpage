@@ -6,6 +6,7 @@
   top: 0;
   height: 100lvh;
   margin: 0;
+  width: var(--item-height);
   padding: var(--side) var(--pad-y);
   writing-mode: vertical-rl;
   transform: rotate(180deg);
