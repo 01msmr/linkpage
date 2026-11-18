@@ -14,9 +14,6 @@ body {
 h1 { margin: 0 0 var(--side); font-size: inherit; font-weight: normal; overflow-wrap: anywhere; }
 #list { display: flex; flex-direction: column; gap: var(--gap-item); align-items: flex-start; }
 .error { color: var(--fg); overflow-wrap: anywhere; }
-@media (max-width: 600px) {
-  #list { align-items: stretch; }
-}
 
 /* Items: links, and the heads and closing lines of folders */
 .item {
@@ -81,8 +78,6 @@ html[data-input="key"] #list .folder-head[aria-expanded="true"]:focus-visible::b
 /* Split layout: the list keeps the left side, the chosen link shows in a pane on the right. */
 #pane { display: none; }
 html[data-split] body { padding-right: calc(var(--pane) + var(--pad-page)); }
-html[data-split] #list { align-items: stretch; }
-html[data-split] .ent { width: 100%; }
 html[data-split] #pane { position: fixed; top: 0; right: 0; bottom: 0; width: var(--pane); display: flex; flex-direction: column; background: var(--bg); box-shadow: -2px 0 0 var(--fg); }
 html[data-split] #pane-open { position: absolute; z-index: 1; top: var(--side); left: var(--pad-page); background: var(--bg); padding: var(--pad-y) var(--pad-x); font-size: var(--ui-font); line-height: var(--ui-leading); color: var(--fg); }
 html[data-split] #pane-open:hover { color: var(--hover); }
