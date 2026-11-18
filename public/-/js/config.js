@@ -34,6 +34,7 @@
     endpoint: '/edit/save.php',
     probe: '/edit/probe.php',
     autoProbe: false,
+    link: { text: 'edit', href: '/edit/', hideMs: 8000, fadeMs: 400, query: '(display-mode: standalone)' },
     flagKey: 'linkpage-edit',
     modeKey: 'linkpage-mode',
     modes: MODES,

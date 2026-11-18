@@ -539,8 +539,23 @@
       .catch(function () { return false; });
   }
 
+  // A home-screen app has no address bar: a small link to the login shows for E.link.hideMs after load, unless editing is already on.
+  function showEditLink() {
+    var L = E.link;
+    var standalone = root.matchMedia(L.query).matches || root.navigator.standalone === true;
+    if (!standalone) return;
+    var a = el('a', 'editlink', L.text);
+    a.href = L.href;
+    document.body.appendChild(a);
+    setTimeout(function () {
+      a.dataset.gone = '';
+      setTimeout(function () { a.remove(); }, L.fadeMs);
+    }, L.hideMs);
+  }
+
   function boot() {
     if (enabled()) return R.whenReady(start);
+    showEditLink();
     if (!E.autoProbe || new URLSearchParams(root.location.search).get('edit') === '0') return;
     probe().then(function (ok) {
       if (!ok) return;

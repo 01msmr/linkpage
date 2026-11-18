@@ -82,4 +82,9 @@ html[data-split] .toolbar { background: color-mix(in srgb, var(--bg) var(--toolb
 /* Keyboard is the last input: the row icons step aside (the row being edited and the list-end buttons stay). */
 html[data-input="key"] .ent:not([data-editing]):not(.listend) .ctl { opacity: 0; pointer-events: none; transition: none; animation: none; }
 
+/* The login link of a home-screen app: small, top left, fades out. */
+.editlink { position: fixed; top: var(--top, var(--side)); left: var(--pad-page); z-index: 4; font-size: var(--ui-font); line-height: var(--ui-leading); color: var(--fg); text-decoration: none; opacity: var(--icon-opacity); transition: opacity var(--fade); }
+.editlink:hover, .editlink:focus-visible { opacity: 1; }
+.editlink[data-gone] { opacity: 0; pointer-events: none; }
+
 @media (prefers-reduced-motion: reduce) { .menu, .dot .pt, .dot .ico, .ctl { transition: none; animation: none; } }
