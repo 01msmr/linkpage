@@ -172,6 +172,44 @@
     return n < 10 ? '0' + n : String(n);
   }
 
+  // Keyboard move over the visible rows [{ depth, folder, open }]: { act: 'focus' | 'toggle', index } or null; -1 = nothing focused yet.
+  function navMove(rows, i, key) {
+    if (i < 0) {
+      if (key === 'ArrowDown') return rows.length ? { act: 'focus', index: 0 } : null;
+      if (key === 'ArrowUp') return rows.length ? { act: 'focus', index: rows.length - 1 } : null;
+      return null;
+    }
+    var row = rows[i];
+    if (key === 'ArrowDown') return i + 1 < rows.length ? { act: 'focus', index: i + 1 } : null;
+    if (key === 'ArrowUp') return i > 0 ? { act: 'focus', index: i - 1 } : null;
+    if (key === 'ArrowRight') {
+      if (!row.folder) return null;
+      if (!row.open) return { act: 'toggle', index: i };
+      return i + 1 < rows.length && rows[i + 1].depth > row.depth ? { act: 'focus', index: i + 1 } : null;
+    }
+    if (key === 'ArrowLeft') {
+      if (row.folder && row.open) return { act: 'toggle', index: i };
+      for (var j = i - 1; j >= 0; j--) if (rows[j].depth < row.depth) return { act: 'focus', index: j };
+    }
+    return null;
+  }
+
+  // The address for the focused entry: its folder chain plus slug for a link, an open folder's own chain, a closed folder's parent chain.
+  function urlFor(items, path, open) {
+    var idx = path.split('.').map(Number);
+    var segs = [];
+    var list = items;
+    for (var d = 0; d < idx.length; d++) {
+      var it = list[idx[d]];
+      var last = d === idx.length - 1;
+      if (isFolder(it)) {
+        if (!last || open.indexOf(path) >= 0) segs.push(slugify(it.name));
+        list = it.items;
+      } else if (it.slug) segs.push(it.slug);
+    }
+    return segs.length ? '/' + segs.join('/') + '/' : '/';
+  }
+
   function isOpen(open, path) { return open.indexOf(path) >= 0; }
 
   function toggleOpen(open, path) {
@@ -241,7 +279,7 @@
   }
 
   var api = { resolveSettings: resolveSettings, pillFont: pillFont, formOf: formOf, slugify: slugify, resolveOpen: resolveOpen, findLink: findLink,
-    sortItems: sortItems, sortedEntries: sortedEntries, entriesFor: entriesFor, prefixPaths: prefixPaths, reindexOpen: reindexOpen, openAfterMove: openAfterMove, slugFor: slugFor, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen,
+    sortItems: sortItems, sortedEntries: sortedEntries, entriesFor: entriesFor, prefixPaths: prefixPaths, reindexOpen: reindexOpen, openAfterMove: openAfterMove, slugFor: slugFor, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen, navMove: navMove, urlFor: urlFor,
     clone: clone, itemAt: itemAt, removeAt: removeAt, insertAt: insertAt, moveItem: moveItem, parentAfterRemoval: parentAfterRemoval,
     setField: setField, hasChanged: hasChanged, countDescendants: countDescendants };
   root.LinkpagesLogic = api;

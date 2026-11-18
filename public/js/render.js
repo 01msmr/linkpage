@@ -197,8 +197,9 @@
     draw();
   }
 
-  function linkCore(item, index) {
+  function linkCore(item, index, path) {
     var a = el('a', 'item');
+    a.dataset.path = path;
     if (item.slug) a.href = '/' + item.slug + '/';
     if (item.url) a.dataset.url = item.url;
     if (item.url && item.url === activeUrl) a.setAttribute('aria-current', 'true');
@@ -241,7 +242,7 @@
   function entry(item, index, path) {
     var box = editor && editor.editBox(item, path);
     if (!Array.isArray(item.items)) {
-      var core = box || linkCore(item, index);
+      var core = box || linkCore(item, index, path);
       return editor ? editor.wrap(core, item, path) : core;
     }
     var isOpen = L.isOpen(open, path);
@@ -342,6 +343,37 @@
     settle();
   }
 
+  // Arrow keys (display mode): up/down move, right opens or enters a folder, left closes it or goes to its parent; Enter is the native click.
+  function navRows() {
+    return Array.prototype.filter.call(document.querySelectorAll('#list .item:not(.folder-closer)'), function (it) {
+      return !it.closest('.folder[data-state="closed"] > .folder-body');
+    });
+  }
+
+  // Focusing an entry (keyboard or mouse) puts its address in the location bar.
+  function onFocusIn(e) {
+    var it = e.target.closest && e.target.closest('#list .item[data-path]');
+    if (!it || editor || !settings) return;
+    var url = L.urlFor(raw.items, it.dataset.path, open);
+    if (url !== root.location.pathname) root.history.replaceState(null, '', url);
+  }
+
+  function onNavKey(e) {
+    if (editor || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || !settings) return;
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.key) < 0) return;
+    var items = navRows();
+    var rows = items.map(function (it) {
+      var depth = 0;
+      for (var b = it.closest('.folder-body'); b; b = b.parentElement && b.parentElement.closest('.folder-body')) depth++;
+      return { depth: depth, folder: it.classList.contains('folder-head'), open: it.getAttribute('aria-expanded') === 'true' };
+    });
+    var move = L.navMove(rows, items.indexOf(document.activeElement), e.key);
+    e.preventDefault();
+    if (!move) return;
+    if (move.act === 'toggle') items[move.index].click();
+    else items[move.index].focus();
+  }
+
   // Shows a site and keeps the open folders (edit mode redraws through this).
   function show(site) {
     raw = site;
@@ -402,6 +434,9 @@
     setOpen: function (paths) { open = paths; },
     setEditor: function (e) { editor = e; }
   };
+
+  root.addEventListener('keydown', onNavKey);
+  root.addEventListener('focusin', onFocusIn);
 
   var listBox = document.getElementById('list');
   listBox.addEventListener('mouseover', tipOver);

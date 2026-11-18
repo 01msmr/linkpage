@@ -60,6 +60,12 @@
   --fade-icon: 0.09s;
   --icon-delay: 0.2s;
   --fold: 0.2s;
+
+  /* Keyboard focus mark: a line from the viewport edge to the item, or a > for an open folder */
+  --focus-line: 1px;
+  --focus-edge: 1px;
+  --focus-gap: 1px;
+  --focus-arrow-gap: 0.4em;
 }
 :root[data-mode="dark"] {
   --bg: #000;

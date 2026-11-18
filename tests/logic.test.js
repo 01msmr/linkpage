@@ -215,3 +215,51 @@ test('formOf says pill for the pill design and text for every other design', () 
   assert.equal(L.formOf('vertical-heading'), 'pill');
   assert.ok(C.DESIGNS.filter(d => d !== 'vertical-heading').every(d => L.formOf(d) === 'text'));
 });
+
+// rows in visual order: A (open folder) > [b, C (closed folder)], d
+const navRows = [
+  { depth: 0, folder: true, open: true },
+  { depth: 1, folder: false, open: false },
+  { depth: 1, folder: true, open: false },
+  { depth: 0, folder: false, open: false }
+];
+test('navMove up/down walks the rows and stops at the ends', () => {
+  assert.deepEqual(L.navMove(navRows, 1, 'ArrowDown'), { act: 'focus', index: 2 });
+  assert.deepEqual(L.navMove(navRows, 1, 'ArrowUp'), { act: 'focus', index: 0 });
+  assert.equal(L.navMove(navRows, 0, 'ArrowUp'), null);
+  assert.equal(L.navMove(navRows, 3, 'ArrowDown'), null);
+});
+test('navMove right opens a closed folder, enters an open one, ignores links', () => {
+  assert.deepEqual(L.navMove(navRows, 2, 'ArrowRight'), { act: 'toggle', index: 2 });
+  assert.deepEqual(L.navMove(navRows, 0, 'ArrowRight'), { act: 'focus', index: 1 });
+  assert.equal(L.navMove(navRows, 1, 'ArrowRight'), null);
+  assert.equal(L.navMove([{ depth: 0, folder: true, open: true }], 0, 'ArrowRight'), null);
+});
+test('navMove left closes an open folder, otherwise goes to the parent folder', () => {
+  assert.deepEqual(L.navMove(navRows, 0, 'ArrowLeft'), { act: 'toggle', index: 0 });
+  assert.deepEqual(L.navMove(navRows, 1, 'ArrowLeft'), { act: 'focus', index: 0 });
+  assert.deepEqual(L.navMove(navRows, 2, 'ArrowLeft'), { act: 'focus', index: 0 });
+  assert.equal(L.navMove(navRows, 3, 'ArrowLeft'), null);
+});
+test('navMove with nothing focused starts at the first (down) or last (up) row', () => {
+  assert.deepEqual(L.navMove(navRows, -1, 'ArrowDown'), { act: 'focus', index: 0 });
+  assert.deepEqual(L.navMove(navRows, -1, 'ArrowUp'), { act: 'focus', index: 3 });
+  assert.equal(L.navMove(navRows, -1, 'ArrowLeft'), null);
+});
+
+const urlTree = [
+  { name: 'Top', slug: 'top', url: 'u' },
+  { name: 'Tools', items: [{ name: 'x', slug: 'x', url: 'v' }, { name: 'Sub X', items: [{ name: 'deep', slug: 'deep', url: 'w' }, { name: 'bare', url: 'z' }] }] }
+];
+test('urlFor names the focused link by its folder chain and slug', () => {
+  assert.equal(L.urlFor(urlTree, '0', []), '/top/');
+  assert.equal(L.urlFor(urlTree, '1.1.0', ['1', '1.1']), '/tools/sub-x/deep/');
+});
+test('urlFor names an open folder, and the parent for a closed one', () => {
+  assert.equal(L.urlFor(urlTree, '1', ['1']), '/tools/');
+  assert.equal(L.urlFor(urlTree, '1', []), '/');
+  assert.equal(L.urlFor(urlTree, '1.1', ['1']), '/tools/');
+});
+test('urlFor falls back to the folder chain for a link without slug', () => {
+  assert.equal(L.urlFor(urlTree, '1.1.1', ['1', '1.1']), '/tools/sub-x/');
+});
