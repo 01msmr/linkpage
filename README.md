@@ -28,7 +28,7 @@ Apache 2.4 with PHP; the document root is `<repo>/public`.
 
 Arrow keys work in the list and in edit mode (not while a field, menu or edit button has focus):
 
-- up / down: move through the visible entries
+- up / down: move through the visible entries and wrap around at the ends
 - right: open a closed folder, or step into an open one; left: close an open folder, or go to the parent folder
 - Enter: a link opens in a new tab, a folder opens or closes
 - the focused entry shows a 2 px line in the item colour, centred in front of it, 4 px clear of the left rail and of the item (`--focus-*` in `tokens.css`); an open folder shows a light `>` instead, at one x left of the outermost items

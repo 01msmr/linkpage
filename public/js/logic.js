@@ -180,8 +180,8 @@
       return null;
     }
     var row = rows[i];
-    if (key === 'ArrowDown') return i + 1 < rows.length ? { act: 'focus', index: i + 1 } : null;
-    if (key === 'ArrowUp') return i > 0 ? { act: 'focus', index: i - 1 } : null;
+    if (key === 'ArrowDown') return { act: 'focus', index: (i + 1) % rows.length };
+    if (key === 'ArrowUp') return { act: 'focus', index: (i - 1 + rows.length) % rows.length };
     if (key === 'ArrowRight') {
       if (!row.folder) return null;
       if (!row.open) return { act: 'toggle', index: i };

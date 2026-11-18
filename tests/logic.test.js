@@ -223,11 +223,11 @@ const navRows = [
   { depth: 1, folder: true, open: false },
   { depth: 0, folder: false, open: false }
 ];
-test('navMove up/down walks the rows and stops at the ends', () => {
+test('navMove up/down walks the rows and wraps around at the ends', () => {
   assert.deepEqual(L.navMove(navRows, 1, 'ArrowDown'), { act: 'focus', index: 2 });
   assert.deepEqual(L.navMove(navRows, 1, 'ArrowUp'), { act: 'focus', index: 0 });
-  assert.equal(L.navMove(navRows, 0, 'ArrowUp'), null);
-  assert.equal(L.navMove(navRows, 3, 'ArrowDown'), null);
+  assert.deepEqual(L.navMove(navRows, 0, 'ArrowUp'), { act: 'focus', index: 3 });
+  assert.deepEqual(L.navMove(navRows, 3, 'ArrowDown'), { act: 'focus', index: 0 });
 });
 test('navMove right opens a closed folder, enters an open one, ignores links', () => {
   assert.deepEqual(L.navMove(navRows, 2, 'ArrowRight'), { act: 'toggle', index: 2 });
