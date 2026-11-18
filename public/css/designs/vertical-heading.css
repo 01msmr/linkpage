@@ -1,4 +1,4 @@
-:root[data-design="vertical-heading"] { --item-pad-x: 1.25rem; --line: var(--r); --line-gap: 0.3125rem; --indent: calc(var(--line) + var(--line-gap)); --focus-edge: calc(var(--item-height) + 2px); }
+:root[data-design="vertical-heading"] { --item-pad-x: 1.25rem; --line: var(--r); --line-gap: 0.3125rem; --indent: calc(var(--line) + var(--line-gap)); --list-left: calc(var(--item-height) + var(--pad-page)); --focus-edge: calc(var(--item-height) + 2px); }
 /* The domain runs sideways along the left edge as a block. */
 :root[data-design="vertical-heading"] h1 {
   position: fixed;
@@ -16,7 +16,7 @@
   line-height: var(--leading);
   overflow: hidden;
 }
-:root[data-design="vertical-heading"] body { padding-left: calc(var(--item-height) + var(--pad-page)); }
+:root[data-design="vertical-heading"] body { padding-left: var(--list-left); }
 :root[data-design="vertical-heading"] .item { font-weight: bold; padding-left: var(--item-pad-x); padding-right: var(--item-pad-x); }
 :root[data-design="vertical-heading"] .folder-head, :root[data-design="vertical-heading"] .folder-closer { font-weight: 300; color: color-mix(in srgb, var(--chip-fg) var(--folder-ink), var(--chip)); }
 :root[data-design="vertical-heading"] .folder-head:hover, :root[data-design="vertical-heading"] .folder-closer:hover { color: color-mix(in srgb, var(--hover-fg) var(--folder-ink), var(--hover)); }

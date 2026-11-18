@@ -66,6 +66,7 @@
   --focus-edge: 2px;
   --focus-gap: 2px;
   --focus-color: var(--chip);
+  --list-left: var(--pad-page);
   --focus-arrow-gap: 0.4em;
 }
 :root[data-mode="dark"] {
