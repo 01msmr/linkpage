@@ -29,7 +29,7 @@ Apache 2.4 with PHP; the document root is `<repo>/public`.
 Open `/edit/` once; the browser then edits inline (`/?edit=0` switches it off). Visitors see no controls. Hover an entry:
 
 - left: drag handle and pen (name and URL); right: `+` adds a link, the pill adds a folder after it; on an open folder's head they add as its first item
-- the icons show when the pointer is anywhere on the entry's line except the item itself (left gutter, the stretch after the item, the icon column); they appear after `--icon-delay` (0.35 s) at `--icon-opacity` (0.5), fade in 0.09 s, take no clicks and show no hand cursor until visible; touch devices always show them
+- the icons show when the pointer is anywhere on the entry's line except the item itself (left gutter, the stretch after the item, the icon column); they appear after `--icon-delay` (0.2 s) at `--icon-opacity` (0.5), fade in 0.09 s, take no clicks and show no hand cursor until visible; touch devices always show them
 - all add icons stand in one column, right of the longest open item, each centred in its own line; items and folders light up on hover at once
 - grey dots in the corner change settings (design, mode, numbers, caps, layout, intensity, pill height); a floppy icon appears when something is unsaved, Cmd/Ctrl+S saves
 - in the split layout the divider between list and pane can be dragged (this view only)
