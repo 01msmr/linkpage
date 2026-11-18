@@ -63,8 +63,8 @@
 
   /* Keyboard focus mark: a line from the viewport edge to the item, or a > for an open folder */
   --focus-line: 2px;
-  --focus-edge: 2px;
-  --focus-gap: 2px;
+  --focus-edge: 4px;
+  --focus-gap: 4px;
   --focus-color: var(--chip);
   --list-left: var(--pad-page);
   --focus-arrow-gap: 0.4em;
