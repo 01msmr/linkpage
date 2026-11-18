@@ -15,6 +15,7 @@
   --gear-hover: #777;
   --folder-ink: 66%;
   --icon-opacity: 0.5;
+  --icon-ink: color-mix(in srgb, var(--fg) calc(var(--icon-opacity) * 100%), transparent);
   --pill-ink: color-mix(in srgb, var(--bg) var(--folder-ink), var(--fg));
   --toolbar-opacity: 20%;
 
