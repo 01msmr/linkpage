@@ -8,6 +8,7 @@
   var original = null;
   var draft = null;
   var dragFrom = null;
+  var dragRow = null;
   var editPath = null;
   var saving = false;
   var saveBtn, status, closeTimer, fadeTimer;
@@ -312,21 +313,49 @@
     return { row: row, show: 'after', path: [n - 1], zone: 'after', item: draft.items[n - 1] };
   }
 
+  // The visible row whose vertical span is nearest to y (a pointer in a gap or beside the rows still has a target).
+  function nearestRow(y) {
+    var best = null;
+    var bestD = Infinity;
+    [].slice.call(document.querySelectorAll('#list .ent')).forEach(function (r) {
+      if (r.classList.contains('listend') || r.closest('.folder[data-state="closed"] > .folder-body')) return;
+      var b = r.getBoundingClientRect();
+      var d = y < b.top ? b.top - y : y > b.bottom ? y - b.bottom : 0;
+      if (d < bestD) { bestD = d; best = r; }
+    });
+    return best;
+  }
+
+  function inside(path, from) {
+    return path.length >= from.length && from.every(function (v, i) { return path[i] === v; });
+  }
+
+  // Always a target (the line shows at the future position at every moment): the row under the pointer, else the nearest row, else the list end; dropping into the dragged entry itself keeps it where it is.
   function targetAt(ev) {
     var row = rowAt(ev.clientX, ev.clientY);
-    if (!row) return listEndTarget(ev);
+    if (!row) {
+      var end = listEndTarget(ev);
+      if (end) return end;
+      row = nearestRow(ev.clientY);
+      if (!row) return null;
+    }
     var closer = row.classList.contains('ent-closer') ? row.querySelector('.folder-closer[data-path]') : null;
+    var t;
     if (closer) {
       var b = row.getBoundingClientRect();
-      var inside = (ev.clientY - b.top) / b.height < 0.5;
+      var end2 = (ev.clientY - b.top) / b.height < 0.5;
       var folder = parse(closer.dataset.path);
-      return { row: row, show: inside ? 'before' : 'after', path: folder, zone: inside ? 'into' : 'after', item: L.itemAt(draft.items, folder) };
+      t = { row: row, show: end2 ? 'before' : 'after', path: folder, zone: end2 ? 'into' : 'after', item: L.itemAt(draft.items, folder) };
+    } else if (row.dataset.path) {
+      var path = parse(row.dataset.path);
+      var item = L.itemAt(draft.items, path);
+      var zone = zoneOf(row, ev, Array.isArray(item.items));
+      t = { row: row, show: zone, path: path, zone: zone, item: item };
+    } else return null;
+    if (dragFrom && inside(t.path, dragFrom) && (t.zone === 'into' || t.row !== dragRow)) {
+      return { row: dragRow, show: 'before', path: dragFrom, zone: 'before', item: L.itemAt(draft.items, dragFrom) };
     }
-    if (!row.dataset.path) return null;
-    var path = parse(row.dataset.path);
-    var item = L.itemAt(draft.items, path);
-    var zone = zoneOf(row, ev, Array.isArray(item.items));
-    return { row: row, show: zone, path: path, zone: zone, item: item };
+    return t;
   }
 
   // Dragging the handle (mouse, finger, pen): the row under the pointer shows its drop zone; the page scrolls near its top and bottom edge.
@@ -336,6 +365,7 @@
       e.preventDefault();
       handle.setPointerCapture(e.pointerId);
       dragFrom = p;
+      dragRow = r;
       r.dataset.dragging = '';
       document.documentElement.dataset.dragging = '';
       var target = null;
@@ -374,6 +404,7 @@
       handle.addEventListener('pointermove', over);
       handle.addEventListener('pointerup', up);
       handle.addEventListener('pointercancel', cancel);
+      over(e);
     });
   }
 

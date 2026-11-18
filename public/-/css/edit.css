@@ -98,4 +98,7 @@ html[data-input="key"] .ent:not([data-editing]):not(.listend) .ctl { opacity: 0;
 .editlink:hover, .editlink:focus-visible { opacity: 1; }
 .editlink[data-gone] { opacity: 0; pointer-events: none; }
 
+/* While dragging only the drop line speaks: no blue hover on the items, so line and hover never mix. */
+:root[data-dragging][data-form] .item:hover { background: var(--chip); color: var(--chip-fg); }
+
 @media (prefers-reduced-motion: reduce) { .menu, .dot .pt, .dot .ico, .ctl { transition: none; animation: none; } }
