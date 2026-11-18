@@ -4,7 +4,11 @@ AuthName "Edit"
 AuthUserFile /absolute/path/to/edit/.htpasswd
 Require valid-user
 
-# probe.php lets the page ask "am I signed in?" without showing a login prompt to visitors.
-<Files "probe.php">
+# Only index.php (the login at /edit/) asks for the password. It issues a signed cookie; save.php and probe.php
+# check that cookie themselves (EDIT_COOKIE_ONLY tells them to ignore a bare Authorization header), so a home-screen
+# app can save without a new password prompt. probe.php lets the page ask "am I signed in?" without a login prompt.
+<FilesMatch "^(save|probe)\.php$">
+  Require all granted
+  SetEnv EDIT_COOKIE_ONLY 1
   Header always unset WWW-Authenticate
-</Files>
+</FilesMatch>

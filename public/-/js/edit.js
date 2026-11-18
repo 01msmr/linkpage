@@ -634,17 +634,26 @@
     });
   }
 
+  // The edit switch lives in localStorage and in a cookie (the server sets the cookie at /edit/; a home-screen app keeps it for a year).
+  function flagCookie(on) {
+    var secure = root.location.protocol === 'https:' ? '; secure' : '';
+    root.document.cookie = E.flagKey + '=' + (on ? '1' : '') + '; path=/; samesite=lax; max-age=' + (on ? E.flagCookieDays * 86400 : 0) + secure;
+  }
+
+  function flagIsSet() {
+    var inCookie = new RegExp('(?:^|;\\s*)' + E.flagKey + '=1').test(root.document.cookie);
+    try { return inCookie || root.localStorage.getItem(E.flagKey) === '1'; } catch (e) { return inCookie; }
+  }
+
   // Editing is on only in a browser that opened /edit/ (which redirects to /?edit=1).
   function enabled() {
+    var q = new URLSearchParams(root.location.search).get('edit');
     try {
-      var q = new URLSearchParams(root.location.search).get('edit');
-      if (q === '1') root.localStorage.setItem(E.flagKey, '1');
-      if (q === '0') root.localStorage.removeItem(E.flagKey);
+      if (q === '1') { root.localStorage.setItem(E.flagKey, '1'); flagCookie(true); }
+      if (q === '0') { root.localStorage.removeItem(E.flagKey); flagCookie(false); }
       if (q !== null) root.history.replaceState(null, '', root.location.pathname);
-      return root.localStorage.getItem(E.flagKey) === '1';
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { /* the cookie below still answers */ }
+    return flagIsSet();
   }
 
   // A browser with cached credentials starts editing by itself; visitors get a silent 401.

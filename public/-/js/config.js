@@ -36,6 +36,7 @@
     autoProbe: false,
     link: { text: 'edit', href: '/edit/', hideMs: 8000, fadeMs: 400, query: '(display-mode: standalone)' },
     flagKey: 'linkpage-edit',
+    flagCookieDays: 400,
     modeKey: 'linkpage-mode',
     modes: MODES,
     save: 'Save',

@@ -6,10 +6,10 @@ function fail($code, $msg) {
     echo json_encode(['error' => $msg]);
     exit;
 }
-$user = $_SERVER['REMOTE_USER'] ?? $_SERVER['REDIRECT_REMOTE_USER'] ?? $_SERVER['PHP_AUTH_USER'] ?? '';
-$signedIn = $user !== '' || !empty($_SERVER['HTTP_AUTHORIZATION']);
-if (!$signedIn && php_sapi_name() !== 'cli-server') fail(401, 'Not signed in.');
+require __DIR__ . '/auth.php';
+if (!edit_signed_in() && php_sapi_name() !== 'cli-server') fail(401, 'Not signed in.');
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') fail(405, 'POST only.');
+if (stripos($_SERVER['CONTENT_TYPE'] ?? '', 'application/json') !== 0) fail(415, 'JSON only.');
 $body = file_get_contents('php://input');
 if (json_decode($body) === null) fail(400, 'Invalid JSON.');
 $file = __DIR__ . '/site.json';

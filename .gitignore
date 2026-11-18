@@ -2,6 +2,7 @@
 public/edit/site.json
 public/edit/site.bak.json
 public/edit/.htpasswd
+public/edit/.secret
 public/edit/.htaccess
 node_modules/
 .DS_Store
