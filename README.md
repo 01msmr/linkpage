@@ -29,7 +29,7 @@ Up/down move and wrap; right opens a folder or jumps to its first subfolder; lef
 
 ## Editing
 
-Open `/edit/` once; the browser then edits inline (`/?edit=0` switches off). Hover a line for the drag handle, pen and `+` icons; on touch, tap beside an entry. Grey dots change settings, the floppy icon saves (Cmd/Ctrl+S). In a home-screen app (no address bar) a small `edit` link shows top left for 8 s after load (`EDIT.link` in `config.js`). Optional auto start: `EDIT.autoProbe`.
+Open `/edit/` once; the browser then edits inline (`/?edit=0` switches off). Hover a line for the drag handle, pen and `+` icons; on touch, tap beside an entry. Drag the handle (mouse, finger or pen) to move an entry before, after or into another; Alt+arrow moves the focused entry (up/down among siblings, right into the folder above, left out of its folder). Grey dots change settings, the floppy icon saves (Cmd/Ctrl+S). In a home-screen app (no address bar) a small `edit` link shows top left for 8 s after load (`EDIT.link` in `config.js`). Optional auto start: `EDIT.autoProbe`.
 
 ## Layout and commands
 

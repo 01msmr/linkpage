@@ -268,6 +268,31 @@
   }
 
 
+  // Alt+arrow on an entry: { from, toParent, toIndex } for moveItem, or null when it cannot move that way.
+  function keyMove(items, path, key) {
+    var up = path.slice(0, -1);
+    var i = path[path.length - 1];
+    var list = up.length ? itemAt(items, up).items : items;
+    if (key === 'ArrowUp') return i > 0 ? { from: path, toParent: up, toIndex: i - 1 } : null;
+    if (key === 'ArrowDown') return i < list.length - 1 ? { from: path, toParent: up, toIndex: i + 2 } : null;
+    if (key === 'ArrowRight') {
+      var prev = i > 0 ? list[i - 1] : null;
+      return prev && isFolder(prev) ? { from: path, toParent: up.concat(i - 1), toIndex: prev.items.length } : null;
+    }
+    if (key === 'ArrowLeft') return up.length ? { from: path, toParent: up.slice(0, -1), toIndex: up[up.length - 1] + 1 } : null;
+    return null;
+  }
+
+  // The path an entry has after moveItem(from -> toParent/toIndex).
+  function movedPath(from, toParent, toIndex) {
+    var up = from.slice(0, -1);
+    var last = from[from.length - 1];
+    var parent = parentAfterRemoval(from, toParent);
+    var index = toIndex;
+    if (parent.length === up.length && startsWith(parent, up) && last < toIndex) index--;
+    return parent.concat(index);
+  }
+
   function setField(items, path, key, value) {
     var copy = clone(items);
     var item = itemAt(copy, path);
@@ -284,7 +309,7 @@
   }
 
   var api = { resolveSettings: resolveSettings, pillFont: pillFont, formOf: formOf, slugify: slugify, resolveOpen: resolveOpen, findLink: findLink,
-    sortItems: sortItems, sortedEntries: sortedEntries, entriesFor: entriesFor, prefixPaths: prefixPaths, reindexOpen: reindexOpen, openAfterMove: openAfterMove, slugFor: slugFor, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen, navMove: navMove, urlFor: urlFor,
+    sortItems: sortItems, sortedEntries: sortedEntries, entriesFor: entriesFor, prefixPaths: prefixPaths, reindexOpen: reindexOpen, openAfterMove: openAfterMove, slugFor: slugFor, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen, navMove: navMove, urlFor: urlFor, keyMove: keyMove, movedPath: movedPath,
     clone: clone, itemAt: itemAt, removeAt: removeAt, insertAt: insertAt, moveItem: moveItem, parentAfterRemoval: parentAfterRemoval,
     setField: setField, hasChanged: hasChanged, countDescendants: countDescendants };
   root.LinkpagesLogic = api;

@@ -268,3 +268,29 @@ test('urlFor names an open folder, and the parent for a closed one', () => {
 test('urlFor falls back to the folder chain for a link without slug', () => {
   assert.equal(L.urlFor(urlTree, '1.1.1', ['1', '1.1']), '/tools/sub-x/');
 });
+
+// keyboard moves: items A (link), F (folder: x, y), B (link)
+const moveTree = () => [
+  { name: 'A', url: 'a', slug: 'a' },
+  { name: 'F', items: [{ name: 'x', url: 'x', slug: 'x' }, { name: 'y', url: 'y', slug: 'y' }] },
+  { name: 'B', url: 'b', slug: 'b' }
+];
+test('keyMove up/down move an entry among its siblings, null at the ends', () => {
+  assert.deepEqual(L.keyMove(moveTree(), [2], 'ArrowUp'), { from: [2], toParent: [], toIndex: 1 });
+  assert.deepEqual(L.keyMove(moveTree(), [0], 'ArrowDown'), { from: [0], toParent: [], toIndex: 2 });
+  assert.equal(L.keyMove(moveTree(), [0], 'ArrowUp'), null);
+  assert.equal(L.keyMove(moveTree(), [2], 'ArrowDown'), null);
+});
+test('keyMove right enters the folder above as its last entry, left leaves to after the parent', () => {
+  assert.deepEqual(L.keyMove(moveTree(), [2], 'ArrowRight'), { from: [2], toParent: [1], toIndex: 2 });
+  assert.equal(L.keyMove(moveTree(), [0], 'ArrowRight'), null);
+  assert.equal(L.keyMove(moveTree(), [1, 1], 'ArrowRight'), null);
+  assert.deepEqual(L.keyMove(moveTree(), [1, 0], 'ArrowLeft'), { from: [1, 0], toParent: [], toIndex: 2 });
+  assert.equal(L.keyMove(moveTree(), [0], 'ArrowLeft'), null);
+});
+test('movedPath gives the new path of a moved entry', () => {
+  assert.deepEqual(L.movedPath([2], [1], 2), [1, 2]);
+  assert.deepEqual(L.movedPath([0], [], 2), [1]);
+  assert.deepEqual(L.movedPath([1, 0], [], 2), [2]);
+  assert.deepEqual(L.movedPath([2], [], 1), [1]);
+});

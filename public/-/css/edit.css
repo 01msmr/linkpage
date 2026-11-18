@@ -30,6 +30,8 @@
 /* The closing line is lower than the add icons next to it; its left gutter lies over the row so the icons do not make it taller. */
 .ent-closer { padding-left: var(--gutter-edit); }
 .ent-closer > .gl { position: absolute; top: 0; bottom: 0; }
+.ent[data-dragging] { opacity: 0.5; }
+html[data-dragging], html[data-dragging] * { cursor: grabbing; user-select: none; -webkit-user-select: none; }
 .ent[data-drop="before"] { box-shadow: 0 calc(var(--drop-w) * -1) 0 var(--hover); }
 .ent[data-drop="after"] { box-shadow: 0 var(--drop-w) 0 var(--hover); }
 .ent[data-drop="into"] { box-shadow: inset 0 0 0 var(--drop-w) var(--hover); }
@@ -46,7 +48,7 @@
 .ctl:hover { background: none; color: var(--chip); }
 @keyframes ctl-live { to { pointer-events: auto; } }
 /* The hamburger glyph sits low in its line box; lift it so its ink is centered. */
-.ctl-handle { cursor: grab; font-weight: 400; position: relative; top: calc(var(--handle-lift) * -1); }
+.ctl-handle { touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: grab; font-weight: 400; position: relative; top: calc(var(--handle-lift) * -1); }
 .ctl-remove { color: color-mix(in srgb, var(--danger) calc(var(--icon-opacity) * 100%), transparent); }
 .ctl-remove:hover { color: var(--danger); }
 

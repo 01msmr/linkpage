@@ -60,6 +60,7 @@
     newLink: { name: 'New link', url: 'https://' },
     newFolderName: 'New folder',
     dropZone: { before: 0.25, after: 0.75 },
+    autoscroll: { edge: 60, speed: 14 },
     valueLabels: { true: 'on', false: 'off' },
     controls: [
       { key: 'design', icon: '\u25A7', label: 'Design', values: DESIGNS },

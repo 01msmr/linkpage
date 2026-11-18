@@ -295,25 +295,85 @@
     }
   }
 
-  function wireDrag(r, handle, p, isFolder, item) {
-    handle.addEventListener('mousedown', function () { r.draggable = true; });
-    r.addEventListener('dragstart', function (e) {
+  function rowAt(x, y) {
+    var t = document.elementFromPoint(x, y);
+    return t && t.closest ? t.closest('#list .ent[data-path]') : null;
+  }
+
+  // Dragging the handle (mouse, finger, pen): the row under the pointer shows its drop zone; the page scrolls near its top and bottom edge.
+  function wireDrag(r, handle, p) {
+    handle.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      e.preventDefault();
+      handle.setPointerCapture(e.pointerId);
       dragFrom = p;
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', r.dataset.path);
+      r.dataset.dragging = '';
+      document.documentElement.dataset.dragging = '';
+      var target = null;
+      var last = e;
+      var scroll = 0;
+      var raf = 0;
+      function over(ev) {
+        last = ev;
+        clearDrop();
+        target = null;
+        var row = rowAt(ev.clientX, ev.clientY);
+        if (row) {
+          var path = parse(row.dataset.path);
+          var item = L.itemAt(draft.items, path);
+          var zone = zoneOf(row, ev, Array.isArray(item.items));
+          row.dataset.drop = zone;
+          target = { path: path, zone: zone, item: item };
+        }
+        scroll = ev.clientY < E.autoscroll.edge ? -1 : ev.clientY > root.innerHeight - E.autoscroll.edge ? 1 : 0;
+        if (scroll && !raf) raf = requestAnimationFrame(tick);
+      }
+      function tick() {
+        raf = 0;
+        if (!scroll) return;
+        root.scrollBy(0, scroll * E.autoscroll.speed);
+        over(last);
+      }
+      function end(commit) {
+        handle.removeEventListener('pointermove', over);
+        handle.removeEventListener('pointerup', up);
+        handle.removeEventListener('pointercancel', cancel);
+        cancelAnimationFrame(raf);
+        scroll = 0;
+        delete r.dataset.dragging;
+        delete document.documentElement.dataset.dragging;
+        var t = target;
+        if (commit && t) drop(t.path, t.zone, t.item);
+        else { dragFrom = null; clearDrop(); }
+      }
+      function up() { end(true); }
+      function cancel() { end(false); }
+      handle.addEventListener('pointermove', over);
+      handle.addEventListener('pointerup', up);
+      handle.addEventListener('pointercancel', cancel);
     });
-    r.addEventListener('dragend', function () { r.draggable = false; dragFrom = null; clearDrop(); });
-    r.addEventListener('dragover', function (e) {
-      if (!dragFrom) return;
-      e.preventDefault();
-      clearDrop();
-      r.dataset.drop = zoneOf(r, e, isFolder);
-    });
-    r.addEventListener('drop', function (e) {
-      if (!dragFrom) return;
-      e.preventDefault();
-      drop(p, zoneOf(r, e, isFolder), item);
-    });
+  }
+
+  // Alt+arrow on the focused entry: up/down among its siblings, right into the folder above, left out after its folder.
+  function keyReorder(e) {
+    if (!e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || !draft) return;
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.key) < 0) return;
+    var at = document.activeElement;
+    var it = at && at.closest ? at.closest('#list .item[data-path]') : null;
+    if (!it || it.classList.contains('folder-closer')) return;
+    e.preventDefault();
+    var mv = L.keyMove(draft.items, parse(it.dataset.path), e.key);
+    if (!mv) return;
+    settle();
+    var moved = L.moveItem(draft.items, mv.from, mv.toParent, mv.toIndex);
+    if (!moved) return;
+    var parent = L.parentAfterRemoval(mv.from, mv.toParent);
+    var open = L.openAfterMove(R.getOpen(), mv.from, mv.toParent, mv.toIndex);
+    L.prefixPaths(parent).forEach(function (q) { if (open.indexOf(q) < 0) open.push(q); });
+    draft.items = moved;
+    afterChange(parent, undefined, open);
+    var now = document.querySelector('#list .item[data-path="' + L.movedPath(mv.from, mv.toParent, mv.toIndex).join('.') + '"]:not(.folder-closer)');
+    if (now) now.focus();
   }
 
   // The row around an entry: controls in the gutters, the entry itself in the middle.
@@ -335,7 +395,7 @@
       gl.appendChild(handle);
       gl.appendChild(ctl(I.pen, fill(E.labels.pen, item.name), 'ctl-pen', function () { startEdit(path); }));
       gr.appendChild(belowDuo(item, p, isFolder && L.isOpen(R.getOpen(), path)));
-      wireDrag(r, handle, p, isFolder, item);
+      wireDrag(r, handle, p);
     }
     r.appendChild(gl);
     r.appendChild(core);
@@ -506,6 +566,7 @@
     R.setEditor(api);
     R.show(draft);
     root.addEventListener('pointerdown', touchRow);
+    root.addEventListener('keydown', keyReorder);
     root.addEventListener('keydown', function (e) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
         e.preventDefault();
