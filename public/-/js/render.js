@@ -477,7 +477,7 @@
   });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (settings) settle(); });
 
-  fetch('/site.php', { cache: 'no-store' })
+  fetch('/-/site.php', { cache: 'no-store' })
     .then(function (r) {
       return r.json().then(function (body) {
         if (!r.ok) throw new Error(body && body.error ? body.error : 'HTTP ' + r.status);

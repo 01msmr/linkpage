@@ -1,10 +1,10 @@
 <?php
-// Serves edit/site.json; seeds it from seeds/default.json on first call.
+// Serves ../edit/site.json; seeds it from seeds/default.json on first call.
 header('Content-Type: application/json');
 header('Cache-Control: no-cache');
-$file = __DIR__ . '/edit/site.json';
+$file = __DIR__ . '/../edit/site.json';
 if (!is_file($file)) {
-    @mkdir(__DIR__ . '/edit', 0755, true);
+    @mkdir(dirname($file), 0755, true);
     @copy(__DIR__ . '/seeds/default.json', $file);
 }
 $json = @file_get_contents($file);

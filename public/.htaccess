@@ -1,5 +1,5 @@
 # Hide the seed folder.
-RedirectMatch 404 ^/seeds(/|$)
+RedirectMatch 404 ^/-/seeds(/|$)
 
 # /a/b/ shows the list with those folders opened; with ?open a link path redirects to the link at once (real files and folders such as /edit/ are left alone).
 RewriteEngine On

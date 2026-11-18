@@ -1,6 +1,6 @@
 # linktree
 
-Brutalist link pages with folders, eight designs and online editing. Static HTML, CSS and vanilla JS plus three small PHP scripts (`site.php`, `edit/save.php`, `edit/probe.php`). No build step, no framework.
+Brutalist link pages with folders, eight designs and online editing. Static HTML, CSS and vanilla JS plus three small PHP scripts (`-/site.php`, `edit/save.php`, `edit/probe.php`). No build step, no framework.
 
 | Closed | Opened (`/projects/archive/old-notes/`) |
 |---|---|
@@ -12,7 +12,7 @@ Apache 2.4 with PHP; the document root is `<repo>/public`.
 
 1. Copy `public/edit/.htaccess.example` to `public/edit/.htaccess`, set `AuthUserFile` to the absolute path of `public/edit/.htpasswd`.
 2. `htpasswd -c public/edit/.htpasswd <user>`, then open `/edit/` once and sign in. `public/edit/` must be writable by PHP.
-3. The first `/site.php` request copies `seeds/default.json` to `edit/site.json`; saves go there (previous: `site.bak.json`).
+3. The first `/-/site.php` request copies `-/seeds/default.json` to `edit/site.json`; saves go there (previous: `site.bak.json`).
 
 `site.json`, `site.bak.json`, `.htpasswd`, `.htaccess` in `public/edit/` are never committed.
 
@@ -47,7 +47,8 @@ Auto start (`EDIT.autoProbe` in `js/config.js`, off): add the `<Files "probe.php
 
 ## Layout and commands
 
-    public/        index.html (list), go.html (redirect), css/ (tokens, base, edit, designs/), js/ (config, logic, render, edit, go), edit/ seeds/ icons/ (PHP, dummy content)
+    public/        index.html (list), go.html (redirect), edit/ (login, save, probe; PHP), -/ (everything else)
+    public/-/      css/ (tokens, base, edit, designs/), js/ (config, logic, render, edit, go), seeds/, site.php, manifest, app icons
     tests/ docs/ tools/   unit tests, specs and plans, dev router
     local/         git-ignored scratch data
 
@@ -56,7 +57,7 @@ Auto start (`EDIT.autoProbe` in `js/config.js`, off): add the `<Files "probe.php
 
 Sizes: the pill height setting is the height at 1280 px width; it scales with the window between 1x and 1.5x (so pills and edit icons are smallest on phones) (`SCALE` in `config.js`). A folder is as wide as its direct items; a subfolder keeps its own width but reaches at least one radius past the right edge of its parent. Styling and details target `vertical-heading`; other designs follow later. Split pane only on viewports of at least 900 x 500 px (`SPLIT.query`), otherwise links open in a new tab.
 
-Pill form is `vertical-heading` (`PILL_DESIGNS`), all others are text form (`html[data-form]`). Change a value in one place: `tokens.css` first, then `config.js`. Bump `?v=N` on the CSS/JS links in `index.html` and `go.html` with every change (browsers cache for an hour).
+Pill form is `vertical-heading` (`PILL_DESIGNS`), all others are text form (`html[data-form]`). Everything but `edit/` lives in `/-/`, so no folder name you pick in the list can clash with a path (`slugify` never yields a lone `-`); `edit/` stays because it holds the login and your data. Change a value in one place: `tokens.css` first, then `config.js`. Bump `?v=N` on the CSS/JS links in `index.html` and `go.html` with every change (browsers cache for an hour).
 
 ## Status
 
