@@ -62,9 +62,10 @@
   --fold: 0.2s;
 
   /* Keyboard focus mark: a line from the viewport edge to the item, or a > for an open folder */
-  --focus-line: 1px;
-  --focus-edge: 1px;
-  --focus-gap: 1px;
+  --focus-line: 2px;
+  --focus-edge: 2px;
+  --focus-gap: 2px;
+  --focus-color: var(--chip);
   --focus-arrow-gap: 0.4em;
 }
 :root[data-mode="dark"] {
