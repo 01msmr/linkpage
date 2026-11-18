@@ -55,8 +55,9 @@
   --gutter-right: calc(var(--ctl) * 4.4);
   --drop-w: 3px;
   --drop-out: var(--item-height);
-  --drop-w-touch: 4px;
-  --drop-veil: color-mix(in srgb, var(--hover) 15%, transparent);
+  --drop-w-touch: 6px;
+  --drop-color-touch: var(--danger);
+  --drop-veil: color-mix(in srgb, var(--drop-color-touch) 15%, transparent);
   --menu-gap: calc(var(--side) / 4);
   --menu-slide: calc(var(--side) * 0.25);
 
