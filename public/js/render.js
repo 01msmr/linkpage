@@ -360,9 +360,8 @@
     draw();
   }
 
-  // ?open on /folder/link/ opens the tree down to that entry, marks it and, in the split layout, loads it.
+  // /folder/link/ opens the tree down to that entry, marks it and, in the split layout, loads it.
   function applyOpen() {
-    if (!new URLSearchParams(root.location.search).has('open')) return;
     var res = L.resolveOpen(raw.items, root.location.pathname.split('/').filter(Boolean));
     if (!res) return;
     res.open.forEach(function (p) { if (open.indexOf(p) < 0) open.push(p); });

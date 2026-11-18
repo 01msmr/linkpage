@@ -126,13 +126,15 @@
     return slug;
   }
 
-  // The link with this slug anywhere in the tree: { open: [folder paths], target, path }.
+  // The link or folder with this slug anywhere in the tree: { open: [folder paths to open], target, path }.
   function locate(items, slug, prefix, open) {
     for (var i = 0; i < items.length; i++) {
       var it = items[i];
       var path = prefix.concat(i);
       if (isFolder(it)) {
-        var hit = locate(it.items, slug, path, open.concat(path.join('.')));
+        var own = open.concat(path.join('.'));
+        if (slugify(it.name) === slug) return { open: own, target: it, path: path.join('.') };
+        var hit = locate(it.items, slug, path, own);
         if (hit) return hit;
       } else if (it.slug === slug) return { open: open, target: it, path: path.join('.') };
     }

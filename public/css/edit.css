@@ -67,6 +67,7 @@
 .esave svg { width: var(--dot-w); height: var(--dot-w); }
 .esave:hover:not(:disabled) { background: none; color: var(--hover); }
 .esave:disabled { opacity: 0.4; }
+.esave[hidden], .esave[hidden]:disabled { display: none; }
 
 /* Split layout: the draggable divider between list and pane, and the toolbar floating over the pane. */
 #divider { display: none; }

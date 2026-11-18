@@ -1,19 +1,15 @@
 # Hide the seed folder.
 RedirectMatch 404 ^/seeds(/|$)
 
-# /folder/link/?open shows the list with that entry opened (real files and folders such as /edit/ are left alone).
+# /a/b/ shows the list with those folders opened; with ?open a link path redirects to the link at once (real files and folders such as /edit/ are left alone).
 RewriteEngine On
 RewriteCond %{QUERY_STRING} (^|&)open(&|=|$)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^[^.]+/?$ index.html [L]
-
-# /slug, /slug/ and /slug/index.html all open go.html.
+RewriteRule ^[^.]+/?$ go.html [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([^/.]+)/?$ go.html [L]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^([^/.]+)/index\.html$ go.html [L]
+RewriteRule ^[^.]+/?$ index.html [L]
 
 # Caching: html always revalidated, css/js one hour.
 <IfModule mod_headers.c>

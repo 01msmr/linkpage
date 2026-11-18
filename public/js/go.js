@@ -1,4 +1,4 @@
-// Redirect page: looks the slug up in site.php and replaces the location at once.
+// Redirect page for ?open: a link path goes to the link at once, a folder path to its opened list.
 (function (root) {
   var L = root.LinkpagesLogic;
   var R = root.LinkpagesConfig.REDIRECT;
@@ -8,10 +8,6 @@
     if (cls) e.className = cls;
     if (text !== undefined) e.textContent = text;
     return e;
-  }
-
-  function slugFromPath(path) {
-    return path.replace(/^\/+/, '').split('/')[0];
   }
 
   function applyLook(s) {
@@ -38,10 +34,11 @@
   function run(site) {
     var s = L.resolveSettings(site);
     applyLook(s);
-    var slug = slugFromPath(location.pathname);
-    var link = L.findLink(s.items, slug);
-    if (!link) return showError(R.unknown.replace('{slug}', slug));
-    location.replace(link.url);
+    var segs = location.pathname.split('/').filter(Boolean);
+    var res = L.resolveOpen(s.items, segs);
+    if (!res) return showError(R.unknown.replace('{slug}', segs.join('/')));
+    if (res.target.url) location.replace(res.target.url);
+    else location.replace(location.pathname);
   }
 
   document.getElementById('back').textContent = R.back;

@@ -22,7 +22,7 @@ Apache 2.4 with PHP; the document root is `<repo>/public`.
 
 `edit/site.json`: `design`, `mode` (`light`/`dark`), `numbers`, `caps` (`regular`/`versalien`), `font`, `layout` (`list`/`split`), `height` (pill height, 30 to 70 px), `intensity` (10 to 100 %) and `items`. A link is `{ name, url, slug }`, a folder `{ name, items: [...] }`, folders nest. Designs: `vertical-heading` (default), `giant-type`, `giant-numerals`, `bracket-terminal`, `headline-tiny-links`, `raw-listing`, `tracked-rows`, `plain-inverted`.
 
-`/<slug>/` redirects to the link at once. `/<folder>/<link>/?open` shows the list with the tree opened down to that entry and marks it (in the split layout it loads the link in the pane). Folder slugs are the names in lower case with `-`, e.g. `tbx.li` becomes `tbx-li`.
+`/<folder>/<folder>/` shows the list with those folders opened; `/<folder>/<link>/` also opens the tree down to the link and marks it (in the split layout it loads the link in the pane). With `?open` a link path (`/<link>/?open` from anywhere in the tree, or `/<folder>/<link>/?open`) redirects to the link at once; a folder path with `?open` shows the opened list. Real paths such as `/edit/` are left alone. Folder slugs are the names in lower case with `-`, e.g. `tbx.li` becomes `tbx-li`.
 
 ## Editing
 
@@ -64,7 +64,7 @@ Bump the `?v=N` on the CSS and JS links in `index.html` and `go.html` with every
 
 ## Status
 
-Working and checked in the browser: all eight designs, folders with open/close animation, `?open` paths, inline editing (add, rename, move, remove, settings dock, save), icon hover behaviour above, 43 unit tests. Content is dummy. Pushed to `main` (deploys to l.msmr.co via Plesk Git); the live host was not re-checked after the latest pushes.
+Working and checked in the browser: all eight designs, folders with open/close animation, folder and `?open` paths, inline editing (add, rename, move, remove, settings dock, save), icon hover behaviour above, 43 unit tests. Content is dummy. Pushed to `main` (deploys to l.msmr.co via Plesk Git); the live host was not re-checked after the latest pushes.
 
 Not yet checked: edit mode in the split layout, in narrow windows and in the text-form designs; very long (wrapped) entries with the icon column.
 
