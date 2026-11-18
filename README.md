@@ -2,7 +2,7 @@
 
 Brutalist link pages with folders, eight designs and online editing. Static HTML, CSS and vanilla JS plus three small PHP scripts (`site.php`, `edit/save.php`, `edit/probe.php`). No build step, no framework.
 
-| Closed | Opened (`/projects/archive/old-notes/?open`) |
+| Closed | Opened (`/projects/archive/old-notes/`) |
 |---|---|
 | ![closed folders](docs/screenshots/closed.jpg) | ![opened folders](docs/screenshots/opened.jpg) |
 
