@@ -377,16 +377,26 @@
     return r;
   }
 
-  // All add icons stand at one x, right of the longest entry, each in its own line; the empty stretch up to them (.gap) also shows them.
+  // The add icons of one group stand at one x, right of its longest open entry, each in its own line. A group is a main folder with everything in it, or a run of consecutive links on the top level (a main folder ends the run).
   function alignIcons() {
-    var rows = [].slice.call(document.querySelectorAll('#list .ent'));
-    var live = rows.filter(function (r) { return !r.closest('.folder[data-state="closed"] > .folder-body'); });
-    var right = 0;
-    live.forEach(function (r) {
+    var list = document.getElementById('list');
+    var ids = new Map();
+    var prevLink = false;
+    [].slice.call(list.children).forEach(function (c, i) {
+      var link = c.classList.contains('ent');
+      ids.set(c, link && prevLink ? ids.get(list.children[i - 1]) : i);
+      prevLink = link;
+    });
+    var group = function (r) { return ids.get(r.parentElement === list ? r : r.closest('#list > .folder')); };
+    var rows = [].slice.call(list.querySelectorAll('.ent'));
+    var rights = new Map();
+    rows.forEach(function (r) {
+      if (r.closest('.folder[data-state="closed"] > .folder-body')) return;
       var core = r.querySelector(':scope > .item, :scope > .ebox, :scope > .lend');
-      if (core) right = Math.max(right, core.getBoundingClientRect().right);
+      if (core) rights.set(group(r), Math.max(rights.get(group(r)) || 0, core.getBoundingClientRect().right));
     });
     rows.forEach(function (r) {
+      var right = rights.get(group(r)) || 0;
       var gr = r.querySelector(':scope > .gr');
       var box = r.getBoundingClientRect();
       if (gr) gr.style.left = Math.round(right - box.left) + 'px';
