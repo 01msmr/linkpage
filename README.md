@@ -39,7 +39,7 @@ Works in the list and in edit mode, except while a field, menu or edit button ha
 Open `/edit/` once; the browser then edits inline (`/?edit=0` switches off). Visitors see no controls. Hover a line:
 
 - left: drag handle and pen (name, URL); right: `+` adds a link, the pill a folder after it (on an open folder's head: as its first item). They show after `--icon-delay` (0.2 s) at `--icon-opacity`, take no clicks until visible; on touch a tap beside an entry (gutters, the stretch after it) shows that row's icons, a tap elsewhere hides them.
-- hovering an add/edit icon fills it with the main colour (`--chip`, incl. the intensity setting).
+- hovering an add/edit icon shows it at full strength in the main colour (`--chip`, incl. the intensity setting).
 - grey dots change settings; the floppy icon shows while something is unsaved (Cmd/Ctrl+S saves). Light/dark is a per-browser view choice, never saved; the split divider drags per view.
 
 Auto start (`EDIT.autoProbe` in `js/config.js`, off): add the `<Files "probe.php">` block from `.htaccess.example` to the live `.htaccess`, set it `true`; browsers holding credentials then start editing, others get a silent 401.
