@@ -53,7 +53,7 @@ Auto start (`EDIT.autoProbe` in `js/config.js`, off): add the `<Files "probe.php
     php -S 0.0.0.0:8080 -t public tools/dev-router.php   # local server
     npm test                                              # unit tests (node --test)
 
-Sizes: the pill height setting is the height at 1280 px width; it scales with the window between 1x and 1.5x (so pills and edit icons are smallest on phones) (`SCALE` in `config.js`). A folder is as wide as its direct items; subfolders keep their own width. Styling and details target `vertical-heading`; other designs follow later. Split pane only on viewports of at least 900 x 500 px (`SPLIT.query`), otherwise links open in a new tab.
+Sizes: the pill height setting is the height at 1280 px width; it scales with the window between 1x and 1.5x (so pills and edit icons are smallest on phones) (`SCALE` in `config.js`). A folder is as wide as its direct items; a subfolder keeps its own width but reaches at least one radius past the right edge of its parent. Styling and details target `vertical-heading`; other designs follow later. Split pane only on viewports of at least 900 x 500 px (`SPLIT.query`), otherwise links open in a new tab.
 
 Pill form is `vertical-heading` (`PILL_DESIGNS`), all others are text form (`html[data-form]`). Change a value in one place: `tokens.css` first, then `config.js`. Bump `?v=N` on the CSS/JS links in `index.html` and `go.html` with every change (browsers cache for an hour).
 
