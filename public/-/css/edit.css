@@ -30,6 +30,8 @@
 /* The closing line is lower than the add icons next to it; its left gutter lies over the row so the icons do not make it taller. */
 .ent-closer { padding-left: var(--gutter-edit); }
 .ent-closer > .gl { position: absolute; top: 0; bottom: 0; }
+/* While dragging, a folder's closing line reaches --drop-out further down: a roomy zone for "after this folder". */
+html[data-dragging] .ent-closer:not(.listend)::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: var(--drop-out); }
 .ent[data-dragging] { opacity: 0.5; }
 html[data-dragging], html[data-dragging] * { cursor: grabbing; user-select: none; -webkit-user-select: none; }
 .ent[data-drop="before"] { box-shadow: 0 calc(var(--drop-w) * -1) 0 var(--hover); }

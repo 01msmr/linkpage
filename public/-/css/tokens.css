@@ -54,6 +54,7 @@
   --gutter-edit: calc(var(--ctl) * 2);
   --gutter-right: calc(var(--ctl) * 4.4);
   --drop-w: 3px;
+  --drop-out: var(--item-height);
   --menu-gap: calc(var(--side) / 4);
   --menu-slide: calc(var(--side) * 0.25);
 
