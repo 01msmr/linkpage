@@ -45,7 +45,7 @@
 .ctl:hover { background: var(--chip); color: var(--chip-fg); }
 .ctl-folder:hover { background: none; color: var(--chip); }
 /* The hovered icon is at full strength: the main colour as the item bars show it. */
-.ent:has(.gl:hover, .gr:hover) .ctl:hover { opacity: 1; }
+.ent:has(.gl:hover, .gr:hover) .ctl:hover { opacity: 1; transition-delay: 0s; }
 @keyframes ctl-live { to { pointer-events: auto; } }
 /* The hamburger glyph sits low in its line box; lift it so its ink is centered. */
 .ctl-handle { cursor: grab; font-weight: 400; position: relative; top: calc(var(--handle-lift) * -1); }
