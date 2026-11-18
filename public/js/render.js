@@ -358,7 +358,7 @@
     if (url !== root.location.pathname) root.history.replaceState(null, '', url);
   }
 
-  // The last input method wins: arrow keys / Tab set html[data-input=key] (focus mark on, row icons off), a real pointer move or press unsets it. Page load starts as mouse.
+  // The last input method wins (the first key after the mouse continues from the entry under the pointer): arrow keys / Tab set html[data-input=key] (focus mark on, row icons off), a real pointer move or press unsets it. Page load starts as mouse.
   var lastPointer = null;
   function setInput(kind) {
     var html = document.documentElement;
@@ -380,6 +380,7 @@
     var at = document.activeElement;
     if (at && at !== document.body && !at.classList.contains('item')) return;
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.key) < 0) return;
+    var fromMouse = document.documentElement.dataset.input !== 'key';
     setInput('key');
     var items = navRows();
     var rows = items.map(function (it) {
@@ -387,7 +388,12 @@
       for (var b = it.closest('.folder-body'); b; b = b.parentElement && b.parentElement.closest('.folder-body')) depth++;
       return { depth: depth, folder: it.classList.contains('folder-head'), open: it.getAttribute('aria-expanded') === 'true' };
     });
-    var move = L.navMove(rows, items.indexOf(document.activeElement), e.key);
+    var here = items.indexOf(document.activeElement);
+    if (fromMouse) {
+      var under = document.querySelector('#list .item:hover');
+      if (under && items.indexOf(under) >= 0) here = items.indexOf(under);
+    }
+    var move = L.navMove(rows, here, e.key);
     e.preventDefault();
     if (!move) return;
     if (move.act === 'toggle') items[move.index].click();
