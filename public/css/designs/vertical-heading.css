@@ -1,4 +1,4 @@
-:root[data-design="vertical-heading"] { --item-pad-x: 1.25rem; --line: var(--r); --line-gap: 0.3125rem; --indent: calc(var(--line) + var(--line-gap)); }
+:root[data-design="vertical-heading"] { --item-pad-x: 1.25rem; --line: var(--r); --line-gap: 0.3125rem; --indent: calc(var(--line) + var(--line-gap)); --focus-edge: calc(var(--item-height) + 2px); }
 /* The domain runs sideways along the left edge as a block. */
 :root[data-design="vertical-heading"] h1 {
   position: fixed;
