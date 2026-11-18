@@ -59,8 +59,8 @@
 
 /* Entry editing */
 .ebox { display: flex; flex-wrap: wrap; gap: var(--gap-item); }
-.ebox input { flex: 1 1 var(--ebox-name); min-width: 0; border: 0; border-radius: 0; padding: var(--pad-y) var(--pad-x); background: var(--chip); color: var(--chip-fg); font: inherit; font-size: var(--item-font); line-height: var(--leading); }
-.ebox .in-url { flex: 2 1 var(--ebox-url); }
+.ebox input { width: var(--ebox-name); flex: 1 1 var(--ebox-name); min-width: 0; border: 0; border-radius: 0; padding: var(--pad-y) var(--pad-x); background: var(--chip); color: var(--chip-fg); font: inherit; font-size: var(--item-font); line-height: var(--leading); }
+.ebox .in-url { width: var(--ebox-url); flex: 2 1 var(--ebox-url); }
 .ebox.efolder input { border-radius: var(--r); }
 .ebtn { border: 0; border-radius: var(--radius-chip); padding: var(--pad-y) var(--pad-x); background: var(--chip); color: var(--chip-fg); font: inherit; cursor: pointer; }
 .ebtn:disabled { opacity: 0.4; cursor: default; background: var(--chip); color: var(--chip-fg); }
