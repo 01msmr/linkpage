@@ -43,6 +43,9 @@
 .ent:has(.gl:hover, .gr:hover, .gap:hover) .ctl, .ent[data-touch] .ctl { opacity: var(--icon-opacity); transform: none; transition-delay: var(--icon-delay); animation: ctl-live 0s var(--icon-delay) forwards; }
 .ctl:focus-visible, .ent[data-editing] .ctl, .listend .ctl { opacity: var(--icon-opacity); transform: none; pointer-events: auto; }
 .ctl:hover { background: var(--chip); color: var(--chip-fg); }
+.ctl-folder:hover { background: none; color: var(--chip); }
+/* The hovered icon is at full strength: the main colour as the item bars show it. */
+.ent:has(.gl:hover, .gr:hover) .ctl:hover { opacity: 1; }
 @keyframes ctl-live { to { pointer-events: auto; } }
 /* The hamburger glyph sits low in its line box; lift it so its ink is centered. */
 .ctl-handle { cursor: grab; font-weight: 400; position: relative; top: calc(var(--handle-lift) * -1); }
