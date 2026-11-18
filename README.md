@@ -31,7 +31,7 @@ Works in the list and in edit mode, except while a field, menu or edit button ha
 - Up/down move through the visible entries and wrap around; the first key after the mouse continues from the entry under the pointer.
 - Right opens a folder, or on an open one jumps to the first subfolder inside it (nothing if there is none); left closes an open folder, or on a closed one goes to the parent folder; Enter opens a link in a new tab or toggles a folder.
 - The focused link shows a band as tall as one item line, in the item colour, between the left rail (4 px clear) and the left edge of the outermost entries, whatever the nesting (the item gap: 1 px before a link, 4 px before a folder); a closed folder shows a 2 px line there, an open one a light `>` at one x left of the outermost items (`--focus-*`, `--rail-gap` in `tokens.css`).
-- The last input method wins: after a key the row icons and mouse-over highlight hide and the mark shows; moving or pressing the mouse reverses it. A page starts in mouse mode.
+- The last input method wins: after a key the row icons and mouse-over highlight hide and the mark shows; moving or pressing the mouse reverses it. On devices with a mouse (`START_MARK.query` in `config.js`) the page loads in keyboard mode with the first entry, or the one the address names, marked; the first real mouse move or press hides the mark. Touch devices start in mouse mode.
 - The address bar follows the focus (a closed folder shows its parent), also on clicks; history is untouched.
 
 ## Editing

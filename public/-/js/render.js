@@ -335,12 +335,27 @@
     if (editor && editor.afterDraw) editor.afterDraw();
   }
 
+  // On load (pointer devices) the first entry, or the one the address names, shows the keyboard mark until the first real input.
+  var startMark = root.matchMedia(C.START_MARK.query).matches;
+  var startPath = null;
+  var quiet = false;
+
+  function placeStartMark() {
+    var el = startPath !== null ? document.querySelector('#list .item[data-path="' + startPath + '"]:not(.folder-closer)') : navRows()[0];
+    if (!el) return;
+    quiet = true;
+    setInput('key');
+    el.focus({ preventScroll: true });
+    quiet = false;
+  }
+
   function draw() {
     hideTip();
     var main = document.getElementById('list');
     main.textContent = '';
     fill(main, settings.items, '');
     settle();
+    if (startMark) placeStartMark();
   }
 
   // Arrow keys (not while a field or control has focus): up/down move, right opens or enters a folder, left closes it or goes to its parent; Enter is the native click.
@@ -353,7 +368,7 @@
   // Focusing an entry (keyboard or mouse) puts its address in the location bar.
   function onFocusIn(e) {
     var it = e.target.closest && e.target.closest('#list .item[data-path]');
-    if (!it || !settings) return;
+    if (!it || !settings || quiet) return;
     var url = L.urlFor(raw.items, it.dataset.path, open);
     if (url !== root.location.pathname) root.history.replaceState(null, '', url);
   }
@@ -368,10 +383,12 @@
 
   function onPointer(e) {
     if (e.type === 'pointermove') {
-      var moved = !lastPointer || lastPointer.x !== e.clientX || lastPointer.y !== e.clientY;
+      var first = !lastPointer;
+      var moved = first ? !!(e.movementX || e.movementY) : lastPointer.x !== e.clientX || lastPointer.y !== e.clientY;
       lastPointer = { x: e.clientX, y: e.clientY };
       if (!moved) return;
     }
+    startMark = false;
     setInput('mouse');
   }
 
@@ -381,6 +398,7 @@
     if (at && at !== document.body && !at.classList.contains('item')) return;
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.key) < 0) return;
     var fromMouse = document.documentElement.dataset.input !== 'key';
+    startMark = false;
     setInput('key');
     var items = navRows();
     var rows = items.map(function (it) {
@@ -422,6 +440,7 @@
   function applyOpen() {
     var res = L.resolveOpen(raw.items, root.location.pathname.split('/').filter(Boolean));
     if (!res) return;
+    startPath = res.path;
     res.open.forEach(function (p) { if (open.indexOf(p) < 0) open.push(p); });
     var url = res.target.url;
     if (url && splitOn() && embeddable(url)) openInPane(url);
@@ -465,7 +484,7 @@
   root.addEventListener('focusin', onFocusIn);
   root.addEventListener('pointermove', onPointer);
   root.addEventListener('pointerdown', onPointer);
-  root.addEventListener('keydown', function (e) { if (e.key === 'Tab') setInput('key'); });
+  root.addEventListener('keydown', function (e) { if (e.key === 'Tab') { startMark = false; setInput('key'); } });
 
   var listBox = document.getElementById('list');
   listBox.addEventListener('mouseover', tipOver);

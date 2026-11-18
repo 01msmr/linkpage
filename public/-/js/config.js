@@ -25,6 +25,7 @@
     back: '\u2190 Back',
     unknown: 'Unknown link: {slug}'
   };
+  var START_MARK = { query: '(hover: hover) and (pointer: fine)' };
   var SCALE = { ref: 1280, min: 1, max: 1.5 };
   var SPLIT = { query: '(min-width: 900px) and (min-height: 500px)', queryEmbedded: '(min-width: 450px)', min: 20, max: 80, fitSlack: 0.98, newTabHosts: ['icloud.com'], open: 'Open in new tab \u2197', frameTitle: 'Preview' };
   var TIP = { showMs: 2000, hideMs: 3000, gap: 8 };
@@ -76,7 +77,7 @@
       other: 'Saving failed (HTTP {status}). Your edits are kept.'
     }
   };
-  var api = { EDIT: EDIT, FOLDER: FOLDER, SPLIT: SPLIT, SCALE: SCALE, TIP: TIP, DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, PILL_DESIGNS: PILL_DESIGNS, MODES: MODES, LAYOUTS: LAYOUTS, HEIGHTS: HEIGHTS, INTENSITIES: INTENSITIES, FONTS: FONTS };
+  var api = { EDIT: EDIT, FOLDER: FOLDER, SPLIT: SPLIT, SCALE: SCALE, START_MARK: START_MARK, TIP: TIP, DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, PILL_DESIGNS: PILL_DESIGNS, MODES: MODES, LAYOUTS: LAYOUTS, HEIGHTS: HEIGHTS, INTENSITIES: INTENSITIES, FONTS: FONTS };
   root.LinkpagesConfig = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);
