@@ -3,7 +3,7 @@ RedirectMatch 404 ^/seeds(/|$)
 
 # /a/b/ shows the list with those folders opened; with ?open a link path redirects to the link at once (real files and folders such as /edit/ are left alone).
 RewriteEngine On
-RewriteCond %{QUERY_STRING} (^|&)open(&|=|$)
+RewriteCond %{QUERY_STRING} (^|&)(o|open)(&|=|$)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^[^.]+/?$ go.html [L]

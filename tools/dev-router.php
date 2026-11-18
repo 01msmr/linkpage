@@ -16,7 +16,7 @@ if (is_file($file)) {
 if ($path === '/' ) { header('Content-Type: text/html'); readfile(ROOT . '/index.html'); return true; }
 $query = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY) ?? '';
 if (!is_dir($file) && strpos($path, '.') === false) {
-    $page = preg_match('/(^|&)open(&|=|$)/', $query) ? '/go.html' : '/index.html';
+    $page = preg_match('/(^|&)(o|open)(&|=|$)/', $query) ? '/go.html' : '/index.html';
     header('Content-Type: text/html'); readfile(ROOT . $page); return true;
 }
 return false;

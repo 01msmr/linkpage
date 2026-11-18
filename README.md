@@ -22,7 +22,7 @@ Apache 2.4 with PHP; the document root is `<repo>/public`.
 
 `edit/site.json`: `design`, `mode` (`light`/`dark`), `numbers`, `caps` (`regular`/`versalien`), `font`, `layout` (`list`/`split`), `height` (pill height, 30 to 70 px), `intensity` (10 to 100 %) and `items`. A link is `{ name, url, slug }`, a folder `{ name, items: [...] }`, folders nest. Designs: `vertical-heading` (default), `giant-type`, `giant-numerals`, `bracket-terminal`, `headline-tiny-links`, `raw-listing`, `tracked-rows`, `plain-inverted`.
 
-`/<folder>/<folder>/` shows the list with those folders opened; `/<folder>/<link>/` also opens the tree down to the link and marks it (in the split layout it loads the link in the pane). With `?open` a link path (`/<link>/?open` from anywhere in the tree, or `/<folder>/<link>/?open`) redirects to the link at once; a folder path with `?open` shows the opened list. Real paths such as `/edit/` are left alone. Folder slugs are the names in lower case with `-`, e.g. `tbx.li` becomes `tbx-li`.
+`/<folder>/<folder>/` shows the list with those folders opened; `/<folder>/<link>/` also opens the tree down to the link and marks it (in the split layout it loads the link in the pane). With `?open` (or `?o`) a link path (`/<link>/?open` from anywhere in the tree, or `/<folder>/<link>/?open`) redirects to the link at once; a folder path with `?open` shows the opened list. Real paths such as `/edit/` are left alone. Folder slugs are the names in lower case with `-`, e.g. `tbx.li` becomes `tbx-li`.
 
 ## Editing
 
