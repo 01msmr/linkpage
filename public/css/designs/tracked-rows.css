@@ -12,7 +12,7 @@
 /* The row scrolls only while hovered; the keyframe stops at the end of the text. */
 @keyframes tracked-scroll { to { transform: translateX(min(0px, calc(100cqw - 100%))); } }
 @media (prefers-reduced-motion: no-preference) {
-  :root[data-design="tracked-rows"] .item:hover .name { animation: tracked-scroll var(--scroll-time) linear forwards; }
+  :root[data-design="tracked-rows"]:not([data-input="key"]) .item:hover .name { animation: tracked-scroll var(--scroll-time) linear forwards; }
 }
 /* The chevron is pinned to the right edge over the scrolling name. */
 :root[data-design="tracked-rows"] .chev { position: absolute; right: 0; top: var(--pad-y); padding: 0 0.15em; box-sizing: content-box; margin: 0; letter-spacing: 0; background: inherit; }

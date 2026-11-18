@@ -55,7 +55,7 @@ button.item { font-family: inherit; line-height: inherit; text-align: left; curs
 .folder[data-state="closed"] > .folder-body { height: 0; overflow: hidden; visibility: hidden; margin-top: calc(var(--gap-item) * -1); }
 
 /* Hover and focus looks, shared by items and the edit controls */
-:root[data-form] .item:hover, :root[data-form] a.item[aria-current], .ebtn:hover:not(:disabled), .opt:hover { background: var(--hover); color: var(--hover-fg); }
+:root[data-form]:not([data-input="key"]) .item:hover, :root[data-form] a.item[aria-current], .ebtn:hover:not(:disabled), .opt:hover { background: var(--hover); color: var(--hover-fg); }
 .item:focus-visible, .ebtn:focus-visible, .ctl:focus-visible, .ebox input:focus-visible, .dot:focus-visible, .opt:focus-visible { outline: 2px solid var(--hover); outline-offset: 2px; }
 
 /* Keyboard focus: a 2px line (the item colour) centered in front of the item, from 2px inside the viewport's left edge to 2px before the item; an open folder shows > instead, at one x left of the outermost items at every depth. Out of flow, so nothing moves. */

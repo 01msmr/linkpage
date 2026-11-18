@@ -32,7 +32,7 @@ Arrow keys work in the list and in edit mode (not while a field, menu or edit bu
 - right: open a closed folder, or step into an open one; left: close an open folder, or go to the parent folder
 - Enter: a link opens in a new tab, a folder opens or closes
 - the focused entry shows a 2 px line in the item colour, centred in front of it, 4 px clear of the left rail and of the item (`--focus-*` in `tokens.css`); an open folder shows a light `>` instead, at one x left of the outermost items
-- the last input method wins: after an arrow key or Tab the row icons are hidden and the focus mark shows; moving or pressing the mouse brings the icons back and hides the mark; a page starts in mouse mode, so the mark appears only after the first key press
+- the last input method wins: after an arrow key or Tab the row icons and the mouse-over highlight are hidden and the focus mark shows; moving or pressing the mouse brings the icons and the highlight back and hides the mark; a page starts in mouse mode, so the mark appears only after the first key press
 - the address bar follows the focus (`/folder/link/`; a closed folder shows its parent), also on mouse clicks; the history is not touched
 
 ## Editing

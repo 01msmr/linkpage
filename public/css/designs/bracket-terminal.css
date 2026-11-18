@@ -3,6 +3,6 @@
 :root[data-design="bracket-terminal"] .item::before { content: "[ "; white-space: pre; }
 :root[data-design="bracket-terminal"] .name::after { content: " ]"; white-space: pre; }
 /* Hover: an arrow replaces the number. */
-:root[data-design="bracket-terminal"] .item:hover::before { content: "[ \2192  "; }
-:root[data-design="bracket-terminal"] .item:hover .num { display: none; }
+:root[data-design="bracket-terminal"]:not([data-input="key"]) .item:hover::before { content: "[ \2192  "; }
+:root[data-design="bracket-terminal"]:not([data-input="key"]) .item:hover .num { display: none; }
 :root[data-design="bracket-terminal"] .folder-closer::before, :root[data-design="bracket-terminal"] .folder-closer:hover::before { content: none; }
