@@ -37,6 +37,13 @@ html[data-dragging], html[data-dragging] * { cursor: grabbing; user-select: none
 .ent[data-drop="before"] { box-shadow: 0 calc(var(--drop-w) * -1) 0 var(--hover); }
 .ent[data-drop="after"] { box-shadow: 0 var(--drop-w) 0 var(--hover); }
 .ent[data-drop="into"] { box-shadow: inset 0 0 0 var(--drop-w) var(--hover); }
+/* Touch (finger) is harder to aim: a thicker line and a tinted row make the target clear. */
+@media (pointer: coarse) {
+  .ent[data-drop] { background: var(--drop-veil); }
+  .ent[data-drop="before"] { box-shadow: 0 calc(var(--drop-w-touch) * -1) 0 var(--hover); }
+  .ent[data-drop="after"] { box-shadow: 0 var(--drop-w-touch) 0 var(--hover); }
+  .ent[data-drop="into"] { box-shadow: inset 0 0 0 var(--drop-w-touch) var(--hover); }
+}
 .lend { display: flex; gap: var(--gap-item); }
 
 /* Controls: appear on hovering the gutter beside an entry. */
