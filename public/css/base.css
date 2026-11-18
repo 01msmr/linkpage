@@ -62,8 +62,8 @@ button.item { font-family: inherit; line-height: inherit; text-align: left; curs
 /* The list is cut off --focus-edge from the viewport's left, so the line (drawn far to the left) starts there. */
 #list { clip-path: inset(-100vmax -100vmax -100vmax calc(var(--focus-edge) - var(--list-left))); }
 #list .item:focus-visible { outline: 0; position: relative; }
-#list .item:focus-visible::before { content: ""; position: absolute; top: 50%; right: calc(100% + var(--focus-gap)); width: 100vw; height: var(--focus-line); transform: translateY(-50%); pointer-events: none; background: var(--focus-color); }
-#list .folder-head[aria-expanded="true"]:focus-visible::before { content: ">"; position: fixed; top: auto; right: auto; left: calc(var(--list-left) + var(--gutter) - var(--focus-arrow-gap)); width: auto; height: auto; line-height: var(--leading); transform: translateX(-100%); text-transform: none; font-weight: 300; color: var(--focus-color); background: none; }
+html[data-input="key"] #list .item:focus-visible::before { content: ""; position: absolute; top: 50%; right: calc(100% + var(--focus-gap)); width: 100vw; height: var(--focus-line); transform: translateY(-50%); pointer-events: none; background: var(--focus-color); }
+html[data-input="key"] #list .folder-head[aria-expanded="true"]:focus-visible::before { content: ">"; position: fixed; top: auto; right: auto; left: calc(var(--list-left) + var(--gutter) - var(--focus-arrow-gap)); width: auto; height: auto; line-height: var(--leading); transform: translateX(-100%); text-transform: none; font-weight: 300; color: var(--focus-color); background: none; }
 
 /* Text form (every design but the pill one): no shapes, the chevron follows the name, the closing line is bare. */
 :root[data-form="text"] { --pad-x: 0px; }

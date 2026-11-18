@@ -358,11 +358,29 @@
     if (url !== root.location.pathname) root.history.replaceState(null, '', url);
   }
 
+  // The last input method wins: arrow keys / Tab set html[data-input=key] (focus mark on, row icons off), a real pointer move or press unsets it. Page load starts as mouse.
+  var lastPointer = null;
+  function setInput(kind) {
+    var html = document.documentElement;
+    if (kind === 'key') html.dataset.input = 'key';
+    else delete html.dataset.input;
+  }
+
+  function onPointer(e) {
+    if (e.type === 'pointermove') {
+      var moved = !lastPointer || lastPointer.x !== e.clientX || lastPointer.y !== e.clientY;
+      lastPointer = { x: e.clientX, y: e.clientY };
+      if (!moved) return;
+    }
+    setInput('mouse');
+  }
+
   function onNavKey(e) {
     if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || !settings) return;
     var at = document.activeElement;
     if (at && at !== document.body && !at.classList.contains('item')) return;
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.key) < 0) return;
+    setInput('key');
     var items = navRows();
     var rows = items.map(function (it) {
       var depth = 0;
@@ -439,6 +457,9 @@
 
   root.addEventListener('keydown', onNavKey);
   root.addEventListener('focusin', onFocusIn);
+  root.addEventListener('pointermove', onPointer);
+  root.addEventListener('pointerdown', onPointer);
+  root.addEventListener('keydown', function (e) { if (e.key === 'Tab') setInput('key'); });
 
   var listBox = document.getElementById('list');
   listBox.addEventListener('mouseover', tipOver);

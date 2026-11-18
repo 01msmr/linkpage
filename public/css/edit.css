@@ -76,4 +76,7 @@ html[data-split] #divider { display: block; position: fixed; top: 0; bottom: 0; 
 #divider:hover::after, #divider[data-drag]::after { opacity: 1; }
 html[data-split] .toolbar { background: color-mix(in srgb, var(--bg) var(--toolbar-opacity), transparent); padding: 0 var(--pad-x); }
 
+/* Keyboard is the last input: the row icons step aside (the row being edited and the list-end buttons stay). */
+html[data-input="key"] .ent:not([data-editing]):not(.listend) .ctl { opacity: 0; pointer-events: none; transition: none; animation: none; }
+
 @media (prefers-reduced-motion: reduce) { .menu, .dot .pt, .dot .ico, .ctl { transition: none; animation: none; } }
