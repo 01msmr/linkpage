@@ -1,6 +1,8 @@
 # linktree
 
-Brutalist link pages with folders, eight designs and online editing. Static HTML, CSS and vanilla JS plus three small PHP scripts. No build step, no framework. Styling and details target `vertical-heading`; the other designs follow later.
+Brutalist tree of links — with folders and inline editing. 
+
+Static HTML, CSS and vanilla JS plus three small PHP scripts. No build step, no framework. Styling and details target `vertical-heading`; the other designs follow later.
 
 | Closed | Opened (`/projects/archive/old-notes/`) | Keyboard |
 |---|---|---|
