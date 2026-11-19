@@ -337,7 +337,7 @@
     if (editor && editor.afterDraw) editor.afterDraw();
   }
 
-  // Shapes right of the items on the address path: square at a link, dot at a closed folder, ring at an open one.
+  // Shapes right of the items on the address path as loaded (fixed set; the shape follows open/closed): square at a link, dot at a closed folder, ring at an open one.
   var cur = null;
   function markPath() {
     Array.prototype.forEach.call(document.querySelectorAll('#list .mark'), function (m) { m.parentNode.removeAttribute('data-mark'); m.remove(); });
@@ -389,8 +389,6 @@
     if (!it || !settings || quiet) return;
     var url = L.urlFor(raw.items, it.dataset.path, open);
     if (url !== root.location.pathname) root.history.replaceState(null, '', url);
-    cur = it.dataset.path;
-    markPath();
   }
 
   // The last input method wins (the first key after the mouse continues from the entry under the pointer): arrow keys / Tab set html[data-input=key] (focus mark on, row icons off), a real pointer move or press unsets it. Page load starts as mouse.
