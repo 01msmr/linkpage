@@ -14,13 +14,14 @@ Apache 2.4 with PHP, document root `<repo>/public`.
 2. `htpasswd -c public/edit/.htpasswd <user>`, open `/edit/` once and sign in. `public/edit/` must be writable by PHP.
 3. The first `/-/site.php` request seeds `edit/site.json` from `-/seeds/default.json`; saves keep `site.bak.json`.
 
-`site.json`, `site.bak.json`, `.htpasswd`, `.htaccess` in `public/edit/` are never committed. `main` deploys via Plesk Git.
+`site.json`, `site.bak.json`, `.htpasswd`, `.htaccess` in `public/edit/` are never committed. `main` deploys via Plesk Git: deploy path = the domain's `httpdocs`, document root = `httpdocs/public`, a unique repository name per system user.
 
 ## Data and paths
 
 `edit/site.json`: `design`, `mode`, `numbers`, `caps`, `font`, `layout` (`list`/`split`), `height` (30 to 70 px), `intensity` (10 to 100 %), `items`. A link is `{ name, url, slug }`, a folder `{ name, items }`, folders nest. Folder slugs are the lower-case names with `-` (`tbx.li` is `tbx-li`); a link slug is a dash plus its name (`-docs`), so it never equals a folder slug, and gets a number only next to an identical sibling. Opening edit mode adds the dash to older slugs (save once); addresses without the dash stop working then. `node tools/import-a.js > site.json` snapshots the sections and links of a.msmr.co (sections become top folders) for another instance.
 
 - `/<folder>/<link>/` shows the list with the folders open and the link marked.
+- Right of the item the address names, a mark shows the loaded state: square (link), ring (open folder), dot (closed folder). It stays fixed until the next load.
 - `?open` (or `?o`) on a link path redirects to the link, from anywhere; on a folder path it shows the opened list.
 
 ## Keyboard
