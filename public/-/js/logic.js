@@ -97,11 +97,6 @@
     return slug;
   }
 
-  // A path segment names a link by its slug with or without the leading dash (old addresses keep working).
-  function slugIs(item, seg) {
-    return !!item.slug && (item.slug === seg || item.slug === '-' + seg || '-' + item.slug === seg);
-  }
-
   // The tree with a dash before every link slug that lacks one.
   function normalizeSlugs(items) {
     return items.map(function (it) {
@@ -120,7 +115,7 @@
         if (slugify(it.name) === slug) return { open: own, target: it, path: path.join('.') };
         var hit = locate(it.items, slug, path, own);
         if (hit) return hit;
-      } else if (slugIs(it, slug)) return { open: open, target: it, path: path.join('.') };
+      } else if (it.slug === slug) return { open: open, target: it, path: path.join('.') };
     }
     return null;
   }
@@ -138,7 +133,7 @@
       for (var i = 0; i < list.length && !next; i++) {
         var it = list[i];
         if (isFolder(it) && slugify(it.name) === segs[s]) next = { item: it, index: i, folder: true };
-        else if (last && !isFolder(it) && slugIs(it, segs[s])) next = { item: it, index: i, folder: false };
+        else if (last && !isFolder(it) && it.slug === segs[s]) next = { item: it, index: i, folder: false };
       }
       if (!next) return s === 0 && segs.length === 1 ? locate(items, segs[0], [], []) : null;
       var path = prefix.concat(next.index);

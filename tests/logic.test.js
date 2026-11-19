@@ -112,13 +112,12 @@ test('slugFor needs a number only among the siblings of the same folder', () => 
 test('a link slug never equals a folder slug: it starts with a dash', () => {
   assert.equal(L.slugFor('Mail', [{ name: 'Mail', items: [] }]), '-mail');
 });
-test('paths accept a slug with or without its leading dash', () => {
-  const t = [{ name: 'Tools', items: [{ name: 'Deep', slug: '-deep', url: 'w' }, { name: 'Old', slug: 'old', url: 'v' }] }];
+test('paths match a link slug exactly: an address without the dash no longer finds a link with one', () => {
+  const t = [{ name: 'Tools', items: [{ name: 'Deep', slug: '-deep', url: 'w' }] }];
   assert.equal(L.resolveOpen(t, ['tools', '-deep']).target.name, 'Deep');
-  assert.equal(L.resolveOpen(t, ['tools', 'deep']).target.name, 'Deep');
-  assert.equal(L.resolveOpen(t, ['tools', '-old']).target.name, 'Old');
-  assert.equal(L.resolveOpen(t, ['deep']).target.name, 'Deep');
-  assert.equal(L.resolveOpen(t, ['tools', 'nope']), null);
+  assert.equal(L.resolveOpen(t, ['-deep']).target.name, 'Deep');
+  assert.equal(L.resolveOpen(t, ['tools', 'deep']), null);
+  assert.equal(L.resolveOpen(t, ['deep']), null);
 });
 test('normalizeSlugs puts a dash before every link slug that lacks one, in all folders, without mutating', () => {
   const t = [{ name: 'a', slug: 'a', url: 'u' }, { name: 'F', items: [{ name: 'b', slug: '-b', url: 'v' }, { name: 'c', url: 'w' }, { name: 'G', items: [{ name: 'd', slug: 'd', url: 'x' }] }] }];
