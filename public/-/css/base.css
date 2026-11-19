@@ -53,8 +53,11 @@ button.item { font-family: inherit; line-height: inherit; text-align: left; curs
 
 /* Hover and focus looks, shared by items and the edit controls */
 :root[data-form]:not([data-input="key"]) .item:hover, .ebtn:hover:not(:disabled) { background: var(--hover); color: var(--hover-fg); }
-/* While a folder folds, its closing line takes the hovered head's fill so it does not show as a white band across it */
-.folder[data-folding]:has(> .folder-head:hover, > .ent > .folder-head:hover) > .folder-closer, .folder[data-folding]:has(> .folder-head:hover, > .ent > .folder-head:hover) > .ent > .folder-closer { background: var(--hover); }
+/* A hovered head's fill reaches the closing line only while it overlaps the head: late when closing, early when opening */
+.folder[data-folding="close"]:has(> .folder-head:hover, > .ent > .folder-head:hover) >  .folder-closer, .folder[data-folding="close"]:has(> .folder-head:hover, > .ent > .folder-head:hover) > .ent > .folder-closer { animation: fold-tint-late calc(var(--fold) * (1 - var(--fold-tint-at))) steps(1, start) calc(var(--fold) * var(--fold-tint-at)) both; }
+.folder[data-folding="open"]:has(> .folder-head:hover, > .ent > .folder-head:hover) > .folder-closer, .folder[data-folding="open"]:has(> .folder-head:hover, > .ent > .folder-head:hover) > .ent > .folder-closer { animation: fold-tint calc(var(--fold) * (1 - var(--fold-tint-at))) steps(1, end); }
+@keyframes fold-tint { from { background: var(--hover); } }
+@keyframes fold-tint-late { to { background: var(--hover); } }
 .opt:hover { background: var(--fg); color: var(--bg); }
 .item:focus-visible, .ebtn:focus-visible, .ctl:focus-visible, .ebox input:focus-visible, .dot:focus-visible, .opt:focus-visible { outline: 2px solid var(--hover); outline-offset: 2px; }
 

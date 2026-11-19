@@ -67,6 +67,7 @@
   --fade-icon: 0.09s;
   --icon-delay: 0.2s;
   --fold: 0.2s;
+  --fold-tint-at: 0.85;
 
   /* Keyboard focus mark: a line from the viewport edge to the item, or a > for an open folder */
   --focus-line: 2px;

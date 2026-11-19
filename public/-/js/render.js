@@ -60,7 +60,7 @@
     var finished = false;
     var ms = cssMs('--fold');
     var wrap = parts[0].el.parentElement;
-    wrap.setAttribute('data-folding', '');
+    wrap.setAttribute('data-folding', parts.some(function (p) { return p.prop === 'margin-top' && p.from === 0; }) ? 'close' : 'open');
     function end() {
       if (finished) return;
       finished = true;
