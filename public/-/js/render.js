@@ -337,19 +337,15 @@
     if (editor && editor.afterDraw) editor.afterDraw();
   }
 
-  // Shapes right of the items on the address path as loaded (fixed set; the shape follows open/closed): square at a link, dot at a closed folder, ring at an open one.
+  // One shape right of the item the address named when loaded (none for /; the shape follows open/closed): square at a link, dot at a closed folder, ring at an open one.
   var cur = null;
   function markPath() {
     Array.prototype.forEach.call(document.querySelectorAll('#list .mark'), function (m) { m.parentNode.removeAttribute('data-mark'); m.remove(); });
     if (cur === null) return;
-    var parts = cur.split('.');
-    parts.forEach(function (_, k) {
-      var it = document.querySelector('#list .item[data-path="' + parts.slice(0, k + 1).join('.') + '"]:not(.folder-closer)');
-      if (!it) return;
-      var shape = !it.classList.contains('folder-head') ? 'square' : it.getAttribute('aria-expanded') === 'true' ? 'ring' : 'dot';
-      it.dataset.mark = shape;
-      it.appendChild(el('span', 'mark'));
-    });
+    var it = document.querySelector('#list .item[data-path="' + cur + '"]:not(.folder-closer)');
+    if (!it) return;
+    it.dataset.mark = !it.classList.contains('folder-head') ? 'square' : it.getAttribute('aria-expanded') === 'true' ? 'ring' : 'dot';
+    it.appendChild(el('span', 'mark'));
   }
 
   // On load (pointer devices) the first entry, or the one the address names, shows the keyboard mark until the first real input.
