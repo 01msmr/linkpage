@@ -59,9 +59,12 @@
     folding = true;
     var finished = false;
     var ms = cssMs('--fold');
+    var wrap = parts[0].el.parentElement;
+    wrap.setAttribute('data-folding', '');
     function end() {
       if (finished) return;
       finished = true;
+      wrap.removeAttribute('data-folding');
       parts.forEach(function (p) {
         p.el.style.cssText = '';
         if (p.fade) p.fade.el.style.opacity = '';
