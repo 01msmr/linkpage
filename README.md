@@ -43,4 +43,4 @@ Everything except `edit/` lives in `/-/`, so no folder name from the list can cl
 
 ## Status
 
-Checked in the browser: `vertical-heading`, folders and animation, `?open` paths, inline editing, keyboard navigation; 51 unit tests. Not checked: other designs, edit mode in split/narrow, very long wrapped entries, `.htaccess` rewrites on the live host. No input validation (owner's decision).
+Checked in the browser: `vertical-heading`, folders and animation, `?open` paths, inline editing, keyboard navigation; 62 unit tests. Not checked: other designs, edit mode in split/narrow, very long wrapped entries, `.htaccess` rewrites on the live host. No input validation (owner's decision).
