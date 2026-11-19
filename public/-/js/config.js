@@ -74,7 +74,7 @@
     ].concat(Object.keys(FONTS).length ? [{ key: 'font', icon: 'F', label: 'Font', values: ['system'].concat(Object.keys(FONTS)) }] : []),
     itemFields: { name: 'Name', url: 'URL' },
     errors: {
-      401: 'Not signed in. Open /edit/ once, sign in, then save again.',
+      401: 'Not signed in: reload and tap edit, or open /edit/.',
       400: 'The server rejected the data (400). Your edits are kept.',
       network: 'The server could not be reached. Your edits are kept.',
       other: 'Saving failed (HTTP {status}). Your edits are kept.'
