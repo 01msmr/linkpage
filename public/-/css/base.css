@@ -56,16 +56,16 @@ button.item { font-family: inherit; line-height: inherit; text-align: left; curs
 .opt:hover { background: var(--fg); color: var(--bg); }
 .item:focus-visible, .ebtn:focus-visible, .ctl:focus-visible, .ebox input:focus-visible, .dot:focus-visible, .opt:focus-visible { outline: 2px solid var(--hover); outline-offset: 2px; }
 
-/* Keyboard focus: a fixed-position mark that ends at the left edge of the outermost items, never on an enclosing folder: a 2px line (the item colour) centered in front of the item, from 2px inside the viewport's left edge to 2px before the item; an open folder shows > instead, at one x left of the outermost items at every depth. Out of flow, so nothing moves. */
+/* Keyboard focus: an absolutely positioned mark (item-relative, so it scrolls with the page; --lvl is the item's indent level) that ends at the left edge of the outermost items, never on an enclosing folder: a 2px line (the item colour) centered in front of the item, from 2px inside the viewport's left edge to 2px before the item; an open folder shows > instead, at one x left of the outermost items at every depth. Out of flow, so nothing moves. */
 /* The list is cut off --focus-edge from the viewport's left (--focus-edge-folder while a folder head is focused), so the line (drawn far to the left) starts there: the same item gap on both sides. */
 #list { clip-path: inset(-100vmax -100vmax -100vmax calc(var(--focus-edge) - var(--list-left))); }
 #list:has(.folder-head:focus-visible) { clip-path: inset(-100vmax -100vmax -100vmax calc(var(--focus-edge-folder) - var(--list-left))); }
-#list .item:focus-visible { outline: 0; position: relative; }
-html[data-input="key"] #list .item:focus-visible::before { content: ""; position: fixed; top: auto; right: auto; left: 0; width: calc(var(--list-left) + var(--gutter) - var(--focus-gap)); height: var(--focus-line); pointer-events: none; background: var(--focus-color); }
-html[data-input="key"] #list .folder-head:focus-visible::before { width: calc(var(--list-left) + var(--gutter) - var(--focus-gap-folder)); }
+#list .item:focus-visible { outline: 0; position: relative; overflow: visible; }
+html[data-input="key"] #list .item:focus-visible::before { content: ""; position: absolute; top: auto; left: auto; right: calc(100% + var(--lvl, 0) * var(--indent) + var(--focus-gap)); width: 100vmax; height: var(--focus-line); pointer-events: none; background: var(--focus-color); }
+html[data-input="key"] #list .folder-head:focus-visible::before { right: calc(100% + var(--lvl, 0) * var(--indent) + var(--focus-gap-folder)); }
 /* A link gets a band as tall as one item line (--item-height); a wrapped long name makes the item taller than the band. */
 html[data-input="key"] #list a.item:focus-visible::before { height: var(--item-height); margin-top: calc(var(--pad-y) * -1); }
-html[data-input="key"] #list .folder-head[aria-expanded="true"]:focus-visible::before { content: ">"; position: fixed; top: auto; right: auto; left: calc(var(--list-left) + var(--gutter) - var(--focus-arrow-gap)); width: auto; height: auto; line-height: var(--leading); transform: translateX(-100%); text-transform: none; font-weight: 300; color: var(--focus-color); background: none; }
+html[data-input="key"] #list .folder-head[aria-expanded="true"]:focus-visible::before { content: ">"; position: absolute; top: auto; left: auto; right: calc(100% + var(--lvl, 0) * var(--indent) + var(--focus-arrow-gap)); width: auto; height: auto; line-height: var(--leading); text-transform: none; font-weight: 300; color: var(--focus-color); background: none; }
 
 /* Text form (every design but the pill one): no shapes, the chevron follows the name, the closing line is bare. */
 :root[data-form="text"] { --pad-x: 0px; }

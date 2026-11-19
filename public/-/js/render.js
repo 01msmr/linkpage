@@ -200,6 +200,7 @@
   function linkCore(item, index, path) {
     var a = el('a', 'item');
     a.dataset.path = path;
+    a.style.setProperty('--lvl', Math.max(0, path.split('.').length - 2));
     if (item.slug) a.href = '/' + item.slug + '/';
     if (item.url) a.dataset.url = item.url;
     if (item.url && item.url === activeUrl) a.setAttribute('aria-current', 'true');
@@ -221,6 +222,7 @@
     var head = el('button', 'item folder-head');
     head.type = 'button';
     head.dataset.path = path;
+    head.style.setProperty('--lvl', path.split('.').length - 1);
     head.setAttribute('aria-expanded', String(isOpen));
     head.appendChild(el('span', 'num', L.numberLabel(index)));
     head.appendChild(el('span', 'name', item.name));
