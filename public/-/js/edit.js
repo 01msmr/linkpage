@@ -663,23 +663,33 @@
       .catch(function () { return false; });
   }
 
-  // A home-screen app has no address bar: a small link to the login shows for E.link.hideMs after load, unless editing is already on.
-  function showEditLink() {
+  // A home-screen app has no address bar: a small link to the login shows for E.link.hideMs after load when editing is off, or when editing is on but the login cookie is missing; with editing on it sits under the settings dots.
+  function showEditLink(dock) {
     var L = E.link;
-    var standalone = root.matchMedia(L.query).matches || root.navigator.standalone === true;
-    if (!standalone) return;
     var a = el('a', 'editlink', L.text);
     a.href = L.href;
-    document.body.appendChild(a);
+    (dock || document.body).appendChild(a);
     setTimeout(function () {
       a.dataset.gone = '';
       setTimeout(function () { a.remove(); }, L.fadeMs);
     }, L.hideMs);
   }
 
+  function standalone() {
+    return root.matchMedia(E.link.query).matches || root.navigator.standalone === true;
+  }
+
   function boot() {
-    if (enabled()) return R.whenReady(start);
-    showEditLink();
+    if (enabled()) {
+      R.whenReady(start);
+      if (standalone()) {
+        probe().then(function (ok) {
+          if (!ok) R.whenReady(function () { showEditLink(document.querySelector('.dock')); });
+        });
+      }
+      return;
+    }
+    if (standalone()) showEditLink();
     if (!E.autoProbe || new URLSearchParams(root.location.search).get('edit') === '0') return;
     probe().then(function (ok) {
       if (!ok) return;

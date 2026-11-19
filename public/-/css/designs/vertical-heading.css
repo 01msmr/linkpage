@@ -31,6 +31,7 @@
 /* The settings live in the left rail: dots stacked, menus open to the right and run down. */
 :root[data-design="vertical-heading"] .toolbar { display: contents; }
 :root[data-design="vertical-heading"][data-dragging] .folder-head:hover, :root[data-design="vertical-heading"][data-dragging] .folder-closer:hover { color: color-mix(in srgb, var(--chip-fg) var(--folder-ink), var(--chip)); }
+:root[data-design="vertical-heading"] .dock > .editlink { width: 100%; justify-content: center; }
 :root[data-design="vertical-heading"] .editlink { left: 0; width: var(--item-height); justify-content: flex-start; color: var(--chip-fg); }
 :root[data-design="vertical-heading"] .dock { position: fixed; top: var(--top); left: 0; width: var(--item-height); z-index: 4; flex-direction: column; }
 :root[data-design="vertical-heading"] .estatus { position: fixed; top: var(--side); right: var(--side); z-index: 3; }

@@ -95,6 +95,7 @@ html[data-input="key"] .ent:not([data-editing]):not(.listend) .ctl { opacity: 0;
 
 /* The login link of a home-screen app: vertical like the rail text, as large as the settings dots, top left, fades out. */
 .editlink { position: fixed; top: var(--top, var(--side)); left: var(--pad-page); z-index: 4; display: flex; align-items: center; writing-mode: vertical-rl; transform: rotate(180deg); font-size: calc(var(--gear-size) * 0.6); line-height: 1; color: var(--fg); text-decoration: none; opacity: var(--icon-opacity); transition: opacity var(--fade); }
+.dock > .editlink { position: static; width: 100%; padding: calc(var(--pad-y) * 2) 0; }
 .editlink:hover, .editlink:focus-visible { opacity: 1; }
 .editlink[data-gone] { opacity: 0; pointer-events: none; }
 
