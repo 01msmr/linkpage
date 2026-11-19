@@ -663,7 +663,7 @@
       .catch(function () { return false; });
   }
 
-  // A home-screen app has no address bar: a small link to the login shows for E.link.hideMs after load when editing is off, or when editing is on but the login cookie is missing; with editing on it sits under the settings dots.
+  // A small link to the login shows for E.link.hideMs after load: in a home-screen app (no address bar) when editing is off; in any browser when editing is on but the login cookie is missing, then under the settings dots.
   function showEditLink(dock) {
     var L = E.link;
     var a = el('a', 'editlink', L.text);
@@ -682,11 +682,9 @@
   function boot() {
     if (enabled()) {
       R.whenReady(start);
-      if (standalone()) {
-        probe().then(function (ok) {
-          if (!ok) R.whenReady(function () { showEditLink(document.querySelector('.dock')); });
-        });
-      }
+      probe().then(function (ok) {
+        if (!ok) R.whenReady(function () { showEditLink(document.querySelector('.dock')); });
+      });
       return;
     }
     if (standalone()) showEditLink();

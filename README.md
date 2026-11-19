@@ -29,7 +29,7 @@ Up/down move and wrap; right opens a folder or jumps to its first subfolder; lef
 
 ## Editing
 
-Open `/edit/` once; the browser then edits inline (`/?edit=0` switches off). Hover a line for the drag handle, pen and `+` icons; on touch, tap beside an entry. Drag the handle (mouse, finger or pen) to move an entry before, after or into another, to the end of a folder, behind a folder, or (below the list) to the end of the top level; Alt+arrow moves the focused entry (up/down among siblings, right into the folder above, left out of its folder). Grey dots change settings, the floppy icon saves (Cmd/Ctrl+S). In a home-screen app (no address bar) a small `edit` link shows for 8 s after load (`EDIT.link` in `config.js`): top left when editing is off, under the settings dots when editing is on but the login cookie is missing (found by `probe.php`). Optional auto start: `EDIT.autoProbe`.
+Open `/edit/` once; the browser then edits inline (`/?edit=0` switches off). Hover a line for the drag handle, pen and `+` icons; on touch, tap beside an entry. Drag the handle (mouse, finger or pen) to move an entry before, after or into another, to the end of a folder, behind a folder, or (below the list) to the end of the top level; Alt+arrow moves the focused entry (up/down among siblings, right into the folder above, left out of its folder). Grey dots change settings, the floppy icon saves (Cmd/Ctrl+S). In a home-screen app (no address bar) a small `edit` link shows for 8 s after load (`EDIT.link` in `config.js`): top left when editing is off, and in any browser under the settings dots when editing is on but the login cookie is missing (found by `probe.php`). Optional auto start: `EDIT.autoProbe`.
 
 ## Layout and commands
 
