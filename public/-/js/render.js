@@ -337,6 +337,21 @@
     if (editor && editor.afterDraw) editor.afterDraw();
   }
 
+  // Shapes right of the items on the address path: square at a link, dot at a closed folder, ring at an open one.
+  var cur = null;
+  function markPath() {
+    Array.prototype.forEach.call(document.querySelectorAll('#list .mark'), function (m) { m.parentNode.removeAttribute('data-mark'); m.remove(); });
+    if (cur === null) return;
+    var parts = cur.split('.');
+    parts.forEach(function (_, k) {
+      var it = document.querySelector('#list .item[data-path="' + parts.slice(0, k + 1).join('.') + '"]:not(.folder-closer)');
+      if (!it) return;
+      var shape = !it.classList.contains('folder-head') ? 'square' : it.getAttribute('aria-expanded') === 'true' ? 'ring' : 'dot';
+      it.dataset.mark = shape;
+      it.appendChild(el('span', 'mark'));
+    });
+  }
+
   // On load (pointer devices) the first entry, or the one the address names, shows the keyboard mark until the first real input.
   var startMark = root.matchMedia(C.START_MARK.query).matches;
   var startPath = null;
@@ -357,6 +372,7 @@
     main.textContent = '';
     fill(main, settings.items, '');
     settle();
+    markPath();
     if (startMark) placeStartMark();
   }
 
@@ -373,6 +389,8 @@
     if (!it || !settings || quiet) return;
     var url = L.urlFor(raw.items, it.dataset.path, open);
     if (url !== root.location.pathname) root.history.replaceState(null, '', url);
+    cur = it.dataset.path;
+    markPath();
   }
 
   // The last input method wins (the first key after the mouse continues from the entry under the pointer): arrow keys / Tab set html[data-input=key] (focus mark on, row icons off), a real pointer move or press unsets it. Page load starts as mouse.
@@ -443,6 +461,7 @@
     var res = L.resolveOpen(raw.items, root.location.pathname.split('/').filter(Boolean));
     if (!res) return;
     startPath = res.path;
+    cur = res.path;
     res.open.forEach(function (p) { if (open.indexOf(p) < 0) open.push(p); });
     var url = res.target.url;
     if (url && splitOn() && embeddable(url)) openInPane(url);

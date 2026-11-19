@@ -78,6 +78,8 @@
   --rail-gap: 24px;
   --list-left: var(--pad-page);
   --focus-arrow-gap: 0.4em;
+  --mark-size: var(--item-height);
+  --mark-gap: 4px;
 }
 :root[data-mode="dark"] {
   --bg: #000;
