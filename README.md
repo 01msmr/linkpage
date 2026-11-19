@@ -18,7 +18,7 @@ Apache 2.4 with PHP, document root `<repo>/public`.
 
 ## Data and paths
 
-`edit/site.json`: `design`, `mode`, `numbers`, `caps`, `font`, `layout` (`list`/`split`), `height` (30 to 70 px), `intensity` (10 to 100 %), `items`. A link is `{ name, url, slug }`, a folder `{ name, items }`, folders nest. Folder slugs are the lower-case names with `-` (`tbx.li` is `tbx-li`).
+`edit/site.json`: `design`, `mode`, `numbers`, `caps`, `font`, `layout` (`list`/`split`), `height` (30 to 70 px), `intensity` (10 to 100 %), `items`. A link is `{ name, url, slug }`, a folder `{ name, items }`, folders nest. Folder slugs are the lower-case names with `-` (`tbx.li` is `tbx-li`); a link slug is a dash plus its name (`-docs`), so it never equals a folder slug, and gets a number only next to an identical sibling. Paths accept a link slug with or without the dash (old addresses keep working); opening edit mode adds the dash to older slugs, save once. `node tools/import-a.js > site.json` snapshots the sections and links of a.msmr.co (sections become top folders) for another instance.
 
 - `/<folder>/<link>/` shows the list with the folders open and the link marked.
 - `?open` (or `?o`) on a link path redirects to the link, from anywhere; on a folder path it shows the opened list.

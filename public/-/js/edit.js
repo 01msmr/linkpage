@@ -159,7 +159,7 @@
     var p = parse(editPath);
     var it = L.itemAt(draft.items, p);
     if (it && !Array.isArray(it.items) && !it.slug) {
-      draft.items = L.setField(draft.items, p, 'slug', L.slugFor(it.name || '', draft.items));
+      draft.items = L.setField(draft.items, p, 'slug', L.slugFor(it.name || '', listAt(p.slice(0, -1))));
     }
     editPath = null;
   }
@@ -611,6 +611,7 @@
   function start(site) {
     original = L.clone(site);
     draft = L.clone(site);
+    draft.items = L.normalizeSlugs(draft.items);
     root.document.documentElement.dataset.editing = '';
     build();
     try {
@@ -619,6 +620,7 @@
     } catch (e) { /* default mode */ }
     R.setEditor(api);
     R.show(draft);
+    refresh();
     root.addEventListener('pointerdown', touchRow);
     root.addEventListener('keydown', keyReorder);
     root.addEventListener('keydown', function (e) {

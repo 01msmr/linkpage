@@ -12,14 +12,16 @@ test('each section becomes a folder named by its title, each link a link with a 
   const items = convert(sections);
   assert.equal(items.length, 2);
   assert.equal(items[0].name, 'srv');
-  assert.deepEqual(items[0].items[0], { name: 'Docs', url: 'https://a.example/docs', slug: 'docs' });
+  assert.deepEqual(items[0].items[0], { name: 'Docs', url: 'https://a.example/docs', slug: '-docs' });
   assert.equal(items[1].name, 'tec stuff');
 });
-test('slugs are unique over all links and never equal a folder slug', () => {
+test('link slugs start with a dash, repeat across folders and get a number only inside one folder', () => {
   const items = convert(sections);
-  assert.equal(items[1].items[0].slug, 'docs-2');
+  assert.equal(items[1].items[0].slug, '-docs');
+  const same = convert([{ title: 'x', links: [{ name: 'Docs', url: 'u' }, { name: 'docs', url: 'v' }] }]);
+  assert.deepEqual(same[0].items.map(i => i.slug), ['-docs', '-docs-2']);
   const clash = convert([{ title: 'Mail', links: [{ name: 'mail', url: 'u' }] }]);
-  assert.equal(clash[0].items[0].slug, 'mail-2');
+  assert.equal(clash[0].items[0].slug, '-mail');
 });
 test('links without a name or url are skipped, empty sections too, a missing title falls back to the id', () => {
   const items = convert([{ id: 'x', links: [{ name: 'ok', url: 'u' }, { name: '', url: 'u' }, { name: 'n', url: '' }] }, { id: 'y', title: 'empty', links: [] }]);

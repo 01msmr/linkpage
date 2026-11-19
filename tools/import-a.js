@@ -7,23 +7,16 @@ const L = require('../public/-/js/logic.js');
 const SOURCE = 'https://a.msmr.co/links.php';
 const BASE = path.join(__dirname, '..', 'public', '-', 'seeds', 'default.json');
 
-// Sections become top folders (their title), links become link items with slugs unique over the whole tree.
+// Sections become top folders (their title), links become link items with a dash slug (numbered only inside one folder).
 function convert(sections) {
   const rows = sections
     .map(s => ({ name: String(s.title || s.id || '').trim(), links: (s.links || []).filter(l => l && String(l.name || '').trim() && String(l.url || '').trim()) }))
     .filter(s => s.name && s.links.length);
-  const taken = rows.map(s => L.slugify(s.name));
-  return rows.map(s => ({
-    name: s.name,
-    items: s.links.map(l => {
-      const name = String(l.name).trim();
-      const base = L.slugify(name) || 'link';
-      let slug = base;
-      for (let n = 2; taken.indexOf(slug) >= 0; n++) slug = base + '-' + n;
-      taken.push(slug);
-      return { name, url: String(l.url).trim(), slug };
-    })
-  }));
+  return rows.map(s => {
+    const items = [];
+    s.links.forEach(l => items.push({ name: String(l.name).trim(), url: String(l.url).trim(), slug: L.slugFor(String(l.name).trim(), items) }));
+    return { name: s.name, items };
+  });
 }
 
 function buildSite(base, sections) {

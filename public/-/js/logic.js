@@ -37,17 +37,6 @@
 
   function isFolder(item) { return Array.isArray(item.items); }
 
-  function findLink(items, slug) {
-    for (var i = 0; i < items.length; i++) {
-      var it = items[i];
-      if (isFolder(it)) {
-        var hit = findLink(it.items, slug);
-        if (hit) return hit;
-      } else if (it.slug === slug) return it;
-    }
-    return null;
-  }
-
   // ['1', '1.0'] for path [1, 0]: the folders that must be open to show it.
   function prefixPaths(path) {
     return path.map(function (_, i) { return path.slice(0, i + 1).join('.'); });
@@ -93,26 +82,32 @@
     return rest;
   }
 
-  function allSlugs(items, out) {
-    items.forEach(function (it) {
-      if (isFolder(it)) allSlugs(it.items, out);
-      else if (it.slug) out.push(it.slug);
-    });
-    return out;
-  }
-
   function slugify(name) {
     return String(name).toLowerCase()
       .replace(/\u00e4/g, 'ae').replace(/\u00f6/g, 'oe').replace(/\u00fc/g, 'ue').replace(/\u00df/g, 'ss')
       .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   }
 
-  function slugFor(name, items) {
-    var base = slugify(name) || 'link';
-    var taken = allSlugs(items, []);
+  // A link slug is a dash plus the name, so it can never equal a folder slug; a number only when a sibling in the same folder has it already.
+  function slugFor(name, siblings) {
+    var base = '-' + (slugify(name) || 'link');
+    var taken = siblings.filter(function (it) { return !isFolder(it) && it.slug; }).map(function (it) { return it.slug; });
     var slug = base;
     for (var n = 2; taken.indexOf(slug) >= 0; n++) slug = base + '-' + n;
     return slug;
+  }
+
+  // A path segment names a link by its slug with or without the leading dash (old addresses keep working).
+  function slugIs(item, seg) {
+    return !!item.slug && (item.slug === seg || item.slug === '-' + seg || '-' + item.slug === seg);
+  }
+
+  // The tree with a dash before every link slug that lacks one.
+  function normalizeSlugs(items) {
+    return items.map(function (it) {
+      if (isFolder(it)) return Object.assign({}, it, { items: normalizeSlugs(it.items) });
+      return it.slug && it.slug.charAt(0) !== '-' ? Object.assign({}, it, { slug: '-' + it.slug }) : it;
+    });
   }
 
   // The link or folder with this slug anywhere in the tree: { open: [folder paths to open], target, path }.
@@ -125,7 +120,7 @@
         if (slugify(it.name) === slug) return { open: own, target: it, path: path.join('.') };
         var hit = locate(it.items, slug, path, own);
         if (hit) return hit;
-      } else if (it.slug === slug) return { open: open, target: it, path: path.join('.') };
+      } else if (slugIs(it, slug)) return { open: open, target: it, path: path.join('.') };
     }
     return null;
   }
@@ -143,7 +138,7 @@
       for (var i = 0; i < list.length && !next; i++) {
         var it = list[i];
         if (isFolder(it) && slugify(it.name) === segs[s]) next = { item: it, index: i, folder: true };
-        else if (last && !isFolder(it) && it.slug === segs[s]) next = { item: it, index: i, folder: false };
+        else if (last && !isFolder(it) && slugIs(it, segs[s])) next = { item: it, index: i, folder: false };
       }
       if (!next) return s === 0 && segs.length === 1 ? locate(items, segs[0], [], []) : null;
       var path = prefix.concat(next.index);
@@ -293,8 +288,8 @@
     return item.items.reduce(function (n, i) { return n + 1 + countDescendants(i); }, 0);
   }
 
-  var api = { resolveSettings: resolveSettings, pillFont: pillFont, formOf: formOf, slugify: slugify, resolveOpen: resolveOpen, findLink: findLink,
-    prefixPaths: prefixPaths, reindexOpen: reindexOpen, openAfterMove: openAfterMove, slugFor: slugFor, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen, navMove: navMove, urlFor: urlFor, keyMove: keyMove, movedPath: movedPath,
+  var api = { resolveSettings: resolveSettings, pillFont: pillFont, formOf: formOf, slugify: slugify, resolveOpen: resolveOpen,
+    prefixPaths: prefixPaths, reindexOpen: reindexOpen, openAfterMove: openAfterMove, slugFor: slugFor, normalizeSlugs: normalizeSlugs, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen, navMove: navMove, urlFor: urlFor, keyMove: keyMove, movedPath: movedPath,
     clone: clone, itemAt: itemAt, removeAt: removeAt, insertAt: insertAt, moveItem: moveItem, parentAfterRemoval: parentAfterRemoval,
     setField: setField, hasChanged: hasChanged, countDescendants: countDescendants };
   root.LinkpagesLogic = api;

@@ -14,13 +14,6 @@ test('unknown design falls back to default', () => {
 test('unknown font falls back to the default (system) font', () => {
   assert.equal(L.resolveSettings({ font: 'nope' }).font, C.DEFAULTS.font);
 });
-test('findLink searches nested folders, ignores folders', () => {
-  const items = [{ name: 'a', slug: 'a', url: 'u' },
-    { name: 'f1', items: [{ name: 'f2', items: [{ name: 'deep', slug: 'deep', url: 'x' }] }] }];
-  assert.equal(L.findLink(items, 'deep').url, 'x');
-  assert.equal(L.findLink(items, 'f1'), null);
-  assert.equal(L.findLink(items, 'f2'), null);
-});
 test('numberLabel pads and overflows', () => {
   assert.equal(L.numberLabel(0), '01');
   assert.equal(L.numberLabel(98), '99');
@@ -103,17 +96,38 @@ test('prefixPaths lists every folder on the way to a list', () => {
   assert.deepEqual(L.prefixPaths([1, 0, 2]), ['1', '1.0', '1.0.2']);
 });
 test('slugFor lowercases, maps umlauts and replaces other characters', () => {
-  assert.equal(L.slugFor('SPIEGEL Textkorrektur', []), 'spiegel-textkorrektur');
-  assert.equal(L.slugFor('Grüße äö', []), 'gruesse-aeoe');
-  assert.equal(L.slugFor('  --A!!b--  ', []), 'a-b');
+  assert.equal(L.slugFor('SPIEGEL Textkorrektur', []), '-spiegel-textkorrektur');
+  assert.equal(L.slugFor('Grüße äö', []), '-gruesse-aeoe');
+  assert.equal(L.slugFor('  --A!!b--  ', []), '-a-b');
 });
 test('slugFor falls back to "link" for an empty result', () => {
-  assert.equal(L.slugFor('!!!', []), 'link');
-  assert.equal(L.slugFor('', []), 'link');
+  assert.equal(L.slugFor('!!!', []), '-link');
+  assert.equal(L.slugFor('', []), '-link');
 });
-test('slugFor stays unique across the whole tree', () => {
-  const items = [{ name: 'x', slug: 'new-link', url: '' }, { name: 'F', items: [{ name: 'y', slug: 'new-link-2', url: '' }] }];
-  assert.equal(L.slugFor('New link', items), 'new-link-3');
+test('slugFor needs a number only among the siblings of the same folder', () => {
+  const siblings = [{ name: 'x', slug: '-docs', url: '' }, { name: 'y', slug: '-docs-2', url: '' }, { name: 'F', items: [] }];
+  assert.equal(L.slugFor('Docs', siblings), '-docs-3');
+  assert.equal(L.slugFor('Docs', [{ name: 'F', items: [] }]), '-docs');
+});
+test('a link slug never equals a folder slug: it starts with a dash', () => {
+  assert.equal(L.slugFor('Mail', [{ name: 'Mail', items: [] }]), '-mail');
+});
+test('paths accept a slug with or without its leading dash', () => {
+  const t = [{ name: 'Tools', items: [{ name: 'Deep', slug: '-deep', url: 'w' }, { name: 'Old', slug: 'old', url: 'v' }] }];
+  assert.equal(L.resolveOpen(t, ['tools', '-deep']).target.name, 'Deep');
+  assert.equal(L.resolveOpen(t, ['tools', 'deep']).target.name, 'Deep');
+  assert.equal(L.resolveOpen(t, ['tools', '-old']).target.name, 'Old');
+  assert.equal(L.resolveOpen(t, ['deep']).target.name, 'Deep');
+  assert.equal(L.resolveOpen(t, ['tools', 'nope']), null);
+});
+test('normalizeSlugs puts a dash before every link slug that lacks one, in all folders, without mutating', () => {
+  const t = [{ name: 'a', slug: 'a', url: 'u' }, { name: 'F', items: [{ name: 'b', slug: '-b', url: 'v' }, { name: 'c', url: 'w' }, { name: 'G', items: [{ name: 'd', slug: 'd', url: 'x' }] }] }];
+  const n = L.normalizeSlugs(t);
+  assert.equal(n[0].slug, '-a');
+  assert.equal(n[1].items[0].slug, '-b');
+  assert.equal(n[1].items[1].slug, undefined);
+  assert.equal(n[1].items[2].items[0].slug, '-d');
+  assert.equal(t[0].slug, 'a');
 });
 
 test('parentAfterRemoval shifts an ancestor index past the removed item', () => {
