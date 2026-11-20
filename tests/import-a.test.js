@@ -19,7 +19,7 @@ test('link slugs start with a dash, repeat across folders and get a number only 
   const items = convert(sections);
   assert.equal(items[1].items[0].slug, '-docs');
   const same = convert([{ title: 'x', links: [{ name: 'Docs', url: 'u' }, { name: 'docs', url: 'v' }] }]);
-  assert.deepEqual(same[0].items.map(i => i.slug), ['-docs', '-docs-2']);
+  assert.deepEqual(same[0].items.map(i => i.slug), ['-docs', '-docs_x']);
   const clash = convert([{ title: 'Mail', links: [{ name: 'mail', url: 'u' }] }]);
   assert.equal(clash[0].items[0].slug, '-mail');
 });

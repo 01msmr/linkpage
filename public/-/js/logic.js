@@ -95,12 +95,12 @@
       .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   }
 
-  // A link slug is a dash plus the name, so it can never equal a folder slug; a number only when a sibling in the same folder has it already.
+  // A link slug is a dash plus the name, so it can never equal a folder slug; `_x`, `_xx`, ... only when a sibling in the same folder has it already.
   function slugFor(name, siblings) {
     var base = '-' + (slugify(name) || 'link');
     var taken = siblings.filter(function (it) { return !isFolder(it) && it.slug; }).map(function (it) { return it.slug; });
     var slug = base;
-    for (var n = 2; taken.indexOf(slug) >= 0; n++) slug = base + '-' + n;
+    for (var x = '_x'; taken.indexOf(slug) >= 0; x += 'x') slug = base + x;
     return slug;
   }
 
