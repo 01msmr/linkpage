@@ -296,3 +296,9 @@ test('movedPath gives the new path of a moved entry', () => {
   assert.deepEqual(L.movedPath([1, 0], [], 2), [2]);
   assert.deepEqual(L.movedPath([2], [], 1), [1]);
 });
+test('resyncSlugs rederives link slugs from names, numbers siblings, recurses and does not mutate', () => {
+  const t = [{ name: 'Web', slug: '-old', url: '' }, { name: 'Web', slug: '-x', url: '' }, { name: 'F', items: [{ name: 'Neu', slug: '-alt', url: '' }] }];
+  const r = L.resyncSlugs(t);
+  assert.deepEqual([r[0].slug, r[1].slug, r[2].items[0].slug], ['-web', '-web-2', '-neu']);
+  assert.equal(t[0].slug, '-old');
+});

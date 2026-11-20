@@ -526,6 +526,7 @@
 
   function save() {
     settle();
+    draft.items = L.resyncSlugs(draft.items);
     R.show(draft);
     saving = true;
     saveBtn.disabled = true;

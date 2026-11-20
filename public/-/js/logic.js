@@ -104,6 +104,16 @@
     return slug;
   }
 
+  // The tree with every link slug rederived from its name (numbered among siblings), without mutating.
+  function resyncSlugs(items) {
+    var out = [];
+    items.forEach(function (it) {
+      if (isFolder(it)) out.push(Object.assign({}, it, { items: resyncSlugs(it.items) }));
+      else out.push(Object.assign({}, it, { slug: slugFor(it.name || '', out) }));
+    });
+    return out;
+  }
+
   // The tree with a dash before every link slug that lacks one.
   function normalizeSlugs(items) {
     return items.map(function (it) {
@@ -291,7 +301,7 @@
   }
 
   var api = { resolveSettings: resolveSettings, pillFont: pillFont, formOf: formOf, localValue: localValue, slugify: slugify, resolveOpen: resolveOpen,
-    prefixPaths: prefixPaths, reindexOpen: reindexOpen, openAfterMove: openAfterMove, slugFor: slugFor, normalizeSlugs: normalizeSlugs, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen, navMove: navMove, urlFor: urlFor, keyMove: keyMove, movedPath: movedPath,
+    prefixPaths: prefixPaths, reindexOpen: reindexOpen, openAfterMove: openAfterMove, slugFor: slugFor, resyncSlugs: resyncSlugs, normalizeSlugs: normalizeSlugs, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen, navMove: navMove, urlFor: urlFor, keyMove: keyMove, movedPath: movedPath,
     clone: clone, itemAt: itemAt, removeAt: removeAt, insertAt: insertAt, moveItem: moveItem, parentAfterRemoval: parentAfterRemoval,
     setField: setField, hasChanged: hasChanged, countDescendants: countDescendants };
   root.LinkpagesLogic = api;
