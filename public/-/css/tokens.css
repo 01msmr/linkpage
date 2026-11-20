@@ -23,6 +23,7 @@
   --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --item-size: clamp(1.25rem, 5vw, 1.75rem);
   --item-scale: 1;
+  --pill-min: 0.8;
   --leading: 1.2;
   --fit: 1;
   --item-font: calc(var(--pill-font, calc(var(--item-size) * var(--item-scale))) * var(--fit));
@@ -94,5 +95,5 @@
   --gear-hover: #999;
 }
 @media (min-width: 601px) {
-  :root { --item-size: clamp(1.75rem, 3vw, 2.75rem); --side: 32px; }
+  :root { --item-size: clamp(1.75rem, 3vw, 2.75rem); --side: 32px; --pill-min: 1; }
 }

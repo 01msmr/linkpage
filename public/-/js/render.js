@@ -16,7 +16,27 @@
   var editor = null;
   var readyFns = [];
   var activeUrl = null;
-  var modeOverride = null;
+  var local = null;
+
+  // View values (mode, height, intensity) a user chose in this browser override the site's.
+  function view(key) {
+    if (!local) {
+      local = {};
+      try {
+        Object.keys(C.LOCAL.lists).forEach(function (k) {
+          var v = L.localValue(k, root.localStorage.getItem(C.LOCAL.prefix + k));
+          if (v !== undefined) local[k] = v;
+        });
+      } catch (e) { /* site values */ }
+    }
+    return local[key] !== undefined ? local[key] : settings[key];
+  }
+
+  function setView(key, value) {
+    view(key);
+    local[key] = value;
+    try { root.localStorage.setItem(C.LOCAL.prefix + key, String(value)); } catch (e) { /* this page view only */ }
+  }
 
   // The chevron is a text glyph; one design draws it as an SVG whose ink ends exactly at the box edge. Both turn by rotation.
   function chevron(ch) {
@@ -441,15 +461,15 @@
     settings = L.resolveSettings(site);
     var html = document.documentElement;
     html.dataset.design = settings.design;
-    html.dataset.mode = modeOverride || settings.mode;
+    html.dataset.mode = view('mode');
     html.dataset.caps = settings.caps;
     html.dataset.numbers = String(settings.numbers === true);
     html.dataset.font = settings.font;
     html.dataset.layout = settings.layout;
     html.dataset.form = L.formOf(settings.design);
     syncSplit();
-    html.style.setProperty('--pill-font', L.pillFont(settings.height));
-    html.style.setProperty('--intensity', settings.intensity + '%');
+    html.style.setProperty('--pill-font', L.pillFont(view('height')));
+    html.style.setProperty('--intensity', view('intensity') + '%');
     draw();
   }
 
@@ -492,8 +512,8 @@
     whenReady: function (fn) { if (raw) fn(raw); else readyFns.push(fn); },
     cssMs: cssMs,
     getOpen: function () { return open; },
-    getMode: function () { return modeOverride || (settings && settings.mode); },
-    setMode: function (m) { modeOverride = m; },
+    view: view,
+    setView: setView,
     setOpen: function (paths) { open = paths; },
     setEditor: function (e) { editor = e; }
   };

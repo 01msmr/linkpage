@@ -63,23 +63,22 @@
     fadeTimer = setTimeout(function () { html.classList.remove('mode-fade'); }, ms + 50);
   }
 
-  // The look-and-feel mode is a per-browser view choice: it is never saved and never opens the save bar.
-  function setMode(value) {
-    fadeMode();
-    R.setMode(value);
-    try { root.localStorage.setItem(E.modeKey, value); } catch (e) { /* view only */ }
+  // Mode, height and intensity are per-browser view choices: never saved, never opening the save bar.
+  function setLocal(key, value) {
+    if (key === 'mode') fadeMode();
+    R.setView(key, value);
     R.show(draft);
   }
 
   function setting(key, value) {
-    if (key === 'mode') return setMode(value);
+    if (C.LOCAL.lists[key]) return setLocal(key, value);
     draft[key] = value;
     touched();
     R.show(draft);
   }
 
   function currentOf(key) {
-    return key === 'mode' ? R.getMode() : L.resolveSettings(draft)[key];
+    return C.LOCAL.lists[key] ? R.view(key) : L.resolveSettings(draft)[key];
   }
 
   function labelOf(v) { return Object.prototype.hasOwnProperty.call(E.valueLabels, String(v)) ? E.valueLabels[String(v)] : String(v); }
@@ -146,9 +145,9 @@
     return slot;
   }
 
-  function buildDock() {
+  function buildDock(controls) {
     var dock = el('div', 'dock');
-    E.controls.forEach(function (c) { dock.appendChild(dockSlot(c)); });
+    controls.forEach(function (c) { dock.appendChild(dockSlot(c)); });
     refreshDock();
     return dock;
   }
@@ -580,7 +579,7 @@
 
   function build() {
     var bar0 = el('div', 'toolbar');
-    var dock = buildDock();
+    var dock = buildDock(E.controls);
     saveBtn = button('', 'ebtn esave', save);
     saveBtn.innerHTML = E.saveIcon;
     saveBtn.title = E.save;
@@ -609,15 +608,14 @@
   }
 
   function start(site) {
+    slots = [];
+    Array.prototype.forEach.call(document.querySelectorAll('.toolbar'), function (t) { t.remove(); });
     original = L.clone(site);
     draft = L.clone(site);
     draft.items = L.normalizeSlugs(draft.items);
     root.document.documentElement.dataset.editing = '';
     build();
-    try {
-      var m = root.localStorage.getItem(E.modeKey);
-      if (m && E.modes.indexOf(m) >= 0) R.setMode(m);
-    } catch (e) { /* default mode */ }
+    [original, draft].forEach(function (o) { delete o.height; delete o.intensity; });
     R.setEditor(api);
     R.show(draft);
     refresh();
@@ -681,6 +679,14 @@
     return root.matchMedia(E.link.query).matches || root.navigator.standalone === true;
   }
 
+  // Visitors get the view settings (mode, height, intensity) only; they live in this browser.
+  function startViewer(site) {
+    draft = site;
+    var bar = el('div', 'toolbar');
+    bar.appendChild(buildDock(E.controls.filter(function (c) { return C.LOCAL.lists[c.key]; })));
+    document.body.appendChild(bar);
+  }
+
   function boot() {
     if (enabled()) {
       R.whenReady(start);
@@ -689,7 +695,8 @@
       });
       return;
     }
-    if (standalone()) showEditLink();
+    R.whenReady(startViewer);
+    if (standalone()) R.whenReady(function () { showEditLink(document.querySelector('.dock')); });
     if (!E.autoProbe || new URLSearchParams(root.location.search).get('edit') === '0') return;
     probe().then(function (ok) {
       if (!ok) return;

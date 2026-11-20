@@ -16,11 +16,18 @@
       numbers: pick(raw.numbers, d.numbers),
       caps: pick(raw.caps, d.caps),
       font: font,
-      intensity: C.INTENSITIES.indexOf(raw.intensity) >= 0 ? raw.intensity : d.intensity,
-      height: C.HEIGHTS.indexOf(raw.height) >= 0 ? raw.height : d.height,
+      intensity: d.intensity,
+      height: d.height,
       layout: C.LAYOUTS.indexOf(raw.layout) >= 0 ? raw.layout : d.layout,
       items: Array.isArray(raw.items) ? raw.items : d.items
     };
+  }
+
+  // A stored view value (a string) as the listed value it names, else undefined.
+  function localValue(key, raw) {
+    var list = C.LOCAL.lists[key] || [];
+    for (var i = 0; i < list.length; i++) if (String(list[i]) === raw) return list[i];
+    return undefined;
   }
 
   // 'pill' designs draw shapes, every other design is plain text.
@@ -28,10 +35,10 @@
 
   function num(n) { return String(parseFloat(n.toFixed(3))); }
 
-  // The font size for a pill of `height` px at the reference width; the pill grows and shrinks with the viewport between SCALE.min and SCALE.max times that height.
+  // The font size for a pill of `height` px at the reference width; it scales with the viewport between --pill-min (CSS) and SCALE.max.
   function pillFont(height) {
     var S = C.SCALE;
-    var px = 'clamp(' + num(height * S.min) + 'px, ' + num(height / S.ref * 100) + 'vw, ' + num(height * S.max) + 'px)';
+    var px = 'clamp(calc(' + height + 'px * var(--pill-min)), ' + num(height / S.ref * 100) + 'vw, ' + num(height * S.max) + 'px)';
     return 'calc((' + px + ' - 2 * var(--pad-y)) / var(--leading))';
   }
 
@@ -283,7 +290,7 @@
     return item.items.reduce(function (n, i) { return n + 1 + countDescendants(i); }, 0);
   }
 
-  var api = { resolveSettings: resolveSettings, pillFont: pillFont, formOf: formOf, slugify: slugify, resolveOpen: resolveOpen,
+  var api = { resolveSettings: resolveSettings, pillFont: pillFont, formOf: formOf, localValue: localValue, slugify: slugify, resolveOpen: resolveOpen,
     prefixPaths: prefixPaths, reindexOpen: reindexOpen, openAfterMove: openAfterMove, slugFor: slugFor, normalizeSlugs: normalizeSlugs, numberLabel: numberLabel, toggleOpen: toggleOpen, isOpen: isOpen, navMove: navMove, urlFor: urlFor, keyMove: keyMove, movedPath: movedPath,
     clone: clone, itemAt: itemAt, removeAt: removeAt, insertAt: insertAt, moveItem: moveItem, parentAfterRemoval: parentAfterRemoval,
     setField: setField, hasChanged: hasChanged, countDescendants: countDescendants };

@@ -140,13 +140,19 @@ test('layout defaults to list; split is kept; unknown falls back', () => {
   assert.equal(L.resolveSettings({ layout: 'split' }).layout, 'split');
   assert.equal(L.resolveSettings({ layout: 'nope' }).layout, 'list');
 });
-test('height defaults to the config default; listed steps are kept; others fall back', () => {
-  assert.equal(L.resolveSettings({}).height, C.DEFAULTS.height);
-  assert.equal(L.resolveSettings({ height: 34 }).height, 34);
-  assert.equal(L.resolveSettings({ height: 0 }).height, C.DEFAULTS.height);
-  assert.equal(L.resolveSettings({ height: 74 }).height, C.DEFAULTS.height);
-  assert.equal(L.resolveSettings({ height: 51 }).height, C.DEFAULTS.height);
-  assert.equal(L.resolveSettings({ height: '52' }).height, C.DEFAULTS.height);
+test('height and intensity are not site settings: saved values are ignored', () => {
+  assert.equal(L.resolveSettings({ height: 34, intensity: 40 }).height, C.DEFAULTS.height);
+  assert.equal(L.resolveSettings({ height: 34, intensity: 40 }).intensity, C.DEFAULTS.intensity);
+});
+test('localValue keeps a stored view value only if it is a listed one, typed like the list', () => {
+  assert.equal(L.localValue('height', '34'), 34);
+  assert.equal(L.localValue('height', '35'), undefined);
+  assert.equal(L.localValue('intensity', '40'), 40);
+  assert.equal(L.localValue('intensity', '45'), undefined);
+  assert.equal(L.localValue('mode', 'dark'), 'dark');
+  assert.equal(L.localValue('mode', 'nope'), undefined);
+  assert.equal(L.localValue('design', 'x'), undefined);
+  assert.equal(L.localValue('height', null), undefined);
 });
 test('HEIGHTS run from 30 to 70 in steps of 4 and include the default', () => {
   assert.equal(C.HEIGHTS[0], 30);
@@ -155,8 +161,8 @@ test('HEIGHTS run from 30 to 70 in steps of 4 and include the default', () => {
   assert.ok(C.HEIGHTS.every((h, i) => i === 0 || h - C.HEIGHTS[i - 1] === 4));
 });
 test('pillFont scales the pill height with the viewport around the reference width', () => {
-  assert.equal(L.pillFont(48), 'calc((clamp(48px, 3.75vw, 72px) - 2 * var(--pad-y)) / var(--leading))');
-  assert.equal(L.pillFont(46), 'calc((clamp(46px, 3.594vw, 69px) - 2 * var(--pad-y)) / var(--leading))');
+  assert.equal(L.pillFont(48), 'calc((clamp(calc(48px * var(--pill-min)), 3.75vw, 72px) - 2 * var(--pad-y)) / var(--leading))');
+  assert.equal(L.pillFont(46), 'calc((clamp(calc(46px * var(--pill-min)), 3.594vw, 69px) - 2 * var(--pad-y)) / var(--leading))');
 });
 test('reindexOpen drops the removed folder and shifts later siblings down', () => {
   assert.deepEqual(L.reindexOpen(['0', '1', '1.0', '2', '2.1'], [], 1, -1), ['0', '1', '1.1']);
@@ -167,12 +173,8 @@ test('reindexOpen shifts only inside the changed list', () => {
 test('reindexOpen shifts siblings at or after an insertion up', () => {
   assert.deepEqual(L.reindexOpen(['0', '1', '1.0'], [], 1, 1), ['0', '2', '2.0']);
 });
-test('intensity defaults to 100; steps of 10 from 10 to 100 are kept; others fall back', () => {
+test('intensity defaults to 100', () => {
   assert.equal(L.resolveSettings({}).intensity, 100);
-  assert.equal(L.resolveSettings({ intensity: 40 }).intensity, 40);
-  assert.equal(L.resolveSettings({ intensity: 45 }).intensity, 100);
-  assert.equal(L.resolveSettings({ intensity: 0 }).intensity, 100);
-  assert.equal(L.resolveSettings({ intensity: 110 }).intensity, 100);
 });
 test('slugify makes a folder slug from a name', () => {
   assert.equal(L.slugify('tbx.li'), 'tbx-li');

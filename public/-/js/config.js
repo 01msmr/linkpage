@@ -26,7 +26,9 @@
     unknown: 'Unknown link: {slug}'
   };
   var START_MARK = { query: '(hover: hover) and (pointer: fine)' };
-  var SCALE = { ref: 1280, min: 1, max: 1.5 };
+  // View values kept per browser (localStorage, key prefix + name); never saved to the site.
+  var LOCAL = { prefix: 'linkpage-', lists: { mode: MODES, height: HEIGHTS, intensity: INTENSITIES } };
+  var SCALE = { ref: 1280, max: 1.5 };
   var SPLIT = { query: '(min-width: 900px) and (min-height: 500px)', queryEmbedded: '(min-width: 450px)', min: 20, max: 80, fitSlack: 0.98, newTabHosts: ['icloud.com'], open: 'Open in new tab \u2197', frameTitle: 'Preview' };
   var TIP = { showMs: 2000, hideMs: 3000, gap: 8 };
   var FOLDER = { shape: 'M3 1.6L9.2 5L3 8.4', chevron: '›', closeLabel: 'Close {name}' };
@@ -37,8 +39,6 @@
     link: { text: 'edit', href: '/edit/', hideMs: 8000, fadeMs: 400, query: '(display-mode: standalone)' },
     flagKey: 'linkpage-edit',
     flagCookieDays: 400,
-    modeKey: 'linkpage-mode',
-    modes: MODES,
     save: 'Save',
     saveIcon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h13l3 3v15H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 3v6h8V3M7 21v-7h10v7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
     saving: 'Saving\u2026',
@@ -80,7 +80,7 @@
       other: 'Saving failed (HTTP {status}). Your edits are kept.'
     }
   };
-  var api = { EDIT: EDIT, FOLDER: FOLDER, SPLIT: SPLIT, SCALE: SCALE, START_MARK: START_MARK, TIP: TIP, DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, PILL_DESIGNS: PILL_DESIGNS, MODES: MODES, LAYOUTS: LAYOUTS, HEIGHTS: HEIGHTS, INTENSITIES: INTENSITIES, FONTS: FONTS };
+  var api = { EDIT: EDIT, LOCAL: LOCAL, FOLDER: FOLDER, SPLIT: SPLIT, SCALE: SCALE, START_MARK: START_MARK, TIP: TIP, DEFAULTS: DEFAULTS, REDIRECT: REDIRECT, DESIGNS: DESIGNS, PILL_DESIGNS: PILL_DESIGNS, MODES: MODES, LAYOUTS: LAYOUTS, HEIGHTS: HEIGHTS, INTENSITIES: INTENSITIES, FONTS: FONTS };
   root.LinkpagesConfig = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);
