@@ -16,7 +16,7 @@ Apache 2.4 with PHP, document root `<repo>/public`.
 2. `htpasswd -c public/edit/.htpasswd <user>`, open `/edit/` once and sign in. `public/edit/` must be writable by PHP.
 3. The first `/-/site.php` request seeds `edit/site.json` from `-/seeds/default.json`; saves keep `site.bak.json`.
 
-`site.json`, `site.bak.json`, `.htpasswd`, `.htaccess` in `public/edit/` are never committed. `main` deploys via Plesk Git: deploy path = the domain's `httpdocs`, document root = `httpdocs/public`, a unique repository name per system user.
+`site.json`, `site.bak.json`, `.htpasswd`, `.htaccess` in `public/edit/` are never committed. The home screen icon (`-/apple-touch-icon.png`) is opaque light grey `#e6e6e9` so iOS darkens it with the system appearance; `index.html` embeds it as a `data:` URI (iOS 27.2 does not load it from a URL; re-embed with `base64 -i`). `main` deploys via Plesk Git: deploy path = the domain's `httpdocs`, document root = `httpdocs/public`, a unique repository name per system user.
 
 ## Data and paths
 
